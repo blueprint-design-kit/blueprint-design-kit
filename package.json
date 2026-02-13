@@ -1,0 +1,48 @@
+{
+  "name": "blueprint-design-kit",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueprint-design-kit/blueprint-design-kit.git"
+  },
+  "bin": {
+    "blueprint": "blueprint.js"
+  },
+  "exports": {
+    ".": "./dist/Blueprint/Blueprint.js",
+    "./types": "./src/types/index.ts",
+    "./fileManager": "./dist/fileManager/fileManager.js"
+  },
+  "files": [
+    "lib",
+    "_blueprint_config.js",
+    "_blueprint_imports.js",
+    "blueprint.js",
+    "index.d.ts",
+    "index.js"
+  ],
+  "scripts": {
+    "dev": "npx tsc --watch",
+    "build": "npx tsc",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "deep-extend": "^0.6.0",
+    "minimatch": "^10.2.0",
+    "node-watch": "^0.7.4",
+    "recursive-readdir": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/deep-extend": "^0.6.2",
+    "@types/next": "^8.0.7",
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.7",
+    "@types/recursive-readdir": "^2.2.4",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
