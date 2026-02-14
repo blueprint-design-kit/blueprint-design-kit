@@ -25,7 +25,7 @@ function registerSignalHandlers() {
     process.on('beforeExit', cleanup);
 }
 
-export default function watchBlueprintFiles(onUpdateNeeded: (evt: string, changedPath: string) => void = () => {}) {
+export function watchBlueprintFiles(onUpdateNeeded: (evt: string, changedPath: string) => void = () => {}) {
     const { files } = getOptions();
     const { componentsRoot, ignore, matchBlueprint, matchComponent } = files;
 

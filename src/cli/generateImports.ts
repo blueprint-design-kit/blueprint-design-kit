@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import recursive from 'recursive-readdir';
 import { getOptions } from '../config/options';
-import coverageReport from './coverageReport';
+import { coverageReport } from './coverageReport';
 import { BLUEPRINT_FOLDER, BLUEPRINT_IMPORTS_FILE, BLUEPRINT_IMPORTER_NAMES } from '../config/constants';
 
 import type { BlueprintOptionsWithDefaults, ProjectFiles } from '../types';
@@ -56,7 +56,7 @@ function writeImportsFile(projectFiles: ProjectFiles) {
     });
 }
 
-export default function generateImports() {
+export function generateImports() {
     const { files }: BlueprintOptionsWithDefaults = getOptions();
     const { componentsRoot, ignore, matchBlueprint, matchComponent } = files;
     const relativeRoot = path.resolve(componentsRoot).replace(`${path.resolve('.')}/`, '') + '/';

@@ -5,7 +5,7 @@ import BlueprintError from '../utils/BlueprintError';
 
 import type { ProjectFiles } from '../types';
 
-export default function coverageReport(
+export function coverageReport(
     componentsRoot: string,
     totalFiles: number,
     projectFiles: ProjectFiles,

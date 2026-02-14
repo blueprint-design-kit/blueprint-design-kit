@@ -84,8 +84,8 @@ export interface BlueprintInstance {
     withDefaultProps: (props: BlueprintProps) => BlueprintProps;
 }
 
-export interface MakeBlueprint {
-    (blueprintName?: string): BlueprintInstance;
+export interface Blueprint {
+    make: (blueprintName?: string) => BlueprintInstance;
 }
 
 // type FunctionComponent = React.FunctionComponent<React.PropsWithChildren>;

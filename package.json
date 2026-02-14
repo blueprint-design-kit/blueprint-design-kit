@@ -6,7 +6,7 @@
     "url": "git+https://github.com/blueprint-design-kit/blueprint-design-kit.git"
   },
   "bin": {
-    "blueprint": "blueprint.js"
+    "blueprint": "./blueprint.js"
   },
   "exports": {
     ".": "./dist/Blueprint/Blueprint.js",

@@ -1,4 +1,4 @@
-import type { BlueprintSystemOptions } from "./types";
+import type { BlueprintSystemOptions } from './types';
 
 function locate() {
     try {

@@ -2,9 +2,9 @@ import { BLUEPRINT_IMPORTER_NAMES } from '../config/constants';
 import BlueprintError from '../utils/BlueprintError';
 import { getBlueprintImports } from '../_blueprint_imports';
 
-import type  { MakeBlueprint } from '../types';
+import type  { Blueprint } from '../types';
 
-export default async function getImport(componentName: string, importType: 'blueprint'|'component'): Promise<MakeBlueprint | React.FunctionComponent | undefined> {
+export default async function getImport(componentName: string, importType: 'blueprint'|'component'): Promise<Blueprint | React.FunctionComponent | undefined> {
     let blueprintImports = getBlueprintImports();
     const componentMap = blueprintImports[componentName];
     if (!componentMap) {

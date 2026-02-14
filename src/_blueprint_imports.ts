@@ -8,7 +8,7 @@
  * @returns {function} a function that returns the component map
  */
 
-import type { BlueprintInstance } from "./types";
+import type { BlueprintInstance } from './types';
 
 export interface BlueprintImportsMap {
     [key: string]: {

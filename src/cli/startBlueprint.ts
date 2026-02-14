@@ -1,11 +1,11 @@
-import watchBlueprintFiles from './watchBlueprintFiles';
-import generateImports from './generateImports';
+import { watchBlueprintFiles } from './watchBlueprintFiles';
+import { generateImports } from './generateImports';
 
 function onUpdateNeeded() { // (evt, changedPath)
     generateImports();
 }
 
-export default function startBlueprint() {
+export function startBlueprint() {
     generateImports();
     watchBlueprintFiles(onUpdateNeeded);
 }

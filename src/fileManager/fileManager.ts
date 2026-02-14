@@ -1,6 +1,6 @@
-import { getBlueprint } from "./getBlueprint";
-import { getComponent } from "./getComponent";
-import { listComponents } from "./listComponents";
+import { getBlueprint } from './getBlueprint';
+import { getComponent } from './getComponent';
+import { listComponents } from './listComponents';
 
 const __blueprintFileManager: true = true;
 
