@@ -28,6 +28,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@types/react": "^19.2.7",
     "deep-extend": "^0.6.0",
     "minimatch": "^10.2.0",
     "node-watch": "^0.7.4",
@@ -35,9 +36,7 @@
   },
   "devDependencies": {
     "@types/deep-extend": "^0.6.2",
-    "@types/next": "^8.0.7",
     "@types/node": "^25.2.3",
-    "@types/react": "^19.2.7",
     "@types/recursive-readdir": "^2.2.4",
     "globals": "^17.3.0",
     "typescript": "^5.9.3"
