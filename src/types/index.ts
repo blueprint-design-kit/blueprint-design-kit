@@ -87,16 +87,3 @@ export interface BlueprintInstance {
 export interface Blueprint {
     make: (blueprintName?: string) => BlueprintInstance;
 }
-
-// type FunctionComponent = React.FunctionComponent<React.PropsWithChildren>;
-
-// interface BlueprintConstructor {
-//     new (blueprintConfig: BlueprintConfig): MakeBlueprint;
-// }
-
-// export interface BlueprintFileManager {
-//     __blueprintFileManager: true;
-//     getBlueprint: (componentName: string) => Promise<BlueprintInstance | undefined>;
-//     getComponent: (componentName: string) => Promise<FunctionComponent | undefined>;
-//     listComponents: () => string[];
-// }
