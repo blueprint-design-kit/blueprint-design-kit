@@ -3,6 +3,7 @@
 
 const { startBlueprint } = require('./dist/cli/startBlueprint');
 
-startBlueprint();
+const args = process.argv.slice(2);
+const watch = args.includes('--watch');
 
-// const args = process.argv.slice(2);
+startBlueprint(watch);

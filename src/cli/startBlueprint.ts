@@ -5,7 +5,9 @@ function onUpdateNeeded() { // (evt, changedPath)
     generateImports();
 }
 
-export function startBlueprint() {
+export function startBlueprint(watch = false) {
     generateImports();
-    watchBlueprintFiles(onUpdateNeeded);
+    if (watch) {
+        watchBlueprintFiles(onUpdateNeeded);
+    }
 }
