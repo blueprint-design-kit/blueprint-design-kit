@@ -218,9 +218,9 @@ links: [
     'https://figma.com/design/1234567890',
     'https://github.com/org/repo/blob/master/app/components/Badge.tsx',
     {
-        url: 'http://anydomain.com/foo';
-        type: 'MyCustomLink';
-        icon: <svg>...</svg>;
+        url: 'http://anydomain.com/foo',
+        type: 'MyCustomLink',
+        icon: <svg>...</svg>,
     },
 ],
 ```
@@ -232,7 +232,7 @@ Accepts a ReactNode/JSX for content that should be rendered alongside this compo
 notes: (
     <div>
         <h2>Badge Notes</h2>
-        <p>This comonent is deprecated. Here is a <Link href="/other-components">links to a different component</Link>.</p>
+        <p>This comonent is deprecated. Use <a href="/other">other component</a> instead.</p>
     </div>
 ),
 ```
