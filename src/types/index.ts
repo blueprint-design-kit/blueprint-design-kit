@@ -66,22 +66,24 @@ interface BlueprintLink {
 }
 export type BlueprintLinks = (string | BlueprintLink)[];
 
-export interface BlueprintConfig {
+interface BlueprintConfigBase {
     schema: BlueprintSchema;
     variants?: BlueprintVariants;
     links?: BlueprintLinks;
     notes?: ReactNode;
 }
+export interface BlueprintConfig extends BlueprintConfigBase {
+    locales?: Record<string, BlueprintConfigBase>;
+}
 
 export interface BlueprintInstance {
-    name?: string;
-    getLinks: () => BlueprintLinks;
-    getNotes: () => ReactNode;
-    getSchema: () => BlueprintSchema | undefined;
-    getVariant: (variantName: string) => BlueprintVariant | undefined;
-    listVariants: () => string[];
-    validateProps: (props: BlueprintProps | undefined) => string | undefined;
-    withDefaultProps: (props: BlueprintProps) => BlueprintProps;
+    getLinks: (locale?: string) => BlueprintLinks;
+    getNotes: (locale?: string) => ReactNode;
+    getSchema: (locale?: string) => BlueprintSchema | undefined;
+    getVariant: (variantName: string, locale?: string) => BlueprintVariant | undefined;
+    listVariants: (locale?: string) => string[];
+    validateProps: (props: BlueprintProps | undefined, locale?: string) => string | undefined;
+    withDefaultProps: (props: BlueprintProps, locale?: string) => BlueprintProps;
 }
 
 export interface Blueprint {

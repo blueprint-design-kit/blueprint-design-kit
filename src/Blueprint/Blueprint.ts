@@ -31,46 +31,64 @@ export class Blueprint {
         }
         validateBlueprint(this.config, blueprintName);
 
-        const bp: BlueprintConfig = Object.assign({ schema: {} }, this.config);
+        const bp: BlueprintConfig = Object.assign({ schema: {}, locales: {} }, this.config);
 
-        const getLinks = (): BlueprintLinks => {
+        const getLinks = (locale?: string): BlueprintLinks => {
+            if (locale && bp.locales) {
+                return bp.locales[locale]?.links || bp.links || [];
+            }
             return bp.links || [];
         };
 
-        const getNotes = (): React.ReactNode => {
+        const getNotes = (locale?: string): React.ReactNode => {
+            if (locale && bp.locales) {
+                return bp.locales[locale]?.notes || bp.notes;
+            }
             return bp.notes;
         };
 
-        const getSchema = (): BlueprintSchema | undefined => {
+        const getSchema = (locale?: string): BlueprintSchema | undefined => {
+            if (locale && bp.locales) {
+                return bp.locales[locale]?.schema || bp.schema;
+            }
             return bp.schema;
         };
 
-        const getVariant = (variantName: string): BlueprintVariant | undefined => {
+        const getVariant = (variantName: string, locale?: string): BlueprintVariant | undefined => {
             let variant;
+            let variants = bp.variants;
+            if (locale && bp.locales) {
+                variants = bp.locales[locale]?.variants || variants;
+            }
             if (variantName) {
-                variant = bp.variants && bp.variants[variantName];
+                variant = variants && variants[variantName];
                 if (!variant) {
                     throw new BlueprintError(`${blueprintName || 'Blueprint'} variant "${variantName}" not found`);
                 }
             } else {
-                variant = bp.variants && bp.variants['DEFAULT'];
+                variant = variants && variants['DEFAULT'];
             }
             return variant;
         };
 
-        const listVariants = (): string[] => {
-            return bp.variants ? Object.keys(bp.variants) : [];
+        const listVariants = (locale?: string): string[] => {
+            let variants = bp.variants;
+            if (locale && bp.locales) {
+                variants = bp.locales[locale]?.variants || variants;
+            }
+            return variants ? Object.keys(variants) : [];
         };
 
-        const validateProps = (props: BlueprintProps = {}): string | undefined => {
-            return validatePropsAgainstSchema(props, bp.schema, blueprintName);
+        const validateProps = (props: BlueprintProps = {}, locale?: string): string | undefined => {
+            return validatePropsAgainstSchema(props, getSchema(locale) || {}, blueprintName);
         };
 
-        const withDefaultProps = (props: BlueprintProps = {}): BlueprintProps => {
+        const withDefaultProps = (props: BlueprintProps = {}, locale?: string): BlueprintProps => {
             const defaultValues: BlueprintProps = {};
-            if (bp.schema) {
-                for (const key in bp.schema) {
-                    defaultValues[key] = bp.schema[key] && bp.schema[key].default;
+            const schema = getSchema(locale);
+            if (schema) {
+                for (const key in schema) {
+                    defaultValues[key] = schema[key] && schema[key].default;
                 }
             }
             return Object.assign({}, defaultValues, props);
