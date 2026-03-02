@@ -125,6 +125,7 @@ new Blueprint({
     variants: { ... },
     links: [ ... ],
     notes: <>...</>,
+    locales: { ... },
 });
 ```
 
@@ -235,6 +236,24 @@ notes: (
         <p>This comonent is deprecated. Use <a href="/other">other component</a> instead.</p>
     </div>
 ),
+```
+
+### locales:
+Use this feature to override the blueprint configuration just for a specific locale. Any properties that you do not specifically override will fall back to the default configuration. Pass in the current locale when using Blueprint instance functions such as `getVariant`, `getLinks`, etc.
+
+```tsx
+locales: {
+    'en-GB': {
+        variants: { ... },
+        links: [ ... ],
+        notes: <>...</>,
+    },
+    'fr-FR': {
+        variants: { ... },
+        links: [ ... ],
+        notes: <>...</>,
+    },
+},
 ```
 
 
