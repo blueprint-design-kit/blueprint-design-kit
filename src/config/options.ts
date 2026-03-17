@@ -41,6 +41,12 @@ const options: BlueprintOptionsWithDefaults = {
          */
         // matchComponent: '(.+)\\.component\\.(tsx|ts|jsx|js)$',
         matchComponent: '^(.+?)(?:\\.component)?(?<!\\.(?:blueprint|specs?|tests?|mocks?|stories)|index)\\.(?:tsx|jsx)$',
+
+        /**
+         * When true, Blueprint will open and look for a "use client" directive at the top of each component file.
+         *   This enables the use of `getComponentMeta()` but can impact performance.
+         */
+        readComponentMeta: true,
     },
 
     /**

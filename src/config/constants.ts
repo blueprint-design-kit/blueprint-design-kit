@@ -4,4 +4,5 @@ export const BLUEPRINT_COVERAGE_FILE = 'blueprint.coverage.json';
 export const BLUEPRINT_IMPORTER_NAMES = {
     blueprint: 'b',
     component: 'c',
+    meta: 'm',
 };

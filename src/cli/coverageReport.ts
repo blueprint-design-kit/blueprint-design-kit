@@ -17,11 +17,11 @@ export function coverageReport(
         const componentFiles = Object.entries(components);
         const totalComponents = componentFiles.length;
         const missing: string[] = [];
-        for (const [key, path] of componentFiles) {
+        for (const [key, comp] of componentFiles) {
             if (blueprints[key]) {
                 componentsWithBlueprints += 1;
             } else {
-                missing.push(path);
+                missing.push(comp.path);
             }
         }
         const coverage = {

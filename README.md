@@ -140,10 +140,10 @@ Each prop in a schema can contain any of the following attributes:
 - **min** (what is the minimum allowed value)
 - **max** (what is the maximum allowed value)
 
-For a component that takes `title`, `backgroundColor`, and `price`, the schema might look like this:
+For a component that takes `text`, `backgroundColor`, and `price`, the schema might look like this:
 ```ts
 schema: {
-    title: {
+    text: {
         type: ['string'], // this prop is required and must be a string
         allow: ['Limited Time', 'New', 'Most Popular'], // should only accept one of these values
         source: 'https://cms.com/entries/5678', // what is the source of this data?
@@ -174,7 +174,8 @@ Used for validations and to power a UI showcase, the variants record describes s
 Each variant object can contain any of the following attributes:
 - **props** (what values are passed as props)
 - **expectation** (what the resulting dom should look like, as JSX)
-- **state** (what initial values to use as state - Note: For this to work, your component must consume these from a special prop called `state` and pass these values in to `useState()`)
+- **state** (what initial values to use as state)
+  - Note: This is an advanced feature. To be able to preview state in blueprints, your component must consume these values from a special prop called `state` and pass them into `useState()` hooks as initial values.
 
 An example variants object might look like this:
 ```tsx
@@ -257,36 +258,85 @@ locales: {
 ```
 
 
-## Rendering components with blueprints
+## Rendering components with Blueprint UI
 
-You can access your blueprints programmatically for use in custom tooling, but Blueprint offers a pre-built [blueprint-design-kit-ui](https://github.com/blueprint-design-kit/blueprint-design-kit-ui) which you can install and use out of the box.
+Blueprint offers a pre-built [blueprint-design-kit-ui](https://github.com/blueprint-design-kit/blueprint-design-kit-ui) which you can install and use out of the box...
 
-Using Blueprint UI:
+### Basic usage:
 ```tsx
-import blueprintFileManager from 'blueprint-design-kit/fileManager';
 import BlueprintDesignKitUI from 'blueprint-design-kit-ui';
 
 export default async function BlueprintShowcase({ params, searchParams }) {
 	const urlParams = await params;
 	const urlSearchParams = await searchParams;
+    const componentPath = decodeURIComponent((urlParams.component || []).join('/'));
+    const locale = decodeURIComponent(urlParams.locale || '');
+    const options = {};
 	return (
 		<BlueprintDesignKitUI
-			blueprintFileManager={blueprintFileManager}
-			urlParams={urlParams}
+            componentPath={componentPath}
+            locale={locale}
 			urlSearchParams={urlSearchParams}
+            options={options}
 		/>
 	);
 }
 ```
 
-DIY:
+---
+## DIY Rendering components with custom tooling
+
+However, if you need extra customization, you can always access your blueprints programmatically...
+
+(Pro tip: use [this page](https://github.com/blueprint-design-kit/blueprint-design-kit-ui/blob/main/src/index.tsx) for reference when building your own UI)
+
+### Example DIY Usage:
+
 ```ts
-import { listComponents, getComponent, getBlueprint } from 'blueprint-design-kit/fileManager';
+import { listComponents, getBlueprint, getComponent } from 'blueprint-design-kit';
 
 const components = listComponents();
-const blueprint = await getBlueprint(components[0]);
-const component = await getComponent(components[0]);
+const componentPath = components[0];
+const blueprint = await getBlueprint(componentPath);
+const component = await getComponent(componentPath);
 ```
-(Pro tip: use [this page](https://github.com/blueprint-design-kit/blueprint-design-kit-ui/blob/main/src/index.tsx) for reference when building your own UI)
+
+#### -> listComponents()
+Returns an Array of componentPaths that corresponds to your directory structure. For example:
+```ts
+const components = listComponents();
+// [ 'Atoms/Badge', 'Atoms/Button' ]
+```
+
+#### -> getBlueprint(componentPath: string) (async)
+Returns a Blueprint instance for the specified component.
+```ts
+const locale = 'en-US';
+const blueprint = await getBlueprint('Atoms/Badge');
+blueprint.getLinks(locale), // [ 'http://foo.com/Badge' ]
+blueprint.getNotes(locale), // <h1>Notes</h1>
+blueprint.getSchema(locale), // { text: { type: 'string' }, backgroundColor: { default: '#f96' } }
+blueprint.listVariants(), // [ 'DEFAULT', 'NewProducts', 'Logged-In' ]
+blueprint.getVariant('Logged-In', locale), // { props: { text: 'Hi, Sam' } }
+```
+
+#### -> getComponent(componentPath: string) (async)
+Returns your actual component, ready for rendering
+```tsx
+const FunctionComponent = await getComponent('Atoms/Badge');
+return <FunctionComponent {...props} />
+```
+
+#### -> getComponentMeta(componentPath: string) (async)
+Returns an object that describes the meta attributes of a component. Currently only contains a boolean indicating if the component has the `'use client'` or `'use server'` directive at the top.
+```ts
+const componentMetaData = await getComponentMeta('Atoms/Badge');
+// { useClient: true, useServer: false }
+```
+
+---
+---
+
+...
 
 Enjoy your components and happy coding!

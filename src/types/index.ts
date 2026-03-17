@@ -1,8 +1,16 @@
 import type { ReactNode } from 'react';
 
+export interface ComponentMeta {
+    useClient?: boolean;
+    useServer?: boolean;
+}
+
 export type ProjectFiles = {
     blueprints: Record<string, string>;
-    components: Record<string, string>;
+    components: Record<string, {
+        path: string;
+        meta: ComponentMeta;
+    }>;
 };
 
 // As passed in by the user
@@ -12,6 +20,7 @@ export interface BlueprintSystemOptions {
         ignore?: string[];
         matchBlueprint?: string;
         matchComponent?: string;
+        readComponentMeta?: boolean;
     };
     importsFormat?: 'es6' | 'commonjs';
     saveCoverageReport?: boolean;
@@ -26,6 +35,7 @@ export interface BlueprintOptionsWithDefaults {
         ignore: string[];
         matchBlueprint: string;
         matchComponent: string;
+        readComponentMeta: boolean;
     };
     importsFormat: 'es6' | 'commonjs';
     saveCoverageReport: boolean;
@@ -66,14 +76,17 @@ interface BlueprintLink {
 }
 export type BlueprintLinks = (string | BlueprintLink)[];
 
-interface BlueprintConfigBase {
+export interface BlueprintConfig {
     schema: BlueprintSchema;
     variants?: BlueprintVariants;
     links?: BlueprintLinks;
     notes?: ReactNode;
-}
-export interface BlueprintConfig extends BlueprintConfigBase {
-    locales?: Record<string, BlueprintConfigBase>;
+    locales?: Record<string, {
+        schema?: BlueprintSchema;
+        variants?: BlueprintVariants;
+        links?: BlueprintLinks;
+        notes?: ReactNode;
+    }>;
 }
 
 export interface BlueprintInstance {
@@ -86,6 +99,10 @@ export interface BlueprintInstance {
     withDefaultProps: (props: BlueprintProps, locale?: string) => BlueprintProps;
 }
 
-export interface Blueprint {
-    make: (blueprintName?: string) => BlueprintInstance;
+export interface BlueprintImportsMap {
+    [key: string]: {
+        b: () => Promise<BlueprintInstance> | Promise<{ default: BlueprintInstance }> | Promise<undefined>;
+        c: () => Promise<React.FunctionComponent> | Promise<{ default: React.FunctionComponent }> | Promise<undefined>;
+        m: () => Promise<ComponentMeta> | Promise<undefined>;
+    };
 }

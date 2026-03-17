@@ -10,11 +10,10 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/Blueprint/Blueprint.js",
-      "require": "./dist/Blueprint/Blueprint.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
       "types": "./src/types/index.ts"
     },
-    "./fileManager": "./dist/fileManager/fileManager.js",
     "./types": "./src/types/index.ts"
   },
   "files": [
@@ -30,15 +29,15 @@
   "dependencies": {
     "@types/react": "^19.2.7",
     "deep-extend": "^0.6.0",
-    "minimatch": "^10.2.0",
+    "minimatch": "^10.2.4",
     "node-watch": "^0.7.4",
     "recursive-readdir": "^2.2.3"
   },
   "devDependencies": {
     "@types/deep-extend": "^0.6.2",
-    "@types/node": "^25.2.3",
+    "@types/node": "^25.2.5",
     "@types/recursive-readdir": "^2.2.4",
-    "globals": "^17.3.0",
+    "globals": "^17.4.0",
     "typescript": "^5.9.3"
   },
   "engines": {

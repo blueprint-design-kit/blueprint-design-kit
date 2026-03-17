@@ -10,8 +10,6 @@ import type {
     BlueprintVariant,
 } from '../types';
 
-export * from '../types/index';
-
 export class Blueprint {
     private config: BlueprintConfig;
 
