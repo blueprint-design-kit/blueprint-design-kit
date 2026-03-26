@@ -21,7 +21,8 @@ const componentMap = {
 export default componentMap;`,
     },
     commonjs: {
-        prefix: `const dynamic = require('next/dynamic');
+        prefix: `const nextDynamic = require('next/dynamic');
+const dynamic = nextDynamic.default || nextDynamic;
 const componentMap = {
 `,
         import: 'require',
@@ -98,10 +99,14 @@ export function generateImports() {
                         const firstLine = await fsReadFirstLine(path);
 
                         const useClient = firstLine?.match(/^\s*['"]+use client['"]+/);
-                        meta.useClient = !!useClient;
+                        if (useClient) {
+                            meta.useClient = true;
+                        }
 
                         const useServer = firstLine?.match(/^\s*['"]+use server['"]+/);
-                        meta.useServer = !!useServer;
+                        if (useServer) {
+                            meta.useServer = true;
+                        }
                     }
 
                     projectFiles.components[key] = {
