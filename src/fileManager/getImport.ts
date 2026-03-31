@@ -14,12 +14,12 @@ export default async function getImport(
     let blueprintImports = getBlueprintImports();
     const componentMap = blueprintImports[componentPath];
     if (!componentMap) {
-        throw new BlueprintError(`Component ${componentPath} not found`);
+        throw new BlueprintError(`${importType} not found for '${componentPath}'`);
     }
     const importerKey = BLUEPRINT_IMPORTER_NAMES[importType] as keyof typeof componentMap;
     const importer = componentMap[importerKey];
     if (typeof importer !== 'function') {
-        throw new BlueprintError(`Component ${componentPath} does not have an importer`);
+        throw new BlueprintError(`'${componentPath}' ${importType} does not have an importer`);
     }
     const imported = await importer();
     // @ts-expect-error -- support both default and named exports for compatibility with different module systems

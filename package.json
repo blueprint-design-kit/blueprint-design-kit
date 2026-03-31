@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "dev": "npx tsc --watch",
+    "dev:local": "npx tsc && node put-files",
     "build": "npx tsc",
     "prepublishOnly": "npm run build"
   },
