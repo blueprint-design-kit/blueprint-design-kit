@@ -5,18 +5,16 @@
     "type": "git",
     "url": "git+https://github.com/blueprint-design-kit/blueprint-design-kit.git"
   },
+  "type": "module",
   "bin": {
     "blueprint": "blueprint.js"
   },
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./src/types/index.ts"
-    },
-    "./types": "./src/types/index.ts"
+    ".": "./dist/index.js",
+    "./ui": "./dist/ui/index.js"
   },
   "files": [
+    "css",
     "dist",
     "src",
     "blueprint.js"
@@ -24,22 +22,36 @@
   "scripts": {
     "dev": "npx tsc --watch",
     "dev:local": "npx tsc && node put-files",
-    "build": "npx tsc",
+    "build": "rm -rf dist && npx tsc",
+    "lint": "npm run build && eslint",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@types/react": "^19.2.7",
+    "@markedjs/html-differ": "^5.0.4",
+    "color-name": "^2.1.0",
     "deep-extend": "^0.6.0",
-    "minimatch": "^10.2.4",
+    "html-react-parser": "^5.2.17",
+    "json5": "^2.2.3",
+    "minimatch": "^10.2.5",
     "node-watch": "^0.7.4",
+    "playwright": "^1.59.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-element-to-jsx-string": "^17.0.1",
+    "react-transition-group": "^4.4.5",
     "recursive-readdir": "^2.2.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/color-name": "^2.0.0",
     "@types/deep-extend": "^0.6.2",
-    "@types/node": "^25.2.5",
+    "@types/node": "^25.5.0",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-transition-group": "^4.4.12",
     "@types/recursive-readdir": "^2.2.4",
+    "eslint": "^10.1.0",
     "globals": "^17.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "engines": {
     "node": ">=20.0.0"

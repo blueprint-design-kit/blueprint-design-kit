@@ -1,0 +1,401 @@
+
+.blueprint-reset, .blueprint-reset-self, .blueprint-reset * {
+    box-sizing: border-box;
+    border: none;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+.blueprint-ui .blueprint-layout {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    /* box-sizing: border-box; */
+}
+
+.blueprint-ui a {
+    text-decoration: none;
+}
+
+.blueprint-ui .blueprint-layout-column-left {
+    display: flex;
+    flex-direction: column;
+    max-width: 25vw;
+}
+
+.blueprint-ui .blueprint-layout-column-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.blueprint-ui .blueprint-layout-column-right {
+    display: flex;
+    flex-direction: column;
+    max-width: 27vw;
+}
+
+.blueprint-ui .blueprint-layout-tile:not(:empty) {
+    padding: 20px;
+    overflow: auto;
+}
+
+.blueprint-ui .blueprint-layout-tile:nth-child(3) {
+    margin-top: auto;
+}
+
+.blueprint-ui .blueprint-layout-left-top:not(:empty) {
+    max-height: 25vh;
+    overflow: unset;
+}
+
+.blueprint-ui .blueprint-layout-left:not(:empty) {
+    padding-left: 0;
+    padding-right: 0;
+}
+.blueprint-ui .blueprint-layout-left ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0 0.7em;
+}
+.blueprint-ui .blueprint-layout-left li {
+    padding: 0;
+    margin: 0.3em 0.6em 0.3em 0;
+}
+.blueprint-ui .blueprint-layout-left a {
+    padding: 0.3em 0.5em 0.3em 1em;
+    display: block;
+}
+
+.blueprint-ui .blueprint-layout-left-bottom {
+    max-height: 25vh;
+}
+
+.blueprint-ui .blueprint-layout-left-bottom:not(:empty) {
+    overflow: hidden;
+    min-height: 64px;
+}
+
+.blueprint-ui .blueprint-layout-center-top {
+    max-height: 20vh;
+}
+.blueprint-ui .blueprint-layout-center:not(:empty) {
+    flex: 1;
+    padding: 0;
+}
+.blueprint-ui .blueprint-layout-center-bottom {
+    max-height: 30vh;
+}
+
+.blueprint-ui .blueprint-layout-right-top:not(:empty) {
+    min-height: 85px;
+    max-height: 20vh;
+}
+
+.blueprint-ui .blueprint-layout-right-bottom {
+    max-height: 30vh;
+}
+
+.blueprint-ui .blueprint-layout-documentation {
+    padding: 30px;
+    line-height: 1.4em;
+}
+
+/*********************/
+/*** ComponentMenu ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-component-menu details {
+    margin: 14px 0 0 20px;
+}
+.blueprint-ui .blueprint-layout-component-menu summary {
+    cursor: pointer;
+    margin: 0 0 6px;
+}
+.blueprint-ui .blueprint-layout-component-menu-docs {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+.blueprint-ui .blueprint-layout-component-menu-search input {
+    width: 94%;
+    padding: 3px 6px;
+}
+
+/*********************/
+/*** Preview Frame ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-preview-frame-outer:not(:empty) {
+    width: 100%;
+    height: 100%;
+}
+
+.blueprint-ui .blueprint-layout-preview-frame:not(:empty) {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: auto;
+}
+
+.blueprint-ui .blueprint-layout-preview-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.blueprint-ui .blueprint-layout-device-wrapper {
+    flex: 0.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.blueprint-ui .blueprint-layout-preview-controls {
+    box-sizing: border-box;
+    border: none;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+    flex: 0 0 auto;
+    padding: 20px 20px 0 0;
+}
+.blueprint-layout-preview-control-dark-mode {
+    cursor: pointer;
+    display: flex;
+    width: 36px;
+    height: 36px;
+}
+.blueprint-layout-preview-control-device-mode {
+    cursor: pointer;
+    display: flex;
+    width: 36px;
+    height: 36px;
+}
+.blueprint-layout-preview-control-copy-jsx {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    width: 36px;
+    height: 36px;
+}
+
+.blueprint-ui .blueprint-layout-main {
+    width: 100%;;
+    margin: 0 auto;
+}
+
+.blueprint-ui .blueprint-layout-main-border:not(:empty) {
+    height: 100%;
+}
+
+.blueprint-ui .blueprint-layout-main-content {
+    padding: 2px;
+}
+
+/***************************/
+/*** Preview Expectation ***/
+/***************************/
+
+.blueprint-layout-preview-expectation {
+    flex: 0 0 auto;
+    margin-top: 20px;
+    padding-top: 10px;
+    position: relative;
+}
+.blueprint-layout-preview-expectation-unmet {
+    min-width: 40vw;
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+}
+.blueprint-layout-preview-expectation pre {
+    white-space: pre-wrap;
+    max-height: 30vh;
+    overflow: auto;
+}
+.blueprint-layout-preview-expectation-main {
+    width: 100%;;
+    margin: 0 auto 10px;
+}
+
+/*********************/
+/*** VariantPicker ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-variant-picker-section {
+    margin-bottom: -15px;
+    padding-bottom: 15px;
+}
+.blueprint-ui .blueprint-layout-variant-picker-label {
+    margin-bottom: 5px;
+}
+.blueprint-ui .blueprint-layout-variant-picker {
+    min-width: 150px;
+    max-width: 240px;
+}
+
+/*******************/
+/*** PropsViewer ***/
+/*******************/
+
+.blueprint-layout-props-viewer {
+    margin-top: -10px;
+}
+.blueprint-layout-props-viewer-label {
+    margin-bottom: 15px;
+}
+.blueprint-layout-props-viewer-item {
+    margin-bottom: 15px;
+    padding: 8px 10px;
+}
+.blueprint-layout-props-viewer-item-key {
+    display: inline-block;
+}
+.blueprint-layout-props-viewer-item-value {
+    display: inline-block;
+    margin-left: 5px;
+}
+.blueprint-layout-props-viewer-item-details-item {
+    margin-left: 14px;
+}
+.blueprint-layout-props-viewer-item-details-expandable summary {
+    margin-left: -12px;
+    cursor: pointer;
+}
+.blueprint-layout-props-viewer-item-details-inline {
+    cursor: default;
+}
+.blueprint-layout-props-viewer-item-schema {
+    padding: 4px;
+    margin: 5px -10px -8px;
+}
+.blueprint-layout-props-viewer-item-schema table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.blueprint-layout-props-viewer-item-schema td {
+    padding: 2px 4px;
+    vertical-align: top;
+}
+.blueprint-layout-props-viewer-item-schema td:first-child {
+    width: 50px;
+}
+.blueprint-layout-props-viewer-item-color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: -3px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+/*****************/
+/*** LinksMenu ***/
+/*****************/
+
+.blueprint-layout-links-menu {
+    margin: -7px 0 -3px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.blueprint-layout-links-menu * {
+    box-sizing: content-box;
+}
+.blueprint-layout-links-menu-item a {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    padding: 2px;
+}
+.blueprint-layout-links-menu-icon {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+.blueprint-layout-links-menu-empty {
+    margin: 1px 1px 4px 1px;
+    width: 30px;
+    height: 30px;
+}
+
+
+/************************/
+/*** ValidationRunner ***/
+/************************/
+
+.blueprint-layout-validations-runner-link svg {
+    display: inline-block;
+    vertical-align: text-top;
+    margin-left: -5px;
+}
+
+.blueprint-layout-validations-runner {
+    padding: 35px 40px 100px;
+}
+
+.blueprint-layout-validations-runner button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.blueprint-layout-validations-runner input {
+    min-width: 300px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    border: 1px solid #999;
+}
+
+.blueprint-layout-validations-runner h3 {
+    margin-top: 30px;
+}
+
+.blueprint-layout-validations-runner details {
+    margin: 5px 20px;
+    cursor: pointer;
+}
+
+.blueprint-layout-validations-progress-bar-outer {
+    margin-top: 10px;
+    width: 500px;
+    padding: 1px;
+    height: 15px;
+    border: 1px solid #bbb;
+}
+
+.blueprint-layout-validations-progress-bar {
+    height: 100%;
+    background-color: #999;
+}
+
+.blueprint-layout-validations-progress-bar-label {
+    margin-top: 8px;
+}
+
+.blueprint-layout-validations-runner-error-box {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    cursor: auto;
+}
+
+.blueprint-layout-validations-runner-passed-variants {
+    padding: 5px 10px;
+    cursor: auto;
+}
+
+.blueprint-layout-validations-runner-skipped {
+    margin: 5px 20px;
+}

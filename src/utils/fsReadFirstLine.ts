@@ -1,3 +1,5 @@
+'use server';
+
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 

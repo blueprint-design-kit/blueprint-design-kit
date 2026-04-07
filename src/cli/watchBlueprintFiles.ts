@@ -1,6 +1,8 @@
-import watch, { type Watcher } from 'node-watch';
+import watch from 'node-watch';
 import { minimatch } from 'minimatch';
-import { getOptions } from '../config/options';
+import { getBlueprintOptions, getComponentOptions, getFileOptions } from '../config/options.js';
+
+import type { Watcher } from 'node-watch';
 
 let watcher: Watcher | null = null;
 let signalHandlersRegistered = false;
@@ -26,8 +28,9 @@ function registerSignalHandlers() {
 }
 
 export function watchBlueprintFiles(onUpdateNeeded: (evt: string, changedPath: string) => void = () => {}) {
-    const { files } = getOptions();
-    const { componentsRoot, ignore, matchBlueprint, matchComponent } = files;
+    const { componentsRoot = '.', ignore = [] } = getFileOptions();
+    const { matchComponent = '' } = getComponentOptions();
+    const { matchBlueprint = '' } = getBlueprintOptions();
 
     const watchConfig = {
         recursive: true,
@@ -45,6 +48,7 @@ export function watchBlueprintFiles(onUpdateNeeded: (evt: string, changedPath: s
     };
 
     cleanup(); // Close existing watcher if any
+    // @ts-expect-error - node-watch types are outdated and don't reflect the actual API
     watcher = watch(componentsRoot, watchConfig, onUpdateNeeded);
     
     // Register signal handlers only once

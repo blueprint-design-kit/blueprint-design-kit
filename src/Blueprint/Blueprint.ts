@@ -1,6 +1,8 @@
-import BlueprintError from '../utils/BlueprintError';
-import { validateBlueprint, validatePropsAgainstSchema } from './validate';
+import BlueprintError from '../utils/BlueprintError.js';
+import { validateBlueprint } from './validateBlueprint.js';
+import { validatePropsAgainstSchema } from './validateProps.js';
 
+import type { ReactNode } from 'react';
 import type {
     BlueprintConfig,
     BlueprintInstance,
@@ -8,7 +10,8 @@ import type {
     BlueprintProps,
     BlueprintSchema,
     BlueprintVariant,
-} from '../types';
+    BlueprintVariants,
+} from './types.js';
 
 export class Blueprint {
     private config: BlueprintConfig;
@@ -24,7 +27,7 @@ export class Blueprint {
             blueprintName = callerName;
         }
 
-        if (!this.config) {
+        if (!this || !this.config) {
             throw new BlueprintError(`${blueprintName || ''} Constructing a new Blueprint() requires a blueprintConfig`);
         }
         validateBlueprint(this.config, blueprintName);
@@ -38,7 +41,7 @@ export class Blueprint {
             return bp.links || [];
         };
 
-        const getNotes = (locale?: string): React.ReactNode => {
+        const getNotes = (locale?: string): ReactNode => {
             if (locale && bp.locales) {
                 return bp.locales[locale]?.notes || bp.notes;
             }
@@ -52,29 +55,35 @@ export class Blueprint {
             return bp.schema;
         };
 
-        const getVariant = (variantName: string, locale?: string): BlueprintVariant | undefined => {
-            let variant;
-            let variants = bp.variants;
+        function getConfiguredVariants(locale?: string): { variants: BlueprintVariants; names: string[] } {
+            let variants = bp.variants || {};
             if (locale && bp.locales) {
                 variants = bp.locales[locale]?.variants || variants;
             }
+            const names = Object.keys(variants);
+            return { variants, names };
+        }
+
+        const getVariant = (variantName: string, locale?: string): BlueprintVariant | undefined => {
+            let variant;
+            const { variants, names } = getConfiguredVariants(locale);
             if (variantName) {
-                variant = variants && variants[variantName];
+                variant = variants[variantName];
                 if (!variant) {
                     throw new BlueprintError(`${blueprintName || 'Blueprint'} variant "${variantName}" not found`);
                 }
             } else {
-                variant = variants && variants['DEFAULT'];
+                const firstVariantName = names[0];
+                if (firstVariantName) {
+                    variant = variants[firstVariantName];
+                }
             }
             return variant;
         };
 
         const listVariants = (locale?: string): string[] => {
-            let variants = bp.variants;
-            if (locale && bp.locales) {
-                variants = bp.locales[locale]?.variants || variants;
-            }
-            return variants ? Object.keys(variants) : [];
+            const { names } = getConfiguredVariants(locale);
+            return names;
         };
 
         const validateProps = (props: BlueprintProps = {}, locale?: string): string | undefined => {
@@ -92,7 +101,7 @@ export class Blueprint {
             return Object.assign({}, defaultValues, props);
         };
 
-        const blueprintInstance = {
+        const blueprintInstance: BlueprintInstance = {
             getLinks,
             getNotes,
             getSchema,

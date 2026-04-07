@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 "use strict";
 
-const { startBlueprint } = require('./dist/cli/startBlueprint');
+import { execBlueprintCli } from './dist/cli/execBlueprintCli.js';
 
 const args = process.argv.slice(2);
-const watch = args.includes('--watch');
+const command = args.shift();
 
-startBlueprint(watch);
+execBlueprintCli(command, args).catch((err) => {
+    console.error(err);
+    process.exit(1);
+});

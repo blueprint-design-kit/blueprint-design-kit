@@ -1,92 +1,134 @@
 import deepExtend from 'deep-extend';
-import { getOptionsFromConfig } from '../_blueprint_config';
-
-import type { BlueprintSystemOptions, BlueprintOptionsWithDefaults } from '../types';
-
-let userOptionsApplied = false;
+import { getOptionsFromConfig } from '../_blueprint_config.js';
 
 /**
- * Blueprint's default options are set here.
- * These can be overridden by the user by passing options to the `withBlueprint` function.
+ * Set by the user in a blueprint.config.{ts|js} file in the root of their project.
  */
-const options: BlueprintOptionsWithDefaults = {
+export interface BlueprintSystemOptions {
 
-    files: {
+    fileOptions?: {
         /**
          * Path to the highest directory that contains all of your component and blueprint files
          *  (relative to the project root)
          */
-        componentsRoot: './app/components',
-        // componentsRoot: '.',
+        componentsRoot?: string;
 
         /**
          * Array of matchers for files to ignore
          * Passed to https://github.com/jergason/recursive-readdir
          */
-        ignore: [
-            '.**', // dot files
-            '.**/**', // directories starting with dot (yes this has to be separate from dot files glob)
-            'node_modules/**',
-        ],
+        ignore?: string[];
 
         /**
-         * RegEx to use for identifying "blueprint" files
-         *  1st capture group should return the key to use for this file in the component list
+         * The format of the file that will be generated to contain the imports.
          */
-        matchBlueprint: '(.+)\\.blueprint\\.(tsx|ts|jsx|js)$',
+        importsFormat?: 'es6' | 'commonjs';
+    };
 
+    componentOptions?: {
         /**
-         * RegEx to use for identifying "component" files
+         * RegEx used to identify "component" files
          *  1st capture group should return the key to use for this file in the component list
          */
-        // matchComponent: '(.+)\\.component\\.(tsx|ts|jsx|js)$',
-        matchComponent: '^(.+?)(?:\\.component)?(?<!\\.(?:blueprint|specs?|tests?|mocks?|stories)|index)\\.(?:tsx|jsx)$',
+        matchComponent?: string;
 
         /**
          * When true, Blueprint will open and look for a "use client" directive at the top of each component file.
          *   This enables the use of `getComponentMeta()` but can impact performance.
          */
-        readComponentMeta: true,
+        readComponentMeta?: boolean;
+
+        /**
+         * Controls how to handle components that are missing a blueprint.
+         * "false" means no coverage warning will be given.
+         */
+        onMissingCoverage?: 'warn' | 'error' | false;
+
+        /**
+         * If true, a coverage report will be generated in the .blueprint folder.
+         */
+        saveCoverageReport?: boolean;
     },
 
-    /**
-     * The format of the file that will be generated to contain the imports.
-     */
-    importsFormat: 'es6',
+    blueprintOptions?: {
+        /**
+         * RegEx used to identify "blueprint" files
+         *  1st capture group should return the key to use for this file in the component list
+         */
+        matchBlueprint?: string;
 
-    /**
-     * If true, a coverage report will be generated in the .blueprint folder.
-     */
-    saveCoverageReport: true,
+        /**
+         * Controls how to handle invalid blueprints.
+         * "false" means no warning will be given.
+         */
+        onInvalidBlueprint?: 'warn' | 'error' | false;
+    },
 
-    /**
-     * Controls how to handle components that are missing a blueprint.
-     * "false" means no coverage warning will be given.
-     */
-    onMissingCoverage: 'warn',
-
-    /**
-     * Controls how to handle invalid blueprints.
-     * "false" means no warning will be given.
-     */
-    onInvalidBlueprint: 'error',
-
-    /**
-     * When true, forbids passing props or state to the default variant.
-     */
-    strictDefaults: true,
-
-};
-
-export function extendOptions(userOptions: BlueprintSystemOptions | undefined) {
-    deepExtend(options, userOptions || {});
+    testingOptions?: {
+        serverCommand?: string;
+        serverUrl?: string;
+    },
+    
 }
 
-export function getOptions(): BlueprintOptionsWithDefaults {
+/**
+ * Blueprint's default options are set here.
+ * These can be overridden by the user in a blueprint.config.{ts|js} file in the root of their project.
+ */
+const options: BlueprintSystemOptions = {
+    fileOptions: {
+        componentsRoot: './app/components',
+        ignore: [
+            '.**', // dot files
+            '.**/**', // directories starting with dot (yes this has to be separate from dot files glob)
+            'node_modules/**',
+        ],
+        importsFormat: 'es6',
+    },
+    componentOptions: {
+        matchComponent: '^(.+?)(?:\\.component)?(?<!\\.(?:blueprint|specs?|tests?|mocks?|stories)|index)\\.(?:tsx|jsx)$',
+        readComponentMeta: true,
+        onMissingCoverage: 'warn',
+        saveCoverageReport: true,
+    },
+    blueprintOptions: {
+        matchBlueprint: '(.+)\\.blueprint\\.(tsx|ts|jsx|js)$',
+        onInvalidBlueprint: 'error',
+    },
+    testingOptions: {
+        serverCommand: 'npm run start',
+        serverUrl: 'http://localhost:3000/blueprint',
+    },
+};
+
+
+let userOptionsApplied = false;
+
+export function setOptions(userOptions: BlueprintSystemOptions | undefined) {
+    deepExtend(options, userOptions || {});
+    userOptionsApplied = true;
+}
+
+function getOptions() {
     if (!userOptionsApplied) {
         const userOptions = getOptionsFromConfig();
-        extendOptions(userOptions);
-        userOptionsApplied = true;
+        setOptions(userOptions);
     }
     return options;
+}
+
+export function getFileOptions() {
+    return getOptions().fileOptions || {};
+}
+
+export function getComponentOptions() {
+    return getOptions().componentOptions || {};
+}
+
+export function getBlueprintOptions() {
+    return getOptions().blueprintOptions || {};
+}
+
+export function getTestingOptions() {
+    return getOptions().testingOptions || {};
 }

@@ -1,0 +1,300 @@
+
+.blueprint-reset, .blueprint-reset * {
+    font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+    font-size: 16px;
+    color: #222;
+    -webkit-font-smoothing: antialiased;
+}
+
+.blueprint-reset code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.blueprint-ui .blueprint-layout-column-left {
+    background-color: #1B272F;
+    color: #EAE0CF;
+}
+
+.blueprint-ui .blueprint-layout-column-right {
+    background-color: #94B4C1;
+}
+
+.blueprint-ui .blueprint-layout-left-top {
+    background-color: #547792;
+    font-size: 1.1em;
+}
+.blueprint-ui .blueprint-layout-left-top a,
+.blueprint-ui .blueprint-layout-left-top h1,
+.blueprint-ui .blueprint-layout-left-top h2 {
+    color: #EAE0CF;
+    font-weight: bold;
+}
+
+.blueprint-ui .blueprint-layout-left a {
+    padding: 0.3em 0.5em 0.3em 1em;
+    display: block;
+    color: #EAE0CF;
+    text-decoration: none;
+}
+.blueprint-ui .blueprint-layout-left a:hover {
+    background-color: #141b1f;
+}
+.blueprint-ui .blueprint-layout-left .selected-component {
+    background-color: #454f57;
+}
+.blueprint-ui .blueprint-layout-left-bottom a {
+    color: #EAE0CF;
+    text-decoration: none;
+}
+.blueprint-ui .blueprint-layout-left-bottom a:hover {
+    text-decoration: underline;
+}
+.blueprint-ui .blueprint-layout-left-bottom {
+    border-top: 1px solid #454f57;
+    font-size: 0.85em;
+}
+
+.blueprint-ui .blueprint-layout-center-top {
+    background-color: #547792;
+    color: #EAE0CF;
+    font-size: 1.1em;
+}
+.blueprint-ui .blueprint-layout-center-bottom {
+    border-top: 1px solid #D4CABA;
+    background-color: #EAE0CF;
+    color: #222;
+}
+.blueprint-ui .blueprint-layout-center-bottom a {
+    color: #5e93bb;
+    text-decoration: underline;
+}
+
+/*********************/
+/*** ComponentMenu ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-component-menu summary {
+    color: #EAE0CF;
+}
+.blueprint-ui .blueprint-layout-component-menu-docs {
+    border-bottom: 1px solid #EAE0CF;
+}
+.blueprint-ui .blueprint-layout-component-menu-docs a {
+    color: #c6a870;
+}
+.blueprint-ui .blueprint-layout-component-menu-search input {
+    color: #111;
+    font-size: 14px;
+    border-radius: 3px;
+    padding: 3px 6px;
+}
+.blueprint-ui .blueprint-layout-component-menu-search input::placeholder {
+    font-style: italic;
+    color: #888;
+}
+
+
+/*********************/
+/*** Preview Frame ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-main-border:not(:empty) {
+    border-radius: 2px;
+    border: 1px dashed #999;
+}
+
+.blueprint-ui .blueprint-layout-main-content {
+    border-radius: 2px;
+    border: 1px dashed #EEE;
+}
+
+/***************************/
+/*** Preview Expectation ***/
+/***************************/
+
+.blueprint-layout-preview-expectation {
+    border-top: 1px solid #D4CABA;
+}
+.blueprint-layout-preview-expectation-unmet {
+    border-radius: 6px;
+    background-color: #eae0cf;
+    color: #111;
+    box-shadow: 1px 3px 3px #3333;
+}
+.blueprint-layout-preview-expectation pre {
+    white-space: pre-wrap;
+}
+.blueprint-layout-preview-expectation del {
+    background-color: #eba3a3;
+}
+.blueprint-layout-preview-expectation ins {
+    background-color: #aedaae;
+}
+
+/*********************/
+/*** VariantPicker ***/
+/*********************/
+
+.blueprint-ui .blueprint-layout-variant-picker-section {
+    border-bottom: 1px solid #EAE0CF;
+}
+.blueprint-ui .blueprint-layout-variant-picker {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/*******************/
+/*** PropsViewer ***/
+/*******************/
+
+.blueprint-layout-props-viewer-label {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.blueprint-layout-props-viewer-item {
+    background-color: #b4c8d1;
+    border-radius: 5px;
+}
+.blueprint-layout-props-viewer-item-def {
+    background-color: #e4f6ff;
+}
+.blueprint-layout-props-viewer-item-key {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.blueprint-layout-props-viewer-item-value {
+    font-size: 0.95em;
+}
+.blueprint-layout-props-viewer-item-value-undefined {
+    color: #666;
+}
+.blueprint-layout-props-viewer-item-details {
+    font-size: 0.9em;
+}
+.blueprint-layout-props-viewer-item-details-expandable summary:hover {
+    background-color: #b1c8d2;
+}
+.blueprint-layout-props-viewer-item-details-inline:hover {
+    background-color: #b1c8d2;
+}
+.blueprint-layout-props-viewer-item-schema * {
+    color: #e3e9ee;
+    font-size: 13px;
+}
+.blueprint-layout-props-viewer-item-schema {
+    background-color: #557792;
+    border-radius: 0 0 5px 5px;
+}
+.blueprint-layout-props-viewer-item-schema td {
+    border: 1px solid #7799aa;
+}
+.blueprint-layout-props-viewer-item-schema td:first-child {
+    text-align: right;
+}
+.blueprint-layout-props-viewer-item-schema a {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #9ecdf1;
+}
+.blueprint-layout-props-viewer-item-schema a:hover {
+    text-decoration: underline;
+}
+.blueprint-layout-props-viewer-item-schema-type code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #e2c082;
+}
+.blueprint-layout-props-viewer-item-color-swatch {
+    border-radius: 2px;
+    border: 1px solid #777;
+}
+
+/*****************/
+/*** LinksMenu ***/
+/*****************/
+
+.blueprint-layout-links-menu-item a {
+    border-radius: 3px;
+    border: 1px dashed #aaa;
+    color: #EAE0CF;
+}
+.blueprint-layout-links-menu-icon {
+    color: #EAE0CF;
+    background-color: #416176;
+}
+.blueprint-layout-links-menu-icon:hover {
+    background-color: #2c3a42;
+}
+.blueprint-layout-links-menu-empty {
+    background-color: #4a6e86;
+}
+.blueprint-layout-links-menu-icon svg, .blueprint-layout-links-menu-icon path {
+    color: #EAE0CF;
+}
+
+
+/*************************/
+/*** ValidationRunner ***/
+/*************************/
+
+.blueprint-layout-validations-runner-link svg, .blueprint-layout-validations-runner-link path {
+    color: #e3e9ee;
+}
+
+.blueprint-layout-validations-runner {
+    color: #333;
+    font-family: monospace;
+    font-size: 14px;
+}
+.blueprint-layout-validations-runner button {
+    background-color: #547792;
+    color: #eee;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+}
+.blueprint-layout-validations-runner h3 {
+    font-weight: bold;
+}
+
+.blueprint-layout-validations-progress-bar-outer {
+    border: 1px solid #bbb;
+    background-color: #ddd;
+}
+
+.blueprint-layout-validations-progress-bar {
+    height: 100%;
+    background-color: #94b4c1;
+    transition: width ease 200ms;
+}
+
+.blueprint-layout-validations-progress-bar-label {
+    font-size: 0.75em;
+}
+
+.blueprint-layout-validations-runner-error-box {
+    color: red;
+    background-color: #eed7cc;
+    border: 1px solid #d88;
+    border-radius: 3px;
+}
+
+.blueprint-layout-validations-runner-error-box a {
+    color: #a00;
+    text-decoration: underline;
+}
+
+.blueprint-layout-validations-runner-error-box del {
+    background-color: #eba3a3;
+}
+.blueprint-layout-validations-runner-error-box ins {
+    background-color: #aedaae;
+}
+
+.blueprint-layout-validations-runner-passed-variants {
+    color: green;
+    background-color: #cec;
+    font-size: 0.8em;
+}
+
+.blueprint-layout-validations-runner-skipped {
+    color: #666;
+}
