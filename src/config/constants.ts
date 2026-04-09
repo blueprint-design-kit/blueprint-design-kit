@@ -15,3 +15,5 @@ export const BLUEPRINT_IMPORTER_NAMES = {
 export const MAIN_CONTENT_ID = 'blueprint_layout_main_content';
 export const EXPECTATION_CONTENT_ID = 'blueprint_layout_expectation_content';
 export const EXPECTATION_MESSAGE_ID = 'blueprint_layout_expectation_message';
+export const TEST_RUNNER_URL_PATH = 'test-runner';
+export const TEST_RUNNER_RESULTS_ID = 'blueprint_test_runner_results_json';

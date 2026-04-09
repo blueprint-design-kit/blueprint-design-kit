@@ -18,21 +18,21 @@ export async function waitForServer(url: string, { timeoutMs = 60000, intervalMs
 
         const tryOnce = () => {
             const req = client.get(
-            {
-                hostname: urlObj.hostname,
-                port: urlObj.port,
-                path: urlObj.pathname,
-                timeout: intervalMs,
-            },
-            (res) => {
-                // Consider any 2xx/3xx as "server is up"
-                if (res.statusCode && res.statusCode < 400) {
-                    res.resume(); // discard data
-                    return resolve(true);
+                {
+                    hostname: urlObj.hostname,
+                    port: urlObj.port,
+                    path: urlObj.pathname,
+                    timeout: intervalMs,
+                },
+                (res) => {
+                    // Consider any 2xx/3xx as "server is up"
+                    if (res.statusCode && res.statusCode < 400) {
+                        res.resume(); // discard data
+                        return resolve(true);
+                    }
+                    res.resume();
+                    scheduleNext();
                 }
-                res.resume();
-                scheduleNext();
-            }
             );
 
             req.on('error', () => {
@@ -72,33 +72,40 @@ export function startLocalServer(command: string, { cwd = process.cwd() } = {}) 
     const child = spawn(cmd, args, {
         cwd,
         stdio: 'inherit', // show dev server logs
+        detached: true,
         env: {
             ...process.env,
         },
-    });
-
-    child.on('exit', (code, signal) => {
-        console.log(`Dev server exited with code=${code} signal=${signal}`);
     });
 
     return child;
 }
 
 /**
- * Stop the dev server if we started it.
+ * Stop the dev server and all of its child processes.
  */
 export function stopLocalServer(child: ChildProcess | undefined) {
     if (!child || child.killed) return;
 
-    // Try graceful shutdown first
-    child.kill('SIGINT');
-
-    // Fallback: force kill if still alive after a bit
-    const timeout = setTimeout(() => {
-        if (!child.killed) {
-            child.kill('SIGKILL');
+    if (child.pid) {
+        if (process.platform === 'win32') {
+            spawn('taskkill', ['/pid', child.pid.toString(), '/f', '/t']);
+        } else {
+            process.kill(-child.pid, 'SIGTERM'); // kill the entire group
         }
-    }, 5000);
+    } else {
+        // Try graceful shutdown first
+        child.kill('SIGINT');
+        child.kill('SIGINT');
+        child.kill('SIGTERM');
+        child.kill('SIGTERM');
 
-    child.on('exit', () => clearTimeout(timeout));
+        // Fallback: force kill if still alive after a bit
+        const timeout = setTimeout(() => {
+            if (!child.killed) {
+                child.kill('SIGKILL');
+            }
+        }, 5000);
+        child.on('exit', () => clearTimeout(timeout));
+    }    
 }

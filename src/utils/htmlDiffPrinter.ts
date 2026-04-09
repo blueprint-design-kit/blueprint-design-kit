@@ -7,6 +7,13 @@ function htmlEncode(str: string) {
         .replace(/>/g, '&gt;')
 }
 
+export function htmlDecode(str: string) {
+    return str
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+}
+
 export function printDiff(diff: HtmlDiffObject[]) {
     let hasTrueDiff = false;
     let acc = '';

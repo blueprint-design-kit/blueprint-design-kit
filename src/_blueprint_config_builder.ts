@@ -19,30 +19,35 @@ function handleImportError(extension: string, err: any) {
     console.error(err);
 }
 
-async function locate() {
+async function locateSavedConfig() {
     try {
-        console.log('trying ts');
+        // @ts-expect-error file may not exist
+        return await import('../../../.blueprint/blueprint.config.js');
+    } catch (err) {
+        handleImportError('js', err);
+    }
+}
+
+async function locateUserConfig() {
+    try {
         // @ts-expect-error file may not exist
         return await import('../../../blueprint.config.ts');
     } catch (err) {
         handleImportError('ts', err);
     }
     try {
-        console.log('trying js');
         // @ts-expect-error file may not exist
         return await import('../../../blueprint.config.js');
     } catch (err) {
         handleImportError('js', err);
     }
     try {
-        console.log('trying cjs');
         // @ts-expect-error file may not exist
         return await import('../../../blueprint.config.cjs');
     } catch (err) {
         handleImportError('cjs', err);
     }
     try {
-        console.log('trying mjs');
         // @ts-expect-error file may not exist
         return await import('../../../blueprint.config.mjs');
     } catch (err) {
@@ -51,12 +56,18 @@ async function locate() {
     return;
 }
 
+function normalizeDefaultExport(configModule: BlueprintSystemOptions | { default: BlueprintSystemOptions } | undefined): BlueprintSystemOptions | undefined {
+    return configModule && 'default' in configModule ? configModule.default : configModule;
+}
+
+export async function readSavedConfigFile(): Promise<BlueprintSystemOptions | undefined> {
+    const configModule = await locateSavedConfig();
+    const config = normalizeDefaultExport(configModule);
+    return config;
+}
+
 export async function readUserConfigFile(): Promise<BlueprintSystemOptions | undefined> {
-    let config: BlueprintSystemOptions | undefined;
-    const configModule = await locate();
-    if (configModule) {
-        config = configModule.default || configModule;
-    }
-    console.log('configModule', config);
+    const configModule = await locateUserConfig();
+    const config = normalizeDefaultExport(configModule);
     return config;
 }

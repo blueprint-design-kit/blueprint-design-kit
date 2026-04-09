@@ -4,8 +4,9 @@ import { createRoot } from 'react-dom/client'
 import { useEffect, useState } from 'react';
 import { findDiff } from '../../../utils/htmlDiffFinder.js';
 import { printDiff } from '../../../utils/htmlDiffPrinter.js';
+import { TEST_RUNNER_RESULTS_ID } from '../../../config/constants.js';
 
-import type { ReactElement, ReactNode } from 'react';
+import type { ExpectationValidation } from '../../../blueprint/getTestValidations.js';
 
 interface ValidationResult {
     componentName: string;
@@ -14,25 +15,13 @@ interface ValidationResult {
     errorMessage?: string | undefined;
 }
 
-interface ValidationOutput {
+export interface ValidationOutput {
     pass: ValidationResult[];
     fail: ValidationResult[];
     skip: ValidationResult[];
 }
 
-type Expectation = {
-    variantName: string;
-    expectation?: ReactNode;
-    component?: ReactElement;
-    errorMessage?: string | undefined;
-};
-
-export type ExpectationValidation = {
-    componentName: string;
-    expectations?: Expectation[] | undefined;
-}
-
-export type ValidationRunnerProps = {
+export type TestRunnerProps = {
     validations: ExpectationValidation[];
 }
 
@@ -58,13 +47,13 @@ async function checkExpectations(validations: ExpectationValidation[], increment
     };
 
     const actualContainer = document.createElement('div');
-    actualContainer.className = 'blueprint-layout-validation-runner-actual';
+    actualContainer.className = 'blueprint-layout-test-runner-actual';
     actualContainer.style.display = 'none';
     document.body.appendChild(actualContainer);
     const actualRoot = createRoot(actualContainer);
 
     const expectationContainer = document.createElement('div');
-    expectationContainer.className = 'blueprint-layout-validation-runner-expected';
+    expectationContainer.className = 'blueprint-layout-test-runner-expected';
     expectationContainer.style.display = 'none';
     document.body.appendChild(expectationContainer);
     const expectationRoot = createRoot(expectationContainer);
@@ -74,8 +63,7 @@ async function checkExpectations(validations: ExpectationValidation[], increment
         if (expectations.length) {
             let resultIsPassing = true;
             const passingVariants: string[] = [];
-            for (const expectObj of expectations) {
-                const { variantName, expectation, component, errorMessage } = expectObj;
+            for (const { variantName, expectation, component, errorMessage } of expectations) {
                 if (errorMessage) {
                     resultIsPassing = false;
                     output.fail.push({ componentName, failingVariant: variantName, errorMessage });
@@ -136,7 +124,7 @@ async function checkExpectations(validations: ExpectationValidation[], increment
     return output;
 }
 
-export function ValidationRunnerClient({ validations }: ValidationRunnerProps) {
+export function TestRunnerClient({ validations }: TestRunnerProps) {
     const [results, setResults] = useState<ValidationOutput | null>(null);
     const [progress, setProgress] = useState(0);
     const [lastCompleted, setLastCompleted] = useState<string>('');
@@ -147,28 +135,28 @@ export function ValidationRunnerClient({ validations }: ValidationRunnerProps) {
     }
 
     useEffect(() => {
-        const doValidation = async () => {
+        const runTests = async () => {
             setProgress(0);
             const results = await checkExpectations(validations, incrementProgress);
             setTimeout(() => {
                 setResults(results);
             }, 200);
         };
-        doValidation();
+        runTests();
     }, [validations]);
 
     if (!results) {
-        return <div className='blueprint-layout-validations-runner blueprint-reset'>
-            <div>Running validations ...</div>
-            <div className='blueprint-layout-validations-progress-bar-outer'>
-                <div className='blueprint-layout-validations-progress-bar' style={{ width: `${(progress/validations.length)*100}%` }}></div>
-                <div className='blueprint-layout-validations-progress-bar-label'>{progress} / {validations.length} {lastCompleted}</div>
+        return <div className='blueprint-layout-test-runner blueprint-reset'>
+            <div>Running UI Tests ...</div>
+            <div className='blueprint-layout-test-runner-progress-bar-outer'>
+                <div className='blueprint-layout-test-runner-progress-bar' style={{ width: `${(progress/validations.length)*100}%` }}></div>
+                <div className='blueprint-layout-test-runner-progress-bar-label'>{progress} / {validations.length} {lastCompleted}</div>
             </div>
         </div>;
     }
 
     const { pass, fail, skip } = results;
-    const printOutput = <div className='blueprint-layout-validations-runner blueprint-reset'>
+    const printOutput = <div className='blueprint-layout-test-runner blueprint-reset'>
         <div>Total Components: {pass.length + fail.length + skip.length}</div>
         {fail.length > 0 && 
         <>
@@ -177,7 +165,7 @@ export function ValidationRunnerClient({ validations }: ValidationRunnerProps) {
                 <div key={index}>
                     <details style={{ color: 'red' }} open={index === 0}>
                         <summary>{result.componentName}</summary>
-                        <div className='blueprint-layout-validations-runner-error-box'>
+                        <div className='blueprint-layout-test-runner-error-box'>
                             <div>Variant: <a href={`../${result.componentName}?variant=${result.failingVariant}`}>{result.failingVariant}</a></div>
                         {result.errorMessage &&
                             <code dangerouslySetInnerHTML={{ __html: result.errorMessage }}></code>
@@ -193,7 +181,7 @@ export function ValidationRunnerClient({ validations }: ValidationRunnerProps) {
             <div key={index}>
                 <details style={{ color: 'green' }}>
                     <summary>{result.componentName}</summary>
-                    <div className='blueprint-layout-validations-runner-passed-variants'>
+                    <div className='blueprint-layout-test-runner-passed-variants'>
                     {result.passingVariants?.map((variantName) => {
                         return <div key={variantName}>- {variantName} ✅</div>;
                     })}
@@ -204,11 +192,12 @@ export function ValidationRunnerClient({ validations }: ValidationRunnerProps) {
         <h3>Skipped ({skip.length})</h3>
         {skip.map((result, index) => (
             <div key={index}>
-                <div className='blueprint-layout-validations-runner-skipped'>
+                <div className='blueprint-layout-test-runner-skipped'>
                     {result.componentName}
                 </div>
             </div>
         ))}
+        <div data-testid={TEST_RUNNER_RESULTS_ID} style={{ display: 'none' }} data-results={JSON.stringify(results)}></div>
     </div>;
 
     return printOutput;

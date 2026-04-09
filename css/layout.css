@@ -334,41 +334,41 @@
 }
 
 
-/************************/
-/*** ValidationRunner ***/
-/************************/
+/**********************/
+/***** TestRunner *****/
+/**********************/
 
-.blueprint-layout-validations-runner-link svg {
+.blueprint-layout-test-runner-link svg {
     display: inline-block;
     vertical-align: text-top;
     margin-left: -5px;
 }
 
-.blueprint-layout-validations-runner {
+.blueprint-layout-test-runner {
     padding: 35px 40px 100px;
 }
 
-.blueprint-layout-validations-runner button {
+.blueprint-layout-test-runner button {
     padding: 10px 20px;
     cursor: pointer;
 }
-.blueprint-layout-validations-runner input {
+.blueprint-layout-test-runner input {
     min-width: 300px;
     padding: 6px 10px;
     border-radius: 3px;
     border: 1px solid #999;
 }
 
-.blueprint-layout-validations-runner h3 {
+.blueprint-layout-test-runner h3 {
     margin-top: 30px;
 }
 
-.blueprint-layout-validations-runner details {
+.blueprint-layout-test-runner details {
     margin: 5px 20px;
     cursor: pointer;
 }
 
-.blueprint-layout-validations-progress-bar-outer {
+.blueprint-layout-test-runner-progress-bar-outer {
     margin-top: 10px;
     width: 500px;
     padding: 1px;
@@ -376,26 +376,26 @@
     border: 1px solid #bbb;
 }
 
-.blueprint-layout-validations-progress-bar {
+.blueprint-layout-test-runner-progress-bar {
     height: 100%;
     background-color: #999;
 }
 
-.blueprint-layout-validations-progress-bar-label {
+.blueprint-layout-test-runner-progress-bar-label {
     margin-top: 8px;
 }
 
-.blueprint-layout-validations-runner-error-box {
+.blueprint-layout-test-runner-error-box {
     margin-bottom: 20px;
     padding: 10px 15px;
     cursor: auto;
 }
 
-.blueprint-layout-validations-runner-passed-variants {
+.blueprint-layout-test-runner-passed-variants {
     padding: 5px 10px;
     cursor: auto;
 }
 
-.blueprint-layout-validations-runner-skipped {
+.blueprint-layout-test-runner-skipped {
     margin: 5px 20px;
 }

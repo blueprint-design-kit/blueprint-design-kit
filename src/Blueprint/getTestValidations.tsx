@@ -1,9 +1,10 @@
 'use server';
 
-import { getBlueprint } from '../../../blueprint/getBlueprint.js';
-import { getComponent } from '../../../blueprint/getComponent.js';
-import { listComponents } from '../../../blueprint/listComponents.js';
-import type { ExpectationValidation } from './ValidationRunnerClient.js';
+import { getBlueprint } from './getBlueprint.js';
+import { getComponent } from './getComponent.js';
+import { listComponents } from './listComponents.js';
+
+import type { ReactElement, ReactNode } from 'react';
 
 type OnPropsReady = (
     selectedComponent: string,
@@ -11,17 +12,28 @@ type OnPropsReady = (
     props: Record<string, any>,
 ) => Promise<Record<string, any>>;
 
+type Expectation = {
+    variantName: string;
+    expectation?: ReactNode;
+    component?: ReactElement;
+    errorMessage?: string | undefined;
+};
+
+export type ExpectationValidation = {
+    componentName: string;
+    expectations?: Expectation[] | undefined;
+}
+
 export type GetValidationsProps = {
-    urlPath: string;
+    filter?: string | undefined;
     onPropsReady?: OnPropsReady | undefined;
 };
 
-export async function getValidations({ urlPath, onPropsReady }: GetValidationsProps) {
+export async function getTestValidations({ filter, onPropsReady }: GetValidationsProps) {
     const validations: ExpectationValidation[] = [];
 
     let componentList = await listComponents();
-    if (urlPath !== 'validate/*') {
-        const filter = urlPath.replace('validate/', '').toLowerCase();
+    if (filter) {
         componentList = componentList.filter((componentName) => {
             const match = componentName.toLowerCase().match(filter);
             return match && match[0];

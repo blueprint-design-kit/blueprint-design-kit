@@ -1,57 +1,15 @@
 'use server';
 
-import { chromium } from 'playwright';
-import { getTestingOptions, type BlueprintSystemOptions } from '../config/options.js';
+import { getFileOptions, getTestingOptions, type BlueprintSystemOptions } from '../config/options.js';
 import BlueprintError from '../utils/BlueprintError.js';
-// import { startLocalServer } from './localServer.js';
+import { startLocalServer, stopLocalServer, waitForServer } from './localServer.js';
+import { testInPlaywright } from './playwright.js';
+import { printResults } from './printResults.js';
 
-async function launchChromium() {
-    try {
-        return await chromium.launch({ headless: true });
-    } catch (err) {
-        if (String(err).includes('playwright install')) {
-            throw new BlueprintError(`
-==========
-== Running blueprint tests requires installing Chromium for Playwright.
-== This step is only required if you haven't already installed Playwright in this project.
-== Please run: 
-==   npx playwright install chromium
-==========`);
-        }
-        throw err;
-    }
-}
+import type { ChildProcess } from 'node:child_process';
+import type { ValidationOutput } from '../ui/components/center/TestRunnerClient.js';
 
-async function testInPlaywright() {
-    const browser = await launchChromium();
-    const page = await browser.newPage();
-
-    await page.goto('https://example.com', { waitUntil: 'networkidle' });
-
-    const selector = 'h1';
-
-    // Wait for the element to be visible (rendered)
-    await page.waitForSelector(selector, { state: 'visible', timeout: 10000 });
-
-    // Very rudimentary comparison logic outside of Playwright
-    const text = await page.textContent(selector);
-    const normalized = text?.trim() ?? '';
-
-    const expected = 'Example Domain';
-
-    if (normalized === expected) {
-        console.log('PASS: element text matched expected');
-    } else {
-        console.error('FAIL: element text did not match');
-        console.error('Expected:', expected);
-        console.error('Received:', normalized);
-        process.exitCode = 1;
-    }
-
-    await browser.close();
-}
-
-function getValidOptions(runtimeOptions?: BlueprintSystemOptions['testingOptions']) {
+function extendOptions(runtimeOptions?: BlueprintSystemOptions['testingOptions']) {
     const configOptions = getTestingOptions();
     const options = Object.assign({}, configOptions, runtimeOptions);
     if (!options.serverCommand || !options.serverUrl) {
@@ -64,14 +22,53 @@ testingOptions: {
     return options;
 }
 
-export async function testExpectations(options?: BlueprintSystemOptions['testingOptions']) {
-    const { serverCommand, serverUrl } = getValidOptions(options);
-    console.log(serverCommand, serverUrl);
-    try {
-        // const server = startLocalServer('npm run dev');
-        await testInPlaywright();
-    } catch (err) {
+export async function testExpectations(options?: BlueprintSystemOptions['testingOptions'], filter?: string) {
+    const { serverCommand = '', serverUrl = '' } = extendOptions(options);
+    const { componentsRoot } = getFileOptions();
+    let server: ChildProcess | undefined;
+
+    function handleError(err: any, context: string = '') {
+        const contextMsg = context ? ` [${context}]` : '';
+        console.log(`\n\nBlueprint Test Runner Error${contextMsg}:`);
+        stopLocalServer(server);
         console.error(err);
         process.exit(1);
+    }
+
+    function exitFailing() {
+        stopLocalServer(server);
+        process.exit(1);
+    }
+
+    function exitPassing() {
+        stopLocalServer(server);
+        process.exit(0);
+    }
+    
+    try {
+        server = startLocalServer(serverCommand);
+        if (!server) { throw new Error('Failed to start local server'); }
+        await waitForServer(serverUrl);
+    } catch (err) {
+        handleError(err, `StartLocalServerError (${serverCommand})`);
+    }
+
+    let results: ValidationOutput | null = null;
+    try {
+        results = await testInPlaywright(serverUrl, handleError, filter);
+    } catch (err) {
+        handleError(err, 'PlaywrightTestError');
+    }
+
+    try {
+        printResults(results, componentsRoot);
+    } catch (err) {
+        handleError(err, 'PrintResultsError');
+    }
+
+    if (!results || results.fail.length > 0) {
+        exitFailing();        
+    } else {
+        exitPassing();
     }
 }

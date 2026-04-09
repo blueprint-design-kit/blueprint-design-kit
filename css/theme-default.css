@@ -231,70 +231,70 @@
 }
 
 
-/*************************/
-/*** ValidationRunner ***/
-/*************************/
+/**********************/
+/***** TestRunner *****/
+/**********************/
 
-.blueprint-layout-validations-runner-link svg, .blueprint-layout-validations-runner-link path {
+.blueprint-layout-test-runner-link svg, .blueprint-layout-test-runner-link path {
     color: #e3e9ee;
 }
 
-.blueprint-layout-validations-runner {
+.blueprint-layout-test-runner {
     color: #333;
     font-family: monospace;
     font-size: 14px;
 }
-.blueprint-layout-validations-runner button {
+.blueprint-layout-test-runner button {
     background-color: #547792;
     color: #eee;
     border: none;
     border-radius: 3px;
     padding: 10px 20px;
 }
-.blueprint-layout-validations-runner h3 {
+.blueprint-layout-test-runner h3 {
     font-weight: bold;
 }
 
-.blueprint-layout-validations-progress-bar-outer {
+.blueprint-layout-test-runner-progress-bar-outer {
     border: 1px solid #bbb;
     background-color: #ddd;
 }
 
-.blueprint-layout-validations-progress-bar {
+.blueprint-layout-test-runner-progress-bar {
     height: 100%;
     background-color: #94b4c1;
     transition: width ease 200ms;
 }
 
-.blueprint-layout-validations-progress-bar-label {
+.blueprint-layout-test-runner-progress-bar-label {
     font-size: 0.75em;
 }
 
-.blueprint-layout-validations-runner-error-box {
+.blueprint-layout-test-runner-error-box {
     color: red;
     background-color: #eed7cc;
     border: 1px solid #d88;
     border-radius: 3px;
 }
 
-.blueprint-layout-validations-runner-error-box a {
+.blueprint-layout-test-runner-error-box a {
     color: #a00;
     text-decoration: underline;
 }
 
-.blueprint-layout-validations-runner-error-box del {
+.blueprint-layout-test-runner-error-box del {
     background-color: #eba3a3;
 }
-.blueprint-layout-validations-runner-error-box ins {
+.blueprint-layout-test-runner-error-box ins {
     background-color: #aedaae;
 }
 
-.blueprint-layout-validations-runner-passed-variants {
+.blueprint-layout-test-runner-passed-variants {
     color: green;
     background-color: #cec;
     font-size: 0.8em;
 }
 
-.blueprint-layout-validations-runner-skipped {
+.blueprint-layout-test-runner-skipped {
     color: #666;
 }

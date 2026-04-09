@@ -5,7 +5,7 @@ import '../../css/preview-controls.js';
 import { getBlueprint } from '../blueprint/getBlueprint.js';
 import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
-import type { BlueprintSchema, BlueprintProps, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
+import { TEST_RUNNER_URL_PATH } from '../config/constants.js';
 
 import BlueprintLayout from './components/BlueprintLayout.js';
 import ComponentMenu from './components/left/ComponentMenu.js';
@@ -14,14 +14,15 @@ import LinksMenu from './components/center/LinksMenu.js';
 import PageTitle from './components/left/PageTitle.js';
 import PreviewFrame from './components/center/PreviewFrame.js';
 import PropsExplorer from './components/right/PropsExplorer.js';
-import ValidationRunner from './components/center/ValidationRunner.js';
-import ValidationRunnerLink from './components/left/ValidaionRunnerLink.js';
-import ValidationRunnerLauncher from './components/center/ValidationRunnerLauncher.js';
+import TestRunner from './components/center/TestRunner.js';
+import TestRunnerLink from './components/left/TestRunnerLink.js';
+import TestRunnerLauncher from './components/center/TestRunnerLauncher.js';
 import VariantPicker from './components/right/VariantPicker.js';
 import PropsProvider from './PropsProvider.js';
 import PreviewWrapperClient from './components/center/PreviewWrapperClient.js';
 import PreviewWrapperServer from './components/center/PreviewWrapperServer.js';
 
+import type { BlueprintSchema, BlueprintProps, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
 import type { ReactNode } from 'react';
 
 
@@ -102,11 +103,12 @@ export default async function BlueprintComponentUI({
 
     let Center = null;
     if (componentPath) {
-        if (componentPath === 'validate') {
-            Center = <ValidationRunnerLauncher />;
+        if (componentPath === TEST_RUNNER_URL_PATH) {
+            Center = <TestRunnerLauncher />;
 
-        } else if (componentPath.startsWith('validate/')) {
-            Center = <ValidationRunner urlPath={componentPath} onPropsReady={onPropsReady} />;
+        } else if (componentPath.startsWith(`${TEST_RUNNER_URL_PATH}/`)) {
+            const testFilter = componentPath === `${TEST_RUNNER_URL_PATH}/*` ? '' : componentPath.replace(`${TEST_RUNNER_URL_PATH}/`, '').toLowerCase();
+            Center = <TestRunner filter={testFilter} onPropsReady={onPropsReady} />;
 
         } else if (documentation && documentationList.includes(componentPath)) {
             Center = <DocumentationViewer content={documentation[componentPath]} />;
@@ -187,7 +189,7 @@ export default async function BlueprintComponentUI({
 
     const LeftTop = PageTitle({ title: pageTitle, baseUrl });
     const Left = ComponentMenu({ documentationList, componentList, componentPath, urlSearchParams, baseUrl, ...componentMenu });
-    const LeftBottom = ValidationRunnerLink({ baseUrl });
+    const LeftBottom = TestRunnerLink({ baseUrl });
     const CenterTop = LinksMenu({ links, ...linksMenu });
     const CenterBottom = notes;
     const RightTop = VariantPicker({ variants, selectedVariant });
