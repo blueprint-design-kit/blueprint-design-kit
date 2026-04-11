@@ -22,6 +22,15 @@ testingOptions: {
     return options;
 }
 
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function print(msg: string) {
+    console.log('');
+    console.log(msg);
+}
+
 export async function testExpectations(options?: BlueprintSystemOptions['testingOptions'], filter?: string) {
     const { serverCommand = '', serverUrl = '' } = extendOptions(options);
     const { componentsRoot } = getFileOptions();
@@ -29,10 +38,9 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
 
     function handleError(err: any, context: string = '') {
         const contextMsg = context ? ` [${context}]` : '';
-        console.log(`\n\nBlueprint Test Runner Error${contextMsg}:`);
-        stopLocalServer(server);
+        print(`\n\n[Blueprint] Test Runner Error${contextMsg}:`);
         console.error(err);
-        process.exit(1);
+        exitFailing();
     }
 
     function exitFailing() {
@@ -46,24 +54,31 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
     }
     
     try {
+        print(`[Blueprint] Starting local server with '${serverCommand}' and waiting for 200 status from '${serverUrl}'...`);
         server = startLocalServer(serverCommand);
         if (!server) { throw new Error('Failed to start local server'); }
         await waitForServer(serverUrl);
     } catch (err) {
         handleError(err, `StartLocalServerError (${serverCommand})`);
+        return;
     }
 
-    let results: ValidationOutput | null = null;
+    await sleep(100); // Let the logs flush and server stabilize before running tests
+
+    let results: ValidationOutput | undefined;
     try {
+        print(`[Blueprint] Launching Playwright test suite...`);
         results = await testInPlaywright(serverUrl, handleError, filter);
     } catch (err) {
         handleError(err, 'PlaywrightTestError');
+        return;
     }
 
     try {
         printResults(results, componentsRoot);
     } catch (err) {
         handleError(err, 'PrintResultsError');
+        return;
     }
 
     if (!results || results.fail.length > 0) {

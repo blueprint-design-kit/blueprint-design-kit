@@ -51,7 +51,7 @@ function renderNestedComponents(
     pathRoot: string,
     baseUrl: string,
     componentPath?: string,
-    urlSearchParams?: {
+    activeState?: {
         [key: string]: string | undefined;
     } | undefined,
 ): ReactNode {
@@ -60,14 +60,14 @@ function renderNestedComponents(
         if (key && key !== '__') {
             items.push(<details key={`dir_${key}`} open>
                 <summary>{key}</summary>
-                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, urlSearchParams)}
+                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, activeState)}
             </details>);
         }
     });
     if (Array.isArray(nested.__) && nested.__.length > 0) {
         nested.__.sort().forEach((component) => {
             const searchParams = typeof window === 'undefined' ?
-                new URLSearchParams(urlSearchParams as Record<string, string>)
+                new URLSearchParams(activeState as Record<string, string>)
                 : new URL(window.location.href).searchParams;
             searchParams.delete('variant'); // Should not carry variant when switching components
             const searchParamsString = searchParams.toString();
@@ -105,7 +105,7 @@ export type ComponentMenuProps = {
     componentPath?: string | undefined;
     baseUrl?: string | undefined;
     searchBar?: boolean | undefined;
-    urlSearchParams?: {
+    activeState?: {
         filter?: string | undefined;
     } | undefined;
 }
@@ -116,7 +116,7 @@ export function ComponentMenuClient({
     componentPath,
     baseUrl = '/blueprint',
     searchBar = true,
-    urlSearchParams,
+    activeState,
 }: ComponentMenuProps) {
     if (!componentList) {
         throw new BlueprintError('componentList is required');
@@ -125,7 +125,7 @@ export function ComponentMenuClient({
         throw new BlueprintError('componentList must be an array of component names');
     }
 
-    const filter = urlSearchParams && urlSearchParams[filterParamName];
+    const filter = activeState && activeState[filterParamName];
     const [filteredComponents, setFilteredComponents] = useState(filterListByQuery(componentList, filter));
     const [filteredDocs, setFilteredDocs] = useState(filterListByQuery(documentationList, filter));
 
@@ -192,7 +192,7 @@ export function ComponentMenuClient({
             <section className="blueprint-layout-component-menu">
                 <div style={{ marginLeft: '-0.7em' }}>
                     <ul>
-                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, urlSearchParams)}
+                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, activeState)}
                     </ul>
                 </div>
             </section>

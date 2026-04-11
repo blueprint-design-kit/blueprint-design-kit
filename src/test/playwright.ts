@@ -23,10 +23,15 @@ async function launchChromium() {
     }
 }
 
+function print(msg: string) {
+    console.log('');
+    console.log(msg);
+}
+
 type HandleErrorFn = (err: any, context?: string) => void;
 
 export async function testInPlaywright(serverUrl: string, handleError: HandleErrorFn, filter?: string) {
-    let resultsJson: ValidationOutput | null = null;
+    let resultsJson: ValidationOutput | undefined;
 
     const browser = await launchChromium();
     try {
@@ -37,15 +42,22 @@ export async function testInPlaywright(serverUrl: string, handleError: HandleErr
         });
 
         const onSiteTestRunnerUrl = `${serverUrl}/${TEST_RUNNER_URL_PATH}${filter ? `/${filter}` : '/*'}`;
-        await page.goto(onSiteTestRunnerUrl, { waitUntil: 'networkidle' });
-
-        const resultsData = await page.getByTestId(TEST_RUNNER_RESULTS_ID).getAttribute('data-results');
-        if (resultsData) {
-            try {
-                resultsJson = JSON.parse(resultsData);
-            } catch {
-                handleError(`Failed to parse test results JSON:\n${resultsData}`, 'PlaywrightJSONParseError');
+        print(`[Blueprint] Navigating to test runner page at '${onSiteTestRunnerUrl}'...`);
+        const response = await page.goto(onSiteTestRunnerUrl, { waitUntil: 'networkidle' });
+        if(response && response.status() < 400) {
+            print(`[Blueprint] Locating page element '#${TEST_RUNNER_RESULTS_ID}'...`);
+            const resultsData = await page.getByTestId(TEST_RUNNER_RESULTS_ID).getAttribute('data-results');
+            print(`[Blueprint] Gathering results...`);
+            if (resultsData) {
+                try {
+                    resultsJson = JSON.parse(resultsData);
+                } catch {
+                    handleError(`Failed to parse test results JSON:\n${resultsData}`, 'PlaywrightJSONParseError');
+                }
             }
+        } else {
+            const error = new Error(`Failed to load test runner page at '${onSiteTestRunnerUrl}'. Received status: ${response ? response.status() : 'No Response'}`);
+            handleError(error, 'PlaywrightNavigationError');
         }
     } catch (err) {
         handleError(err, 'PlaywrightTestError');

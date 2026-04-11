@@ -9,7 +9,7 @@ import type { ChildProcess } from 'node:child_process';
 /**
  * Ping the given URL until it responds, or timeout.
  */
-export async function waitForServer(url: string, { timeoutMs = 60000, intervalMs = 1000 } = {}) {
+export async function waitForServer(url: string, { timeoutMs = 30000, intervalMs = 1000 } = {}) {
     const start = Date.now();
 
     return new Promise((resolve, reject) => {
@@ -88,10 +88,14 @@ export function stopLocalServer(child: ChildProcess | undefined) {
     if (!child || child.killed) return;
 
     if (child.pid) {
-        if (process.platform === 'win32') {
-            spawn('taskkill', ['/pid', child.pid.toString(), '/f', '/t']);
-        } else {
-            process.kill(-child.pid, 'SIGTERM'); // kill the entire group
+        try {
+            if (process.platform === 'win32') {
+                spawn('taskkill', ['/pid', child.pid.toString(), '/f', '/t']);
+            } else {
+                process.kill(-child.pid, 'SIGTERM'); // kill the entire group
+            }
+        } catch {
+            // Ignore errors - the process might have already exited
         }
     } else {
         // Try graceful shutdown first

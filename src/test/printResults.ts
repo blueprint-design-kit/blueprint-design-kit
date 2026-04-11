@@ -9,7 +9,7 @@ function printHtmlWithDiff(str: string) {
         .replaceAll(/<del>(.*?)<\/del>/g, styleText(['red', 'strikethrough'], '$1'));
 }
 
-export function printResults(results: ValidationOutput | null, componentsRoot: string = '') {
+export function printResults(results: ValidationOutput | undefined, componentsRoot: string = '') {
     if (!results) {
         throw new Error('No test results to print');
     }

@@ -1,9 +1,15 @@
 # blueprint-design-kit
-Manage UI components like a pro.
+
+> *A natural alternative to Storybook.*
+
+### Manage your UI components like a pro!
 
 - Define schemas, variants, and expectations for each component.
+- Easily preview and showcase your components in your own app using our drop-in Blueprint UI.
+- Test how each component renders against the expectations in your blueprint.
 - Generate coverage reports.
-- Install [blueprint-design-kit-ui](https://github.com/blueprint-design-kit/blueprint-design-kit-ui) for a pre-built a component explorer, or easily customize your own.
+- Run in CI.
+
 
 ## Install
 
@@ -11,22 +17,31 @@ Manage UI components like a pro.
 npm install blueprint-design-kit
 ```
 
-## Quick Start
 
-### 1) Add the Blueprint CLI to your package.json.
-
-Use `--watch` in dev mode to automatically rebuild blueprints when files are updated.
+### 1) Add `blueprint` CLI commands to your package.json.
 
 ```json
+// package.json
 {
 	"scripts": {
-		"build": "blueprint && next build",
-        "dev": "blueprint --watch & next dev"
+        "dev": "blueprint dev & next dev",
+		"build": "blueprint build && next build",
+        "test:ci": "blueprint test",
+        "test": "blueprint test --serverCommand='npm run dev'",
 	}
 }
 ```
 
-### 2) Go to one of your UI components and create a matching `[COMPONENT].blueprint.tsx` file.
+#### Available CLI Commands:
+- `blueprint build` generates all of the necessary imports for your project then exits.
+- `blueprint dev` watches files and automatically rebuilds when components or blueprints are updated.
+- `blueprint test` builds and starts a dev server using the command of your choice, then runs Playwright in the background to test how each component renders against the expectations in your blueprints.
+  - `test --serverCommand='npm run dev'` Command to be executed to build and start the server
+  - `test --serverUrl='http://localhost:5000/my-bp'` The Url where your Blueprint UI lives
+  - `test Atoms/Buttons` First positional argument will be used as a filter to match component paths
+
+
+### 2) Create a `XXX.blueprint.tsx` file for one of your components
 
 Example Component:
 ```tsx
@@ -36,7 +51,7 @@ export default function Badge({ text, backgroundColor = '#f96' }) {
 }
 ```
 
-Example Blueprint:
+Corresponding Blueprint (matches the file name with `.blueprint`):
 ```tsx
 // app/components/Badge.blueprint.tsx
 import { Blueprint } from 'blueprint-design-kit';
@@ -52,9 +67,6 @@ const BadgeBlueprint = new Blueprint({
 		},
 	},
 	variants: {
-        DEFAULT: {
-            props: { text: 'Some Text Here' },
-        },
 		NewProducts: {
 			props: [
 				{ text: 'New', backgroundColor: 'lavender' },
@@ -62,6 +74,9 @@ const BadgeBlueprint = new Blueprint({
 				{ text: 'New', backgroundColor: 'honeydew' },
 			],
 		},
+        'Logged-In': {
+            props: { text: 'Hi, Sam' },
+        },
 	},
 	links: [
 		'https://figma.com/design/1234567890',
@@ -72,47 +87,39 @@ const BadgeBlueprint = new Blueprint({
 export default BadgeBlueprint;
 ```
 
-### 3) Run the CLI to generate your blueprints.
 
-To build once:
-```bash
-npm run build
-```
-Or to keep blueprints updated while you develop:
-```bash
-npm run dev
-```
-Running `blueprint` from command line scripts will create a .blueprint folder at your project root with:
+### 3) Preview, explore, and test your components with Blueprint UI
 
-- `blueprint.imports.js` - dynamic import map for your components and blueprints
-- `blueprint.coverage.json` - coverage report (if enabled)
+Blueprint offers a pre-built UI which you can install and use out of the box...
 
-It also logs warnings to the terminal for missing blueprints or invalid blueprints based on your config.
+### Follow our guide: [How to Use &lt;BlueprintDesignKitUI /&gt;](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/ui/README.md) 🔗
+
+![Blueprint UI](images/BlueprintUI.jpg)
+
 
 ### 4) [Optional] Add a `blueprint.config.ts` config file at your project root.
 (Can alternatively use `.js` | `.cjs` | `.mjs` extensions where needed)
+
+#### Click here to view [All available options and their defaults](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/config/options.ts) 🔗
 
 ```ts
 // blueprint.config.ts
 import type { BlueprintSystemOptions } from 'blueprint-design-kit';
 
 const blueprintOptions: BlueprintSystemOptions = {
-	... link to config options below
+	// see link to full config options above
 };
 
 export default blueprintOptions;
 ```
-Click here to view [all available options and their defaults](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/config/options.ts)
 
-
-## Component discovery rules (defaults)
-
-By default Blueprint scans `./app/components` as your components root directory and considers:
-
-- Blueprint files end in `.blueprint.(tsx|jsx|ts|js)`
-- Component files include all other `.(tsx|jsx)` files in your components root directory, except for files ending in `(.spec|.test|.mocks|.stories).(tsx|jsx)`
-
-You can override all of these settings in `blueprint.config.ts`.
+- By default, Blueprint scans `./app/components` as your components root directory and considers:
+  - Blueprint files end in `.blueprint.(tsx|jsx|ts|js)`
+  - Component files include all other `.(tsx|jsx)` files in your components root directory, except for files ending in `(.spec|.test|.mocks|.stories).(tsx|jsx)`
+- The build script automatically logs warnings to the terminal for missing or invalid blueprints
+- The build script generates a coverage report called `blueprint.coverage.json`
+  - This is saved in the `.blueprint/` directory in your project root
+- *You can override all of the above behaviors in `blueprint.config.ts`.*
 
 
 ## Properties of a blueprint file
@@ -132,7 +139,7 @@ new Blueprint({
 ### schema:
 As a required property, the schema is the most important. This record defines what props the component accepts and will be used in validations.
 
-Each prop in a schema can contain any of the following attributes:
+Each prop in a schema can contain any of the following attributes (all optional):
 - **type** (what types of values are allowed)
 - **allow** (what specific values are allowed)
 - **default** (what value will be used if none is passed)
@@ -144,23 +151,30 @@ For a component that takes `text`, `backgroundColor`, and `price`, the schema mi
 ```ts
 schema: {
     text: {
-        type: ['string'], // this prop is required and must be a string
-        allow: ['Limited Time', 'New', 'Most Popular'], // should only accept one of these values
-        source: 'https://cms.com/entries/5678', // what is the source of this data?
+        // This type means this prop is required and must be a string
+        type: ['string'],
+        // Allow means it should only accept one of these values
+        allow: ['Limited', 'New', 'Most Popular'],
+        // For debugging, what is the source of this data?
+        source: 'https://cms.com/entries/5678',
     },
     backgroundColor: {
-        default: '#f96', // value used when none is passed
-        type: ['color', 'undefined'], // this prop is optional, but should be a color value
+        // The default value is what is used when none is passed
+        default: '#f96',
+        // With undefined means this prop is optional, otherwise it should be a color
+        type: ['color', 'undefined'],
     },
-    price: { // for complex values, type can be a function that evaluates to true/false
+    price: {
         default: { amount: 0, currency: 'USD' },
+        // For complex values, type can be a function that evaluates to true/false
         type: (value) => {
             if (value) {
                 return typeof value.amount === 'number' && value.currency;
             }
             return true;
         },
-        source: { // source can be given a tag to describe the URL
+        // Source can be given a more readable tag to describe the URL
+        source: {
             tag: 'ProductCatalog',
             url: 'https://api.shopify.com/products/1234567890',
         },
@@ -169,7 +183,7 @@ schema: {
 ```
 
 ### variants:
-Used for validations and to power a UI showcase, the variants record describes some of the most common configurations that will be passed to your component.
+Used for testing and to power the BlueprintUI showcase, the variants record describes some of the most common sets of props that will be passed to your component.
 
 Each variant object can contain any of the following attributes:
 - **props** (what values are passed as props)
@@ -180,41 +194,41 @@ Each variant object can contain any of the following attributes:
 An example variants object might look like this:
 ```tsx
 // You can name your variants whatever you want by giving them unique keys
+// Here we picked 'NewProducts', 'Logged-In', and 'Default'
 variants: {
-    DEFAULT: { // Only needed if you have required props
-        props: { text: 'Some Text Here' },
-        expectation: ( // Given the props above, what is expected to be rendered
-            <div style={{borderRadius: 30, padding: 10, backgroundColor: "#f96"}}>Some Text Here</div>
-        ),
-    },
     NewProducts: {
         props: [
             { text: 'New', backgroundColor: '#f96' },
             { text: 'New', backgroundColor: 'lightblue' },
             { text: 'New', backgroundColor: 'honeydew' },
         ],
+        // Expectation defines: given the props above, what is expected to be rendered
         expectation: (<>
-            <div style={{borderRadius: 30, padding: 10, backgroundColor: "#f96"}}>Most Popular</div>
-            <div style={{borderRadius: 30, padding: 10, backgroundColor: "lightblue"}}>Most Popular</div>
-            <div style={{borderRadius: 30, padding: 10, backgroundColor: "honeydew"}}>Most Popular</div>
+            <div style={{backgroundColor: "#f96"}}>New</div>
+            <div style={{backgroundColor: "lightblue"}}>New</div>
+            <div style={{backgroundColor: "honeydew"}}>New</div>
         </>),
     },
     'Logged-In': {
         props: { text: 'Hi, Sam' },
         expectation: (
-            <div style={{borderRadius: 30, padding: 10, backgroundColor: "#f96"}}>Hi, Sam</div>
+            <div style={{backgroundColor: "#f96"}}>Hi, Sam</div>
         ),
         state: { userName: 'Sam' },
     },
+    Default: {
+        // Shows how it will render when no props are passed
+        expectation: (
+            <div style={{backgroundColor: "#f96"}}>Default Text</div>
+        ),
+    },
 },
-
-// DEFAULT is special variant name for what should be displayed when no props are passed. The default state of the component will automatically exist for every component even when this variant is not explicitly passed, but you should specify a DEFAULT variant here when you need to pass some required props even to the default state, etc. Configure the `strictDefaults` option to deermine if passing props to DEFAULT fails validations or not.
 ```
 
 ### links:
 An Array of hyperlinks associated with this specific component.
 
-Links can be a simple string or an object specifying a type and icon.
+Links can usually be a simple string. Blueprint automatically detects some common types of links and uses smart icons. However, if you want to customize a link you can pass an object specifying a url, type, and icon.
 ```tsx
 links: [
     'https://figma.com/design/1234567890',
@@ -228,7 +242,7 @@ links: [
 ```
 
 ### notes:
-Accepts a ReactNode/JSX for content that should be rendered alongside this component. Useful for keeping special instructions or links to other dependent components.
+Accepts a ReactNode/JSX for content that should be rendered alongside this component in the BlueprintUI showcase. Useful for keeping special instructions or links to other dependent components.
 
 ```tsx
 notes: (
@@ -257,40 +271,16 @@ locales: {
 },
 ```
 
-
-## Rendering components with Blueprint UI
-
-Blueprint offers a pre-built [blueprint-design-kit-ui](https://github.com/blueprint-design-kit/blueprint-design-kit-ui) which you can install and use out of the box...
-
-### Basic usage:
-```tsx
-import BlueprintDesignKitUI from 'blueprint-design-kit-ui';
-
-export default async function BlueprintShowcase({ params, searchParams }) {
-	const urlParams = await params;
-	const urlSearchParams = await searchParams;
-    const componentPath = decodeURIComponent((urlParams.component || []).join('/'));
-    const locale = decodeURIComponent(urlParams.locale || '');
-    const options = {};
-	return (
-		<BlueprintDesignKitUI
-            componentPath={componentPath}
-            locale={locale}
-			urlSearchParams={urlSearchParams}
-            options={options}
-		/>
-	);
-}
-```
-
 ---
-## DIY Rendering components with custom tooling
+---
+---
+## DIY: Rendering components with custom tooling
 
-However, if you need extra customization, you can always access your blueprints programmatically...
+If you need extra special customization ❄️, you can always access your blueprints programmatically to build your own tools or UI...
 
-(Pro tip: use [this page](https://github.com/blueprint-design-kit/blueprint-design-kit-ui/blob/main/src/index.tsx) for reference when building your own UI)
+### Follow our guide: [How to Access Blueprints Programatically](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/blueprint/README.md) 🔗
 
-### Example DIY Usage:
+#### Example DIY Usage:
 
 ```ts
 import { listComponents, getBlueprint, getComponent } from 'blueprint-design-kit';
@@ -300,43 +290,5 @@ const componentPath = components[0];
 const blueprint = await getBlueprint(componentPath);
 const component = await getComponent(componentPath);
 ```
-
-#### -> listComponents()
-Returns an Array of componentPaths that corresponds to your directory structure. For example:
-```ts
-const components = listComponents();
-// [ 'Atoms/Badge', 'Atoms/Button' ]
-```
-
-#### -> getBlueprint(componentPath: string) (async)
-Returns a Blueprint instance for the specified component.
-```ts
-const locale = 'en-US';
-const blueprint = await getBlueprint('Atoms/Badge');
-blueprint.getLinks(locale), // [ 'http://foo.com/Badge' ]
-blueprint.getNotes(locale), // <h1>Notes</h1>
-blueprint.getSchema(locale), // { text: { type: 'string' }, backgroundColor: { default: '#f96' } }
-blueprint.listVariants(), // [ 'DEFAULT', 'NewProducts', 'Logged-In' ]
-blueprint.getVariant('Logged-In', locale), // { props: { text: 'Hi, Sam' } }
-```
-
-#### -> getComponent(componentPath: string) (async)
-Returns your actual component, ready for rendering
-```tsx
-const FunctionComponent = await getComponent('Atoms/Badge');
-return <FunctionComponent {...props} />
-```
-
-#### -> getComponentMeta(componentPath: string) (async)
-Returns an object that describes the meta attributes of a component. Currently only contains a boolean indicating if the component has the `'use client'` or `'use server'` directive at the top.
-```ts
-const componentMetaData = await getComponentMeta('Atoms/Badge');
-// { useClient: true, useServer: false }
-```
-
----
----
-
-...
 
 Enjoy your components and happy coding!

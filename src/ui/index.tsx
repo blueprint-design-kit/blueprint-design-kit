@@ -7,6 +7,9 @@ import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
 import { TEST_RUNNER_URL_PATH } from '../config/constants.js';
 
+import type { BlueprintSchema, BlueprintProps, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
+import type { ReactNode } from 'react';
+
 import BlueprintLayout from './components/BlueprintLayout.js';
 import ComponentMenu from './components/left/ComponentMenu.js';
 import DocumentationViewer from './components/center/DocumentationViewer.js';
@@ -22,14 +25,20 @@ import PropsProvider from './PropsProvider.js';
 import PreviewWrapperClient from './components/center/PreviewWrapperClient.js';
 import PreviewWrapperServer from './components/center/PreviewWrapperServer.js';
 
-import type { BlueprintSchema, BlueprintProps, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
-import type { ReactNode } from 'react';
-
+export {
+    ComponentMenu,
+    DocumentationViewer,
+    LinksMenu,
+    PreviewFrame,
+    PropsExplorer,
+    TestRunner,
+    VariantPicker,
+};
 
 export type BlueprintUIProps = {
     componentPath?: string;
     locale?: string;
-    urlSearchParams?: {
+    activeState?: {
         variant?: string;
         dark?: string;
         device?: 'mobile' | 'tablet' | 'desktop' | undefined;
@@ -74,18 +83,19 @@ export type BlueprintUIProps = {
 export default async function BlueprintComponentUI({
     componentPath,
     locale,
-    urlSearchParams,
+    activeState,
     options = {},
 }: BlueprintUIProps) {
-    const { pageTitle, documentation, onPropsReady, linksMenu, darkMode, deviceMode, copyJSX, componentMenu } = options;
-    const selectedVariant = urlSearchParams?.variant || '';
+    const { pageTitle, documentation, onPropsReady, darkMode, deviceMode, copyJSX, componentMenu } = options;
     const baseUrl = options.baseUrl || '/blueprint';
+    const linksMenu = options.linksMenu || { reversed: true }; // we display right-aligned
+    const selectedVariant = activeState?.variant || '';
     const darkModeParams = darkMode === false ? false : {
-        currentValue: urlSearchParams?.dark,
+        currentValue: activeState?.dark,
         ...darkMode,
     };
     const deviceModeParams = deviceMode === false ? false : {
-        currentValue: urlSearchParams?.device,
+        currentValue: activeState?.device,
         ...deviceMode,
     };
     const copyJSXParams = copyJSX === false ? false : {
@@ -188,7 +198,7 @@ export default async function BlueprintComponentUI({
     }
 
     const LeftTop = PageTitle({ title: pageTitle, baseUrl });
-    const Left = ComponentMenu({ documentationList, componentList, componentPath, urlSearchParams, baseUrl, ...componentMenu });
+    const Left = ComponentMenu({ documentationList, componentList, componentPath, activeState, baseUrl, ...componentMenu });
     const LeftBottom = TestRunnerLink({ baseUrl });
     const CenterTop = LinksMenu({ links, ...linksMenu });
     const CenterBottom = notes;
