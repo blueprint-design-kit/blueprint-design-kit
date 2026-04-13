@@ -5,6 +5,14 @@
     "type": "git",
     "url": "git+https://github.com/blueprint-design-kit/blueprint-design-kit.git"
   },
+  "keywords": [
+    "blueprint",
+    "storybook",
+    "components",
+    "component library",
+    "ui testing",
+    "visual regression"
+  ],
   "type": "module",
   "bin": {
     "blueprint": "blueprint.js"
@@ -30,13 +38,13 @@
     "@markedjs/html-differ": "^5.0.4",
     "color-name": "^2.1.0",
     "deep-extend": "^0.6.0",
-    "html-react-parser": "^5.2.17",
+    "html-react-parser": "^6.0.1",
     "json5": "^2.2.3",
     "minimatch": "^10.2.5",
     "node-watch": "^0.7.4",
     "playwright": "^1.59.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
     "react-element-to-jsx-string": "^17.0.1",
     "react-transition-group": "^4.4.5",
     "recursive-readdir": "^2.2.3"
@@ -45,12 +53,12 @@
     "@eslint/js": "^10.0.1",
     "@types/color-name": "^2.0.0",
     "@types/deep-extend": "^0.6.2",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "@types/react-dom": "^19.2.3",
     "@types/react-transition-group": "^4.4.12",
     "@types/recursive-readdir": "^2.2.4",
-    "eslint": "^10.1.0",
-    "globals": "^17.4.0",
+    "eslint": "^10.2.0",
+    "globals": "^17.5.0",
     "typescript": "^6.0.2"
   },
   "engines": {
