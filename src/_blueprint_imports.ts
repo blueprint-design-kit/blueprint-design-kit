@@ -16,7 +16,7 @@ export async function getBlueprintImports(): Promise<BlueprintImportsMap> {
         // @ts-expect-error file will be generated at this path, but may not exist yet
         bpImports = await import('../../../.blueprint/blueprint.imports');
     } catch (err) {
-        throw new Error(`Error loading blueprint.imports: ${err}`, { cause: err });
+        throw new Error(`Error loading blueprint.imports. Please ensure that 'blueprint build' has completed successfully.\n${err}`, { cause: err });
     }
     if (bpImports && bpImports.default) {
         bpImports = bpImports.default;

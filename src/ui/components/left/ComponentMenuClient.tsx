@@ -190,6 +190,12 @@ export function ComponentMenuClient({
             </section>
         }
             <section className="blueprint-layout-component-menu">
+                {componentList.length === 0 && <div style={{
+                    margin: '0 0 0 1.5em',
+                    fontStyle: 'italic',
+                    fontSize: '13px',
+                    color: '#ccc',
+                }}>--<br />No components found</div>}
                 <div style={{ marginLeft: '-0.7em' }}>
                     <ul>
                         {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, activeState)}

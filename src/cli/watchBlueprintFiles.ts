@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import watch from 'node-watch';
 import { minimatch } from 'minimatch';
 import { getBlueprintOptions, getComponentOptions, getFileOptions } from '../config/options.js';
@@ -31,6 +32,11 @@ export function watchBlueprintFiles(onUpdateNeeded: (evt: string, changedPath: s
     const { componentsRoot = '.', ignore = [] } = getFileOptions();
     const { matchComponent = '' } = getComponentOptions();
     const { matchBlueprint = '' } = getBlueprintOptions();
+
+    if (!existsSync(componentsRoot)) {
+        console.error(`[Blueprint] Unable to watch components root path: '${componentsRoot}'`);
+        return;
+    }
 
     const watchConfig = {
         recursive: true,

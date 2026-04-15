@@ -76,7 +76,7 @@ async function writeImportsFile(projectFiles: ProjectFiles) {
     try {
         await fs.promises.writeFile(filePath, fileContent);
     } catch (error) {
-        console.error(`Error writing ${filePath}`, error);
+        console.error(`[Blueprint] Error writing ${filePath}`, error);
     }
 }
 
@@ -86,16 +86,22 @@ export async function generateImports() {
     const { matchBlueprint = '' } = getBlueprintOptions();
     const relativeRoot = path.resolve(componentsRoot).replace(`${path.resolve('.')}/`, '') + '/';
 
+    try {
+        await fs.promises.access(componentsRoot);
+    } catch {
+        console.error(`[Blueprint] Unable to access components root path '${componentsRoot}'\n`);
+        return;
+    }
+
     let filesList: string[];
     try {
         filesList = await recursive(componentsRoot, ignore || []);
     } catch (err) {
-        console.error('Error reading files in project', err);
+        console.error(`[Blueprint] Error reading files in project`, err);
         return;
     }
-    if (!filesList || filesList.length === 0) {
-        console.warn('No files found in project. Please check your configuration.');
-        return;
+    if (filesList.length === 0) {
+        console.warn(`[Blueprint] Warning: No files found at components root path '${componentsRoot}'. Please check your configuration.\n`);
     }
     filesList.sort();
 
