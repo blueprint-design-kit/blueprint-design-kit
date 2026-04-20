@@ -93,7 +93,7 @@ export interface BlueprintInstance {
      * When variantName is passed, returns the matching variant configuration or throws an error if not found.
      * When variantName is NOT passed, simply returns the first variant in the configuration or undefined.
      */
-    getVariant: (variantName: string, locale?: string) => BlueprintVariant | undefined;
+    getVariant: (variantName?: string, locale?: string) => BlueprintVariant | undefined;
 
     /**
      * Returns an Array of variant names for this blueprint

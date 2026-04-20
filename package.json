@@ -32,6 +32,8 @@
     "dev:local": "npx tsc && node put-files",
     "build": "rm -rf dist && npx tsc",
     "lint": "npm run build && eslint",
+    "test": "npm run build && npm run test:vi",
+    "test:vi": "vitest run",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -59,7 +61,8 @@
     "@types/recursive-readdir": "^2.2.4",
     "eslint": "^10.2.0",
     "globals": "^17.5.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
   },
   "engines": {
     "node": ">=20.0.0"

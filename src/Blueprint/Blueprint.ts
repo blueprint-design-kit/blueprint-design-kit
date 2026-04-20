@@ -23,7 +23,7 @@ export class Blueprint {
     make(blueprintName?: string): BlueprintInstance {
         if (!blueprintName) {
             const callerLine = new Error().stack?.split(/\n\s*at\s*/)[2];
-            const callerName = callerLine?.split(' (')[0];
+            const callerName = callerLine?.split(/\s*[(/]/)[0];
             blueprintName = callerName;
         }
 
@@ -64,7 +64,7 @@ export class Blueprint {
             return { variants, names };
         }
 
-        const getVariant = (variantName: string, locale?: string): BlueprintVariant | undefined => {
+        const getVariant = (variantName?: string, locale?: string): BlueprintVariant | undefined => {
             let variant;
             const { variants, names } = getConfiguredVariants(locale);
             if (variantName) {

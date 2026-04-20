@@ -10,7 +10,7 @@
     "typeRoots": ["./node_modules/@types", "./types"],
     "sourceMap": false,
     "declaration": true,
-    "declarationMap": false,
+    "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noImplicitReturns": true,
@@ -31,5 +31,7 @@
   "exclude": [
     "node_modules",
     "dist",
+    "**/*.spec.*",
+    "**/vitest.**",
   ],
 }
