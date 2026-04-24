@@ -34,6 +34,8 @@
     "lint": "npm run build && eslint",
     "test": "npm run build && npm run test:vi",
     "test:vi": "vitest run",
+    "test:vi:unit": "vitest run --project unit",
+    "test:vi:browser": "vitest run --project browser",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -59,10 +61,13 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-transition-group": "^4.4.12",
     "@types/recursive-readdir": "^2.2.4",
+    "@vitest/browser": "^4.1.4",
+    "@vitest/browser-playwright": "^4.1.4",
     "eslint": "^10.2.0",
     "globals": "^17.5.0",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.4",
+    "vitest-browser-react": "^2.2.0"
   },
   "engines": {
     "node": ">=20.0.0"
