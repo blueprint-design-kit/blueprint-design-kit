@@ -1,5 +1,5 @@
 import deepExtend from 'deep-extend';
-import { getOptionsFromConfig } from '../_blueprint_config.js';
+import savedConfig from '../_project_/blueprint.config.js';
 
 /**
  * Set by the user in a blueprint.config.{ts|js} file in the root of their project.
@@ -67,6 +67,7 @@ export interface BlueprintSystemOptions {
     testingOptions?: {
         serverCommand?: string;
         serverUrl?: string;
+        timeout?: number;
     },
     
 }
@@ -111,8 +112,7 @@ export function setOptions(userOptions: BlueprintSystemOptions | undefined) {
 
 function getOptions() {
     if (!userOptionsApplied) {
-        const userOptions = getOptionsFromConfig();
-        setOptions(userOptions);
+        setOptions(savedConfig);
     }
     return options;
 }

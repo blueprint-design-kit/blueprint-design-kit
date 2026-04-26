@@ -10,6 +10,7 @@ vi.mock(import('node:fs'), () => {
             writeFile: vi.fn((_path: string, _content: string, callback: (error: Error | null) => void) => {
                 callback(null);
             }),
+            mkdirSync: vi.fn(),
         },
     };
 });

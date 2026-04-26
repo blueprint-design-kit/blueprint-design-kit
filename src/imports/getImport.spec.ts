@@ -1,10 +1,10 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import getImport from './getImport';
-import { getBlueprintImports } from '../_blueprint_imports.js';
+import { getImportsMap } from '../imports/getImportsMap.js';
 
-vi.mock(import('../_blueprint_imports.js'), () => {
+vi.mock(import('../imports/getImportsMap.js'), () => {
     return {
-        getBlueprintImports: vi.fn(),
+        getImportsMap: vi.fn(),
     };
 });
 
@@ -15,8 +15,8 @@ describe('getImport', () => {
     });
 
     test('throws when component path is not found in imports map', async () => {
-        const mockedGetBlueprintImports = vi.mocked(getBlueprintImports);
-        mockedGetBlueprintImports.mockResolvedValue({});
+        const mockedGetImportsMap = vi.mocked(getImportsMap);
+        mockedGetImportsMap.mockResolvedValue({});
 
         await expect(() => getImport('Atoms/Button', 'component')).rejects.toThrow(
             "component not found for 'Atoms/Button'",
@@ -24,8 +24,8 @@ describe('getImport', () => {
     });
 
     test('throws when importer key is missing', async () => {
-        const mockedGetBlueprintImports = vi.mocked(getBlueprintImports);
-        mockedGetBlueprintImports.mockResolvedValue({
+        const mockedGetImportsMap = vi.mocked(getImportsMap);
+        mockedGetImportsMap.mockResolvedValue({
             'Atoms/Button': {
                 b: async () => ({ default: { make: () => ({}) } }),
                 m: async () => ({ useClient: true }),
@@ -38,8 +38,8 @@ describe('getImport', () => {
     });
 
     test('returns default export when importer resolves a module object', async () => {
-        const mockedGetBlueprintImports = vi.mocked(getBlueprintImports);
-        mockedGetBlueprintImports.mockResolvedValue({
+        const mockedGetImportsMap = vi.mocked(getImportsMap);
+        mockedGetImportsMap.mockResolvedValue({
             'Atoms/Button': {
                 c: async () => ({ default: () => 'ButtonComponent' }),
             },
@@ -51,8 +51,8 @@ describe('getImport', () => {
     });
 
     test('returns value directly when importer does not resolve a module object', async () => {
-        const mockedGetBlueprintImports = vi.mocked(getBlueprintImports);
-        mockedGetBlueprintImports.mockResolvedValue({
+        const mockedGetImportsMap = vi.mocked(getImportsMap);
+        mockedGetImportsMap.mockResolvedValue({
             'Atoms/Button': {
                 m: async () => ({ useClient: true }),
             },

@@ -1,15 +1,7 @@
 import { vi } from 'vitest';
 
-vi.mock(import('../src/_blueprint_config'), () => {
+vi.mock(import('../src/imports/getImportsMap'), () => {
     return {
-        getOptionsFromConfig: () => {
-            return {};
-        },
-    };
-});
-
-vi.mock(import('../src/_blueprint_imports.js'), () => {
-    return {
-        getBlueprintImports: vi.fn(),
+        getImportsMap: vi.fn(),
     };
 });

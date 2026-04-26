@@ -32,7 +32,7 @@ function print(msg: string) {
 }
 
 export async function testExpectations(options?: BlueprintSystemOptions['testingOptions'], filter?: string) {
-    const { serverCommand = '', serverUrl = '' } = extendOptions(options);
+    const { serverCommand = '', serverUrl = '', timeout = 0 } = extendOptions(options);
     const { componentsRoot } = getFileOptions();
     let server: ChildProcess | undefined;
 
@@ -68,7 +68,7 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
     let results: ValidationOutput | undefined;
     try {
         print(`[Blueprint] Launching Playwright test suite...`);
-        results = await testInPlaywright(serverUrl, handleError, filter);
+        results = await testInPlaywright(serverUrl, handleError, { filter, timeout });
     } catch (err) {
         handleError(err, 'PlaywrightTestError');
         return;

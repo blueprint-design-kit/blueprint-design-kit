@@ -94,9 +94,9 @@ describe('generateImports', () => {
     test('builds imports map, reads meta, writes imports file, and reports coverage', async () => {
         // @ts-expect-error - simplified mock for testing
         vi.mocked(recursive).mockResolvedValue([
-            './app/components/Atoms/Button.blueprint.tsx',
-            './app/components/Atoms/Button.component.tsx',
-            './app/components/Atoms/Card.component.tsx',
+            'app/components/Atoms/Button.blueprint.tsx',
+            'app/components/Atoms/Button.component.tsx',
+            'app/components/Atoms/Card.component.tsx',
         ]);
         vi.mocked(fsReadFirstLine).mockImplementation(async (filePath: string) => {
             if (filePath.includes('Button.component.tsx')) {
@@ -109,26 +109,28 @@ describe('generateImports', () => {
 
         expect(result).toEqual({
             blueprints: {
-                './Atoms/Button': './app/components/Atoms/Button.blueprint.tsx',
+                'Atoms/Button': '../../app/components/Atoms/Button.blueprint.tsx',
             },
             components: {
-                './Atoms/Button': {
-                    path: './app/components/Atoms/Button.component.tsx',
+                'Atoms/Button': {
+                    path: 'app/components/Atoms/Button.component.tsx',
                     meta: { useClient: true },
+                    importPrefix: '../../',
                 },
-                './Atoms/Card': {
-                    path: './app/components/Atoms/Card.component.tsx',
+                'Atoms/Card': {
+                    path: 'app/components/Atoms/Card.component.tsx',
                     meta: { useServer: true },
+                    importPrefix: '../../',
                 },
             },
         });
 
         expect(vi.mocked(fs.promises.writeFile)).toHaveBeenCalledOnce();
         const [filePath, fileContent] = vi.mocked(fs.promises.writeFile).mock.calls[0] || [];
-        expect(filePath).toBe('.blueprint/blueprint.imports.js');
-        expect(String(fileContent)).toContain("'./Atoms/Button': {");
-        expect(String(fileContent)).toContain("c: () => import('.././app/components/Atoms/Button.component.tsx')");
-        expect(String(fileContent)).toContain("b: () => import('.././app/components/Atoms/Button.blueprint.tsx')");
+        expect(filePath).toContain('/blueprint.imports.js');
+        expect(String(fileContent)).toContain("'Atoms/Button': {");
+        expect(String(fileContent)).toContain("c: () => import('../../app/components/Atoms/Button.component.tsx')");
+        expect(String(fileContent)).toContain("b: () => import('../../app/components/Atoms/Button.blueprint.tsx')");
         expect(String(fileContent)).toContain('m: () => { return {"useClient":true}; }');
 
         expect(vi.mocked(coverageReport)).toHaveBeenCalledOnce();

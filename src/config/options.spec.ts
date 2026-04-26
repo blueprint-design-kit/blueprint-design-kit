@@ -1,5 +1,4 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { getOptionsFromConfig } from '../_blueprint_config.js';
 import {
     getBlueprintOptions,
     getComponentOptions,
@@ -8,9 +7,16 @@ import {
     setOptions,
 } from './options';
 
-vi.mock(import('../_blueprint_config.js'), () => {
+vi.mock('../_project_/blueprint.config.js', () => {
     return {
-        getOptionsFromConfig: vi.fn(),
+        default: {
+            fileOptions: {
+                componentsRoot: './custom/components',
+            },
+            blueprintOptions: {
+                onInvalidBlueprint: 'warn',
+            },
+        },
     };
 });
 
@@ -20,24 +26,9 @@ describe('options', () => {
         vi.clearAllMocks();
     });
 
-    test('applies user config lazily and only once on first access', () => {
-        const mockedGetOptionsFromConfig = vi.mocked(getOptionsFromConfig);
-        mockedGetOptionsFromConfig.mockReturnValue({
-            fileOptions: {
-                componentsRoot: './custom/components',
-            },
-            blueprintOptions: {
-                onInvalidBlueprint: 'warn',
-            },
-        });
-
+    test('applies saved config on first access', () => {
         expect(getFileOptions().componentsRoot).toBe('./custom/components');
         expect(getBlueprintOptions().onInvalidBlueprint).toBe('warn');
-
-        getComponentOptions();
-        getTestingOptions();
-
-        expect(mockedGetOptionsFromConfig).toHaveBeenCalledOnce();
     });
 
     test('setOptions deep-merges user options with defaults', () => {

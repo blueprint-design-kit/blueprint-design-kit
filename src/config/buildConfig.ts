@@ -2,7 +2,8 @@
 
 import fs from 'node:fs';
 import JSON5 from 'json5';
-import { BLUEPRINT_FOLDER, BLUEPRINT_CONFIG_FILE } from './constants.js';
+import { BLUEPRINT_PROJECT_DIRNAME } from '../_project_/dirname.js';
+import { BLUEPRINT_CONFIG_FILE } from './constants.js';
 import { getFileOptions, setOptions } from './options.js';
 import { readUserConfigFile } from '../_blueprint_config_builder.js';
 
@@ -16,8 +17,6 @@ const templates = {
 };
 
 export async function buildConfig() {
-    fs.mkdirSync(BLUEPRINT_FOLDER, { recursive: true });
-
     const userConfig = await readUserConfigFile();
     setOptions(userConfig || {});
     const { importsFormat } = getFileOptions();
@@ -38,7 +37,7 @@ export async function buildConfig() {
 // Please add your configuration to a blueprint.config.{ts|js} file in the root of your project.
 ${template.export}${JSON5.stringify(userConfig || {}, null, 2)};`;
 
-    const filePath = `${BLUEPRINT_FOLDER}/${BLUEPRINT_CONFIG_FILE}`;
+    const filePath = `${BLUEPRINT_PROJECT_DIRNAME}/${BLUEPRINT_CONFIG_FILE}`;
     try {
         await fs.promises.writeFile(filePath, fileContent);
     } catch (error) {

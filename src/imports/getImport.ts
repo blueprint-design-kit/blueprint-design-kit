@@ -1,6 +1,6 @@
 import { BLUEPRINT_IMPORTER_NAMES } from '../config/constants.js';
 import BlueprintError from '../utils/BlueprintError.js';
-import { getBlueprintImports } from '../_blueprint_imports.js';
+import { getImportsMap } from './getImportsMap.js';
 
 import type { FunctionComponent } from 'react';
 import type { Blueprint } from '../blueprint/Blueprint.js';
@@ -12,8 +12,8 @@ export default async function getImport(
     componentPath: string,
     importType: ImportType,
 ): Promise<Blueprint | FunctionComponent | ComponentMeta | undefined> {
-    let blueprintImports = await getBlueprintImports();
-    const componentMap = blueprintImports[componentPath];
+    let allImports = await getImportsMap();
+    const componentMap = allImports[componentPath];
     if (!componentMap) {
         throw new BlueprintError(`${importType} not found for '${componentPath}'`);
     }

@@ -48,6 +48,7 @@ ${missing.join('\n')}\n`;
         }
 
         if (saveCoverageReport) {
+            fs.mkdirSync(BLUEPRINT_FOLDER, { recursive: true });
             const coverageReportPath = `${BLUEPRINT_FOLDER}/${BLUEPRINT_COVERAGE_FILE}`;
             fs.writeFile(coverageReportPath, JSON.stringify(coverage, null, 2), (error) => {
                 if (error) {

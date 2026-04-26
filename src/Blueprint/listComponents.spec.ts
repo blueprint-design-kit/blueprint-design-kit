@@ -1,22 +1,20 @@
 import { describe, test, expect, vi } from 'vitest';
 import { listComponents } from './listComponents';
 
-vi.mock(import('../_blueprint_imports'), () => {
+vi.mock(import('../imports/getImportsMap.js'), () => {
     return {
-        getBlueprintImports: async () => {
-            return {
-                Badge: {
-                    b: async () => {},
-                    c: async () => {},
-                    m: async () => {},
-                },
-                'Atoms/Button': {
-                    b: async () => {},
-                    c: async () => {},
-                    m: async () => {},
-                },
-            };
-        },
+        getImportsMap: async () => ({
+            Badge: {
+                b: async () => {},
+                c: async () => {},
+                m: async () => {},
+            },
+            'Atoms/Button': {
+                b: async () => {},
+                c: async () => {},
+                m: async () => {},
+            },
+        }),
     };
 });
 

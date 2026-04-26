@@ -29,8 +29,16 @@ function print(msg: string) {
 }
 
 type HandleErrorFn = (err: any, context?: string) => void;
+type TestInPlaywrightOptions = {
+    filter?: string | undefined;
+    timeout?: number;
+};
 
-export async function testInPlaywright(serverUrl: string, handleError: HandleErrorFn, filter?: string) {
+export async function testInPlaywright(
+    serverUrl: string,
+    handleError: HandleErrorFn,
+    { filter, timeout = 0 }: TestInPlaywrightOptions
+) {
     let resultsJson: ValidationOutput | undefined;
 
     const browser = await launchChromium();
@@ -43,7 +51,7 @@ export async function testInPlaywright(serverUrl: string, handleError: HandleErr
 
         const onSiteTestRunnerUrl = `${serverUrl}/${TEST_RUNNER_URL_PATH}${filter ? `/${filter}` : '/*'}`;
         print(`[Blueprint] Navigating to test runner page at '${onSiteTestRunnerUrl}'...`);
-        const response = await page.goto(onSiteTestRunnerUrl, { waitUntil: 'networkidle' });
+        const response = await page.goto(onSiteTestRunnerUrl, { waitUntil: 'networkidle', timeout });
         if(response && response.status() < 400) {
             print(`[Blueprint] Locating page element '#${TEST_RUNNER_RESULTS_ID}'...`);
             const resultsData = await page.getByTestId(TEST_RUNNER_RESULTS_ID).getAttribute('data-results');
