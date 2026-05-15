@@ -77,7 +77,7 @@ describe('testExpectations', () => {
         expect(testInPlaywright).toHaveBeenCalledWith(
             'http://localhost:3000/blueprint',
             expect.any(Function),
-            'atoms',
+            { filter: 'atoms', timeout: 0 },
         );
         expect(printResults).toHaveBeenCalledOnce();
         expect(printResults).toHaveBeenCalledWith(
@@ -116,7 +116,7 @@ describe('testExpectations', () => {
         expect(testInPlaywright).toHaveBeenCalledWith(
             'http://localhost:4000/blueprint',
             expect.any(Function),
-            undefined,
+            { filter: undefined, timeout: 0 },
         );
         expect(processExitSpy).toHaveBeenCalledWith(0);
     });
