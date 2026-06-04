@@ -65,7 +65,7 @@ describe('generateImports', () => {
         vi.mocked(fs.promises.access).mockResolvedValue(undefined);
         vi.mocked(fs.promises.writeFile).mockResolvedValue(undefined);
         vi.mocked(recursive).mockResolvedValue(undefined);
-        vi.mocked(coverageReport).mockResolvedValue(undefined as any);
+        vi.mocked(coverageReport).mockResolvedValue(undefined);
         vi.mocked(fsReadFirstLine).mockResolvedValue(undefined);
     });
 

@@ -2,6 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { validateBlueprint } from './validateBlueprint';
 import * as configModule from '../config/options.js';
 import BlueprintError from '../utils/BlueprintError.js';
+import type { BlueprintConfig, BlueprintLinks } from './types.js';
 
 vi.mock(import('../config/options.js'), () => {
     return {
@@ -14,7 +15,7 @@ describe('validateBlueprint', () => {
     describe('validateBlueprint', () => {
 
         test('throws error when schema is missing', () => {
-            expect(() => validateBlueprint({} as any, 'TestComponent')).toThrow(
+            expect(() => validateBlueprint({} as BlueprintConfig, 'TestComponent')).toThrow(
                 'Blueprint[TestComponent] must have a schema.',
             );
         });
@@ -26,7 +27,7 @@ describe('validateBlueprint', () => {
                         schema: {
                             propOne: { source: 'http://example.com' },
                         },
-                    } as any,
+                    } as BlueprintConfig,
                     'TestComponent',
                 ),
             ).toThrow('Blueprint[TestComponent] > schema.propOne must specify either a type or a default value.');
@@ -39,7 +40,7 @@ describe('validateBlueprint', () => {
                         schema: {
                             propOne: null,
                         },
-                    } as any,
+                    } as unknown as BlueprintConfig,
                     'TestComponent',
                 ),
             ).toThrow('Blueprint[TestComponent] > schema.propOne does not have a valid configuration.');
@@ -50,7 +51,7 @@ describe('validateBlueprint', () => {
                 validateBlueprint(
                     {
                         schema: { propOne: { type: 'string' } },
-                        links: 'not-an-array' as any,
+                        links: 'not-an-array' as unknown as BlueprintLinks,
                     },
                     'TestComponent',
                 ),
@@ -116,7 +117,7 @@ describe('validateBlueprint', () => {
             const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
             expect(() =>
-                validateBlueprint({} as any, 'TestComponent'),
+                validateBlueprint({} as BlueprintConfig, 'TestComponent'),
             ).not.toThrow();
             expect(consoleSpy).toHaveBeenCalledOnce();
             expect(consoleSpy.mock.calls[0][0]).toBeInstanceOf(BlueprintError);

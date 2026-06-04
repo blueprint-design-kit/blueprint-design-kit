@@ -1,6 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import getImport from './getImport';
-import { getImportsMap } from '../imports/getImportsMap.js';
+import { type BlueprintImportsMap, getImportsMap } from '../imports/getImportsMap.js';
+import type { FunctionComponent } from 'react';
 
 vi.mock(import('../imports/getImportsMap.js'), () => {
     return {
@@ -30,7 +31,7 @@ describe('getImport', () => {
                 b: async () => ({ default: { make: () => ({}) } }),
                 m: async () => ({ useClient: true }),
             },
-        } as any);
+        } as unknown as BlueprintImportsMap);
 
         await expect(() => getImport('Atoms/Button', 'component')).rejects.toThrow(
             "'Atoms/Button' component does not have an importer",
@@ -43,11 +44,11 @@ describe('getImport', () => {
             'Atoms/Button': {
                 c: async () => ({ default: () => 'ButtonComponent' }),
             },
-        } as any);
+        } as unknown as BlueprintImportsMap);
 
         const imported = await getImport('Atoms/Button', 'component');
         expect(typeof imported).toBe('function');
-        expect((imported as any)({})).toBe('ButtonComponent');
+        expect(imported && (imported as FunctionComponent)({})).toBe('ButtonComponent');
     });
 
     test('returns value directly when importer does not resolve a module object', async () => {
@@ -56,7 +57,7 @@ describe('getImport', () => {
             'Atoms/Button': {
                 m: async () => ({ useClient: true }),
             },
-        } as any);
+        } as unknown as BlueprintImportsMap);
 
         const imported = await getImport('Atoms/Button', 'meta');
         expect(imported).toEqual({ useClient: true });

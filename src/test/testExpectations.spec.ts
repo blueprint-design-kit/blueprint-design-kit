@@ -6,7 +6,7 @@ import { testInPlaywright } from './playwright.js';
 import { printResults } from './printResults.js';
 
 let processExitSpy: ReturnType<typeof vi.spyOn>;
-let consoleLogSpy: ReturnType<typeof vi.spyOn>;
+let consoleLogSpy: ReturnType<typeof vi.spyOn>; // eslint-disable-line
 let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
 vi.mock(import('../config/options.js'), () => {
@@ -41,7 +41,7 @@ describe('testExpectations', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        processExitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as any);
+        processExitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined));
         consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
         consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
@@ -52,13 +52,13 @@ describe('testExpectations', () => {
         vi.mocked(getFileOptions).mockReturnValue({
             componentsRoot: './app/components',
         });
-        vi.mocked(startLocalServer).mockReturnValue({ pid: 12345 } as any);
-        vi.mocked(waitForServer).mockResolvedValue(true as any);
+        vi.mocked(startLocalServer).mockReturnValue({ pid: 12345 });
+        vi.mocked(waitForServer).mockResolvedValue(true);
         vi.mocked(testInPlaywright).mockResolvedValue({
             pass: [{ componentName: 'Atoms/Button' }],
             fail: [],
             skip: [],
-        } as any);
+        });
         vi.mocked(printResults).mockReturnValue(undefined);
     });
 
@@ -93,7 +93,7 @@ describe('testExpectations', () => {
             pass: [],
             fail: [{ componentName: 'Atoms/Button', failingVariant: 'default' }],
             skip: [],
-        } as any);
+        });
 
         await testExpectations();
 

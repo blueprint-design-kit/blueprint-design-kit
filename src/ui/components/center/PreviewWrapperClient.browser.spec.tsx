@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 vi.mock(import('../../../blueprint/getComponent.js'), () => ({
     getComponent: vi.fn(async () => {
@@ -12,7 +12,7 @@ vi.mock(import('../../../blueprint/getComponent.js'), () => ({
 }));
 
 vi.mock(import('./PreviewMain.js'), () => ({
-    default: ({ component }: { component: unknown }) => <div>{component as any}</div>,
+    default: ({ component }: { component: unknown }) => <div>{component as ReactNode}</div>,
 }));
 
 import { PropsContext } from '../../PropsProvider';
@@ -21,7 +21,7 @@ import PreviewWrapperClient from './PreviewWrapperClient';
 
 function RenderWithProps({ componentPath, props }: { componentPath: string; props: Record<string, unknown> }) {
     return (
-        <PropsContext.Provider value={{ props, setProps: vi.fn() } as any}>
+        <PropsContext.Provider value={{ props, setProps: vi.fn() }}>
             <PreviewWrapperClient componentPath={componentPath} />
         </PropsContext.Provider>
     );
@@ -41,7 +41,7 @@ describe('PreviewWrapperClient', () => {
     test('loads and renders imported client component with context props', async () => {
         const mockedGetComponent = vi.mocked(getComponent);
         render(
-            <PropsContext.Provider value={{ props: { label: 'OK' }, setProps: vi.fn() } as any}>
+            <PropsContext.Provider value={{ props: { label: 'OK' }, setProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );
@@ -59,7 +59,7 @@ describe('PreviewWrapperClient', () => {
         });
 
         render(
-            <PropsContext.Provider value={{ props: { label: 'Loading' }, setProps: vi.fn() } as any}>
+            <PropsContext.Provider value={{ props: { label: 'Loading' }, setProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/Delayed" />
             </PropsContext.Provider>,
         );
@@ -69,7 +69,7 @@ describe('PreviewWrapperClient', () => {
 
     test('renders one component per props entry when context props is an array', async () => {
         render(
-            <PropsContext.Provider value={{ props: [{ label: 'A' }, { label: 'B' }], setProps: vi.fn() } as any}>
+            <PropsContext.Provider value={{ props: [{ label: 'A' }, { label: 'B' }], setProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );
@@ -80,7 +80,7 @@ describe('PreviewWrapperClient', () => {
 
     test('falls back to blank label when context props are empty', async () => {
         render(
-            <PropsContext.Provider value={{ props: {}, setProps: vi.fn() } as any}>
+            <PropsContext.Provider value={{ props: {}, setProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );

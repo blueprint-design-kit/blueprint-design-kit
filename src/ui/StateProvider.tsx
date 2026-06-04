@@ -1,5 +1,5 @@
 'use client';
- 
+
 import {
     createContext,
     useContext,
@@ -10,7 +10,7 @@ import {
 import type { ReactNode } from 'react';
 import type { BlueprintState } from '../blueprint/types.js';
 
-function updateFn(prev: BlueprintState, action: { key: string; value: any }): BlueprintState {
+function updateFn(prev: BlueprintState, action: { key: string; value: unknown }): BlueprintState {
     const { key, value } = action;
     return Object.assign({}, prev, {
         [key]: value,
@@ -18,7 +18,7 @@ function updateFn(prev: BlueprintState, action: { key: string; value: any }): Bl
 }
 
 export const StateContext = createContext<BlueprintState>(null as unknown as BlueprintState);
- 
+
 export default function StateProvider({
     children,
     value,
@@ -64,7 +64,7 @@ export function useState<S>(key: string, initialState?: S | (() => S)): [S, (val
 }
 
 
-type AnyAction = any;
+type AnyAction = any; // eslint-disable-line
 
 export function useReducer<S, A extends AnyAction>(
     key: string,

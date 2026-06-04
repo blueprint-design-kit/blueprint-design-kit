@@ -5,21 +5,28 @@ export interface ComponentMeta {
     useServer?: boolean;
 }
 
-export type BlueprintSchemaType = string | string[] | ((propValue: any) => boolean);
+export type BlueprintSchemaType =
+    string |
+    string[] |
+    ((propValue: any) => boolean); // eslint-disable-line
 
 export interface BlueprintSchema {
     [key: string]: {
-        default?: any;
+        default?: any; // eslint-disable-line
         type?: BlueprintSchemaType;
         source?: string | { tag: string; url: string; };
-        allow?: any[];
+        allow?: any[]; // eslint-disable-line
         min?: number;
         max?: number;
     };
 }
 
-export type BlueprintProps = { [key: string]: any; };
-export type BlueprintState = { [key: string]: any; };
+export type BlueprintProps = {
+    [key: string]: any; // eslint-disable-line
+};
+export type BlueprintState = {
+    [key: string]: any; // eslint-disable-line
+};
 
 export interface BlueprintVariant {
     props?: BlueprintProps | BlueprintProps[];
@@ -101,7 +108,7 @@ export interface BlueprintInstance {
     listVariants: (locale?: string) => string[];
 
     /**
-     * A hook to validate that the props match the schema for this blueprint. 
+     * A hook to validate that the props match the schema for this blueprint.
      * Returns a string describing the validation error, or undefined if there are no errors.
      */
     validateProps: (props: BlueprintProps | undefined, locale?: string) => string | undefined;

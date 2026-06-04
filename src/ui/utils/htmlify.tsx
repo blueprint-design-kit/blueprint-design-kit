@@ -2,9 +2,9 @@
 
 import type { ReactNode } from 'react';
 
-function buildDetailsItem(key: string | number, val: any, classPrefix: string): ReactNode {
+function buildDetailsItem(key: string | number, val: unknown, classPrefix: string): ReactNode {
     const { inline, details } = htmlify(val, classPrefix);
-    return <div key={key} className={`${classPrefix}-details-item`}>{details ? 
+    return <div key={key} className={`${classPrefix}-details-item`}>{details ?
             <details className={`${classPrefix}-details-expandable`}>
                 <summary>{key}: {inline}</summary>
                 {details}
@@ -15,7 +15,7 @@ function buildDetailsItem(key: string | number, val: any, classPrefix: string): 
         </div>;
 }
 
-export function htmlify(val: any, classPrefix: string): { inline: string; details?: ReactNode } {
+export function htmlify(val: unknown, classPrefix: string): { inline: string; details?: ReactNode } {
     if (!val) { return { inline: String(val) }; }
 
     if (typeof val === 'function') {
@@ -35,27 +35,29 @@ export function htmlify(val: any, classPrefix: string): { inline: string; detail
                 })}</div>,
             };
 
-        } else if (val.$$typeof) {
-            const reactElemType = val.type ? `<${val.type}${val.key ? `#${val.key}` : ''}>` : '';
+        } else if ((val as { $$typeof: unknown }).$$typeof) {
+            const reactVal = val as { type: unknown, key: unknown };
+            const reactElemType = reactVal.type ? `<${reactVal.type}${reactVal.key ? `#${reactVal.key}` : ''}>` : '';
             return {
                 inline: `React${reactElemType}`,
             };
 
-        } else if (val === val.self) {
+        } else if (val === (val as typeof window).self) {
             return {
                 inline: 'window',
             };
 
-        } else if (val.nodeType === 9) {
+        } else if ((val as typeof document).nodeType === 9) {
             return {
                 inline: 'document',
             };
 
-        } else if (val.nodeType === 1) {
-            const tagName = (val.tagName || '').toLowerCase();
-            const className = val.className && typeof val.className === 'string' && `.${val.className.trim().replace(/ +/g, '.')}` || '';
+        } else if ((val as HTMLDivElement).nodeType === 1) { // typed as HTMLDivElement but could be any
+            const elemVal = val as HTMLDivElement;
+            const tagName = (elemVal.tagName || '').toLowerCase();
+            const className = elemVal.className && typeof elemVal.className === 'string' && `.${elemVal.className.trim().replace(/ +/g, '.')}` || '';
             return {
-                inline: `${tagName}${val.id ? `#${val.id}` : ''}${className}`,
+                inline: `${tagName}${elemVal.id ? `#${elemVal.id}` : ''}${className}`,
             };
 
         } else {

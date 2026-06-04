@@ -3,20 +3,21 @@ import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
 import { PropsContext } from '../../PropsProvider';
+import { StateContext } from '../../StateProvider';
 import { PropsExplorerClient } from './PropsExplorerClient';
 
 describe('PropsExplorerClient', () => {
     test('renders props and state sections from context data', async () => {
-        const setProps = vi.fn();
-
         render(
-            <PropsContext.Provider value={{ props: { title: 'Hello', state: { open: true } }, setProps } as any}>
-                <PropsExplorerClient
-                    useClient={false}
-                    schema={{
-                        title: { type: 'string' },
-                    }}
-                />
+            <PropsContext.Provider value={{ props: { title: 'Hello' }, updateProps: vi.fn() }}>
+                <StateContext.Provider value={{ state: { open: true }, updateState: vi.fn() }}>
+                    <PropsExplorerClient
+                        useClient={false}
+                        schema={{
+                            title: { type: 'string' },
+                        }}
+                    />
+                </StateContext.Provider>
             </PropsContext.Provider>,
         );
 
@@ -28,7 +29,7 @@ describe('PropsExplorerClient', () => {
 
     test('omits state section when state is not present', async () => {
         render(
-            <PropsContext.Provider value={{ props: { title: 'Hello' }, setProps: vi.fn() } as any}>
+            <PropsContext.Provider value={{ props: { title: 'Hello' }, updateProps: vi.fn() }}>
                 <PropsExplorerClient
                     useClient={false}
                     schema={{

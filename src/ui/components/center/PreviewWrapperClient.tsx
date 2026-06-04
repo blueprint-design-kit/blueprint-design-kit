@@ -20,17 +20,17 @@ export interface PreviewWrapperProps {
 }
 
 export default function PreviewWrapperClient({ componentPath, expectation }: PreviewWrapperProps) {
-    // Store props in context so they can be updated interactively 
+    // Store props in context so they can be updated interactively
     const { props } = useContext(PropsContext);
-    const [FunctionComponent, setFunctionComponent] = useState<ComponentType<any> | null>(null);
-    
+    const [FunctionComponent, setFunctionComponent] = useState<ComponentType<unknown> | null>(null);
+
     async function importComponent(selectedComponent: string) {
         const importedComponent = await getComponent(selectedComponent);
         if (!importedComponent) {
             throw new Error(`Component "${selectedComponent}" not found.`);
         }
         // Important: importedComponent is itself a Function, so we must wrap in a "setState" function here
-        setFunctionComponent(() => importedComponent as ComponentType<any>);
+        setFunctionComponent(() => importedComponent as ComponentType<unknown>);
     }
 
     useEffect(() => {

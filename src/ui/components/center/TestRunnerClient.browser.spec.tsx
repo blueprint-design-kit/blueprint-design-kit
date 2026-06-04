@@ -14,6 +14,7 @@ vi.mock(import('../../../utils/htmlDiffPrinter.js'), () => ({
 }));
 
 import { TestRunnerClient } from './TestRunnerClient';
+import type { ExpectationValidation } from '../../../blueprint/getTestValidations.js';
 
 describe('TestRunnerClient', () => {
     test('prints zero totals when there are no validations', async () => {
@@ -25,7 +26,7 @@ describe('TestRunnerClient', () => {
     });
 
     test('shows running state before final output', async () => {
-        const validations: any[] = [
+        const validations: ExpectationValidation[] = [
             {
                 componentName: 'ComponentSkip',
             },
@@ -38,7 +39,7 @@ describe('TestRunnerClient', () => {
     });
 
     test('renders pass, fail, and skip groups from validation output', async () => {
-        const validations: any[] = [
+        const validations: ExpectationValidation[] = [
             {
                 componentName: 'ComponentPass',
                 expectations: [
@@ -71,7 +72,7 @@ describe('TestRunnerClient', () => {
     });
 
     test('writes hidden JSON payload for external result consumers', async () => {
-        const validations: any[] = [
+        const validations: ExpectationValidation[] = [
             { componentName: 'ComponentPass', expectations: [{ variantName: 'default' }] },
             { componentName: 'ComponentSkip' },
         ];

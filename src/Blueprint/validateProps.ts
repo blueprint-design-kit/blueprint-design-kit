@@ -7,7 +7,7 @@ import type {
 } from './types.js';
 
 
-function checkTypeMismatch(value: any, expectedTypes: BlueprintSchemaType): string | null {
+function checkTypeMismatch(value: unknown, expectedTypes: BlueprintSchemaType): string | null {
     const doesNotConform = 'does not conform to the type:';
 
     if (typeof expectedTypes === 'function') {

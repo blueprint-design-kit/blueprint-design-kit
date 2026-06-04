@@ -1,6 +1,6 @@
 import { isColor } from './colors.js';
 
-function singleValueConformsToType(value: any, expectedType: string): boolean {
+function singleValueConformsToType(value: unknown, expectedType: string): boolean {
     if (expectedType === 'any') {
         return true;
     }
@@ -20,7 +20,7 @@ function singleValueConformsToType(value: any, expectedType: string): boolean {
     return typeof value === expectedType;
 }
 
-export function valueConformsToType(value: any, expectedType: string): boolean {
+export function valueConformsToType(value: unknown, expectedType: string): boolean {
     if (expectedType.endsWith('[]')) {
         if (Array.isArray(value)) {
             const itemType = expectedType.slice(0, -2);

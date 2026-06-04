@@ -97,10 +97,10 @@ describe('colors utils', () => {
         });
 
         test('returns false for non-string values', () => {
-            expect(isColor(123 as any)).toBe(false);
-            expect(isColor(null as any)).toBe(false);
-            expect(isColor(undefined as any)).toBe(false);
-            expect(isColor({} as any)).toBe(false);
+            expect(isColor(123 as any)).toBe(false); // eslint-disable-line
+            expect(isColor(null as any)).toBe(false); // eslint-disable-line
+            expect(isColor(undefined as any)).toBe(false); // eslint-disable-line
+            expect(isColor({} as any)).toBe(false); // eslint-disable-line
         });
 
     });

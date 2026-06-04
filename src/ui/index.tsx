@@ -74,12 +74,12 @@ export type BlueprintUIProps = {
                 desktop?: string;
             };
         } | false;
-        copyJSX?: {} | false;
+        copyJSX?: object | false;
         onPropsReady?: (
                 selectedComponent: string | undefined,
                 selectedVariant: string | undefined,
-                props: Record<string, any>,
-            ) => Promise<Record<string, any>>;
+                props: Record<string, unknown>,
+            ) => Promise<Record<string, unknown>>;
     };
 };
 
@@ -176,7 +176,7 @@ export default async function BlueprintComponentUI({
                 variantProps = await extendAndValidateProps(variantProps);
             }
 
-            const component = useClient ? 
+            const component = useClient ?
                 <PreviewWrapperClient
                     componentPath={componentPath}
                     expectation={expectation}

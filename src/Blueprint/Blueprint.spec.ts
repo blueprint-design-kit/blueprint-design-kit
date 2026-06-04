@@ -192,7 +192,7 @@ describe('Blueprint', () => {
         });
 
         test('withDefaultProps', () => {
-            const spy = vi.spyOn(validatePropsModule, 'validatePropsAgainstSchema');
+            vi.spyOn(validatePropsModule, 'validatePropsAgainstSchema');
             const schema = { p1: { default: 1 } };
             const schemaFr = { p2: { default: 2 } };
             const props = { foo: 'bar' };

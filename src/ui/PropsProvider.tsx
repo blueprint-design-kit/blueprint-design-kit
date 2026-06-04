@@ -1,10 +1,10 @@
 'use client';
- 
+
 import { createContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { BlueprintProps } from '../blueprint/types.js';
 
-function propsUpdateFn(prev: BlueprintProps, action: { key: string; value: any }): BlueprintProps {
+function propsUpdateFn(prev: BlueprintProps, action: { key: string; value: unknown }): BlueprintProps {
     const { key, value } = action;
     return Object.assign({}, prev, {
         [key]: value,
@@ -12,7 +12,7 @@ function propsUpdateFn(prev: BlueprintProps, action: { key: string; value: any }
 }
 
 export const PropsContext = createContext<BlueprintProps>(null as unknown as BlueprintProps);
- 
+
 export default function PropsProvider({
     children,
     value,

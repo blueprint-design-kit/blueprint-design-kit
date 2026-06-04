@@ -20,7 +20,7 @@ function convertHtmlToJsx(html: string) {
     return jsxString;
 }
 
-export type CopyAsJsxOptions = {} | boolean;
+export type CopyAsJsxOptions = object | boolean;
 
 export function CopyAsJsxButton({ selectorId }: { selectorId: string }) {
     const [feedback, setFeedback] = useState('');

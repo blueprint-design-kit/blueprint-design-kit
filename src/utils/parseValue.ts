@@ -21,7 +21,7 @@ export function parseValueFromString(val: string) {
     }
 }
 
-export function parseValueType(val: any) {
+export function parseValueType(val: unknown) {
     if (val === null || typeof val === 'undefined') {
         return 'undefined';
     }

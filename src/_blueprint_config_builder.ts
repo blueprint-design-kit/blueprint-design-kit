@@ -9,11 +9,14 @@ import type { BlueprintSystemOptions } from './config/options.js';
 // import { createRequire } from 'node:module';
 // const require = createRequire(import.meta.url);
 
-function handleImportError(extension: string, err: any) {
+function handleImportError(extension: string, err: unknown) {
     if (!err) return;
-    if (err.code === 'ERR_MODULE_NOT_FOUND' || err.code === 'MODULE_NOT_FOUND') {
-        // These errors are expected, continue to check the next file type
-        return;
+    if (err instanceof Error) {
+        const errorWithCode = err as Error & { code: string };
+        if (errorWithCode.code === 'ERR_MODULE_NOT_FOUND' || errorWithCode.code === 'MODULE_NOT_FOUND') {
+            // These errors are expected, continue to check the next file type
+            return;
+        }
     }
     console.log(`Error encountered while importing blueprint.config.${extension}`);
     console.error(err);

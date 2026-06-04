@@ -47,7 +47,6 @@ describe('getTestValidations', () => {
                     listVariants: () => ['default'],
                     getVariant: () => ({
                         props: [{ size: 'm' }, { size: 'l' }],
-                        state: { open: true },
                         expectation: 'renders correctly',
                     }),
                     validateProps,
@@ -67,21 +66,25 @@ describe('getTestValidations', () => {
         expect(mockedGetComponent).toHaveBeenCalledWith('Button');
 
         expect(validateProps).toHaveBeenCalledTimes(2);
-        expect(validateProps).toHaveBeenNthCalledWith(1, expect.objectContaining({ size: 'm', state: { open: true } }));
-        expect(validateProps).toHaveBeenNthCalledWith(2, expect.objectContaining({ size: 'l', state: { open: true } }));
+        expect(validateProps).toHaveBeenNthCalledWith(1, {
+            extra: 'resolved',
+            size: 'm',
+        });
+        expect(validateProps).toHaveBeenNthCalledWith(2, {
+            extra: 'resolved',
+            size: 'l',
+        });
 
         expect(onPropsReady).toHaveBeenCalledTimes(2);
-        expect(onPropsReady).toHaveBeenNthCalledWith(
-            1,
+        expect(onPropsReady).toHaveBeenNthCalledWith(1,
             'Button',
             'default',
-            expect.objectContaining({ size: 'm', state: { open: true } }),
+            { extra: 'resolved', size: 'm' },
         );
-        expect(onPropsReady).toHaveBeenNthCalledWith(
-            2,
+        expect(onPropsReady).toHaveBeenNthCalledWith(2,
             'Button',
             'default[1]',
-            expect.objectContaining({ size: 'l', state: { open: true } }),
+            { extra: 'resolved', size: 'l' },
         );
 
         expect(validations).toHaveLength(1);
@@ -90,7 +93,7 @@ describe('getTestValidations', () => {
         expect(validations[0].expectations?.[0].variantName).toBe('default');
         expect(validations[0].expectations?.[0].expectation).toBe('renders correctly');
 
-        const component = validations[0].expectations?.[0].component as any;
+        const component = validations[0].expectations?.[0].component as { props: { children: { props: { extra: unknown } }[] } };
         expect(component).toBeTruthy();
         expect(component.props.children).toHaveLength(2);
         expect(component.props.children[0].props.extra).toBe('resolved');

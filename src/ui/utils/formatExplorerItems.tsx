@@ -8,10 +8,10 @@ import type { BlueprintSchema } from '../../blueprint/types.js';
 
 export interface ExplorerItem {
     key: string;
-    value: any;
+    value: unknown;
     classPrefix: string;
     schema?: BlueprintSchema[keyof BlueprintSchema];
-    onUpdate: (newValue: any) => void;
+    onUpdate: (newValue: unknown) => void;
 }
 
 export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) {
@@ -98,7 +98,7 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
                 const colorPicker = document.createElement('input');
                 colorPicker.className = `${classPrefix}-color-picker`;
                 colorPicker.type = 'color';
-                colorPicker.value = value;
+                colorPicker.value = value as string;
                 colorPicker.style.width = '1px';
                 colorPicker.style.height = '1px';
                 currentTarget.appendChild(colorPicker);
@@ -131,7 +131,7 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
                     <div className={`${classPrefix}-value-holder`} style={{ display: 'inline-block', minWidth: 150 }}>
                         <div className={`${classPrefix}-value`} style={{ cursor: useClient ? 'alias' : 'default' }} onClick={handleValueClicked}>
                             {types && types.includes('color') &&
-                            <span className={`${classPrefix}-color-swatch`} style={{ backgroundColor: value }}> </span>}
+                            <span className={`${classPrefix}-color-swatch`} style={{ backgroundColor: value as string }}> </span>}
                             <span className={`${classPrefix}-value-${valueType}`}>{inline}</span>
                         </div>
                     </div>

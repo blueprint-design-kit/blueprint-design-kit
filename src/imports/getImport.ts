@@ -12,7 +12,7 @@ export default async function getImport(
     componentPath: string,
     importType: ImportType,
 ): Promise<Blueprint | FunctionComponent | ComponentMeta | undefined> {
-    let allImports = await getImportsMap();
+    const allImports = await getImportsMap();
     const componentMap = allImports[componentPath];
     if (!componentMap) {
         throw new BlueprintError(`${importType} not found for '${componentPath}'`);

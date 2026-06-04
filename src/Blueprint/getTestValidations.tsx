@@ -9,8 +9,8 @@ import type { ReactElement, ReactNode } from 'react';
 type OnPropsReady = (
     selectedComponent: string,
     selectedVariant: string | undefined,
-    props: Record<string, any>,
-) => Promise<Record<string, any>>;
+    props: Record<string, unknown>,
+) => Promise<Record<string, unknown>>;
 
 type Expectation = {
     variantName: string;
@@ -47,7 +47,7 @@ export async function getTestValidations({ filter, onPropsReady }: GetValidation
             if (variantNames.length) {
                 const expectations: ExpectationValidation['expectations'] = [];
                 for (const variantName of variantNames) {
-                    let variant = getVariant(variantName);
+                    const variant = getVariant(variantName);
                     if (variant) {
                         const propsArray = Array.isArray(variant.props) ? variant.props : [variant.props];
                         let invalidProps;

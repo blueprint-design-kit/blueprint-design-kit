@@ -13,13 +13,15 @@ export type PropsExplorerProps = {
 }
 
 export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
-    // Store props in context so they can be updated interactively 
-    let { props, updateProps } = useContext(PropsContext);
+    // Store props in context so they can be updated interactively
+    const { props: propsFromContext, updateProps } = useContext(PropsContext) || { updateProps: () => {} };
+    let props = propsFromContext;
 
     // If props is an array (e.g. from a variant with multiple "props" entries), just show the first item in the PropsExplorer
     props = Array.isArray(props) ? props[0] : props;
 
-    const { state, updateState } = useContext(StateContext);
+    const contextForState = useContext(StateContext);
+    const { state, updateState } = contextForState || { updateState: () => {} };
 
     function formatProps(schema: BlueprintSchema, props?: BlueprintProps) {
         const items: ExplorerItem[] = [];
@@ -29,7 +31,7 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
                 value: props && props[key],
                 classPrefix: 'blueprint-layout-props-viewer-item',
                 schema: schema[key] as BlueprintSchema[keyof BlueprintSchema],
-                onUpdate: (newValue: any) => {
+                onUpdate: (newValue: unknown) => {
                     updateProps({ key, value: newValue });
                 },
             });
@@ -44,14 +46,14 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
                 key,
                 value: state[key],
                 classPrefix: 'blueprint-layout-props-viewer-item',
-                onUpdate: (newValue: any) => {
+                onUpdate: (newValue: unknown) => {
                     updateState({ key, value: newValue });
                 },
             });
         }
         return formatExplorerItems(items, useClient);
     }
-    
+
     if (!schema || !Object.keys(schema).length) {
         return null;
     }

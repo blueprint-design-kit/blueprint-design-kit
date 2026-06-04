@@ -3,7 +3,7 @@ import { validatePropsAgainstSchema } from './validateProps';
 
 vi.mock(import('../utils/valueConformsToType.js'), () => {
     return {
-        valueConformsToType: vi.fn((value: any, type: any) => {
+        valueConformsToType: vi.fn((value: unknown, type: unknown) => {
             if (typeof type === 'string') {
                 return typeof value === type;
             }
@@ -57,7 +57,7 @@ describe('validateProps', () => {
         });
 
         test('accepts props conforming to function validator', () => {
-            const isPositive = (val: any) => typeof val === 'number' && val > 0;
+            const isPositive = (val: unknown) => typeof val === 'number' && val > 0;
             const schema = {
                 value: { type: isPositive },
             };
@@ -65,7 +65,7 @@ describe('validateProps', () => {
         });
 
         test('returns error when prop fails function validator', () => {
-            const isPositive = (val: any) => typeof val === 'number' && val > 0;
+            const isPositive = (val: unknown) => typeof val === 'number' && val > 0;
             const schema = {
                 value: { type: isPositive },
             };

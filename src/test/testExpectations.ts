@@ -36,7 +36,7 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
     const { componentsRoot } = getFileOptions();
     let server: ChildProcess | undefined;
 
-    function handleError(err: any, context: string = '') {
+    function handleError(err: unknown, context: string = '') {
         const contextMsg = context ? ` [${context}]` : '';
         print(`\n\n[Blueprint] Test Runner Error${contextMsg}:`);
         console.error(err);
@@ -52,7 +52,7 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
         stopLocalServer(server);
         process.exit(0);
     }
-    
+
     try {
         print(`[Blueprint] Starting local server with '${serverCommand}' and waiting for 200 status from '${serverUrl}'...`);
         server = startLocalServer(serverCommand);
@@ -82,7 +82,7 @@ export async function testExpectations(options?: BlueprintSystemOptions['testing
     }
 
     if (!results || results.fail.length > 0) {
-        exitFailing();        
+        exitFailing();
     } else {
         exitPassing();
     }

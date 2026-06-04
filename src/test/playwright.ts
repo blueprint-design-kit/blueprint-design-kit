@@ -28,7 +28,7 @@ function print(msg: string) {
     console.log(msg);
 }
 
-type HandleErrorFn = (err: any, context?: string) => void;
+type HandleErrorFn = (err: unknown, context?: string) => void;
 type TestInPlaywrightOptions = {
     filter?: string | undefined;
     timeout?: number;
