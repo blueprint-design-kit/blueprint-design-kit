@@ -21,7 +21,7 @@ import PreviewWrapperClient from './PreviewWrapperClient';
 
 function RenderWithProps({ componentPath, props }: { componentPath: string; props: Record<string, unknown> }) {
     return (
-        <PropsContext.Provider value={{ props, setProps: vi.fn() }}>
+        <PropsContext.Provider value={{ props, updateProps: vi.fn() }}>
             <PreviewWrapperClient componentPath={componentPath} />
         </PropsContext.Provider>
     );
@@ -41,7 +41,7 @@ describe('PreviewWrapperClient', () => {
     test('loads and renders imported client component with context props', async () => {
         const mockedGetComponent = vi.mocked(getComponent);
         render(
-            <PropsContext.Provider value={{ props: { label: 'OK' }, setProps: vi.fn() }}>
+            <PropsContext.Provider value={{ props: { label: 'OK' }, updateProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );
@@ -59,7 +59,7 @@ describe('PreviewWrapperClient', () => {
         });
 
         render(
-            <PropsContext.Provider value={{ props: { label: 'Loading' }, setProps: vi.fn() }}>
+            <PropsContext.Provider value={{ props: { label: 'Loading' }, updateProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/Delayed" />
             </PropsContext.Provider>,
         );
@@ -69,7 +69,7 @@ describe('PreviewWrapperClient', () => {
 
     test('renders one component per props entry when context props is an array', async () => {
         render(
-            <PropsContext.Provider value={{ props: [{ label: 'A' }, { label: 'B' }], setProps: vi.fn() }}>
+            <PropsContext.Provider value={{ props: [{ label: 'A' }, { label: 'B' }], updateProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );
@@ -80,7 +80,7 @@ describe('PreviewWrapperClient', () => {
 
     test('falls back to blank label when context props are empty', async () => {
         render(
-            <PropsContext.Provider value={{ props: {}, setProps: vi.fn() }}>
+            <PropsContext.Provider value={{ props: {}, updateProps: vi.fn() }}>
                 <PreviewWrapperClient componentPath="Cards/ProductCard" />
             </PropsContext.Provider>,
         );

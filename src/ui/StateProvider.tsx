@@ -68,7 +68,7 @@ type AnyAction = any; // eslint-disable-line
 
 export function useReducer<S, A extends AnyAction>(
     key: string,
-    reducer: (prevState: S, ...args: [] | [A]) => S,
+    reducer: (prevState: S, action: A) => S,
     initialState?: S,
 ): [S, (action: A) => void] {
     if (!key || typeof key !== 'string') {
@@ -87,7 +87,7 @@ export function useReducer<S, A extends AnyAction>(
     }, []);
 
     const [stateValue, dispatchStateChange] = useReactReducer<S, [A]>(
-        reducer as (prevState: S, ...args: [] | [AnyAction]) => S,
+        reducer as (prevState: S, action: A) => S,
         initialValue as S,
     );
 
