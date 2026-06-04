@@ -1,3 +1,5 @@
+import { isColor } from './colors.js';
+
 function singleValueConformsToType(value: any, expectedType: string): boolean {
     if (expectedType === 'any') {
         return true;
@@ -7,10 +9,7 @@ function singleValueConformsToType(value: any, expectedType: string): boolean {
     }
     if (expectedType === 'color') {
         if (typeof value !== 'string') { return false; }
-        const isHex = value.match(/^\s*#[\da-zA-Z]{3,8};?\s*$/); // #11aaCC
-        const isRgb = value.match(/^\s*rgba?\([\d,.\s]+\);?\s*$/); // rgb(10, 20, 30)
-        const isNamed = value.match(/^[a-z]+$/); // green (must assume is valid color name)
-        return !!(isHex || isRgb || isNamed);
+        return isColor(value);
     }
     if (expectedType === 'null') {
         return value === null;

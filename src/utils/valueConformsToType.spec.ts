@@ -37,12 +37,13 @@ describe('valueConformsToType', () => {
         expect(valueConformsToType('hello', 'number')).toBe(false);
     });
 
-    test('supports color values as hex, rgb(a), and plain lowercase names', () => {
+    test('supports color values as hex, rgb(a), and valid color names', () => {
         expect(valueConformsToType('#abc', 'color')).toBe(true);
         expect(valueConformsToType('#aabbccdd', 'color')).toBe(true);
         expect(valueConformsToType('rgb(255, 0, 0)', 'color')).toBe(true);
         expect(valueConformsToType('rgba(255, 0, 0, 0.5)', 'color')).toBe(true);
         expect(valueConformsToType('red', 'color')).toBe(true);
+        expect(valueConformsToType('LightSkyBlue', 'color')).toBe(true);
     });
 
     test('rejects non-string values for color', () => {

@@ -23,7 +23,7 @@ export type BlueprintState = { [key: string]: any; };
 
 export interface BlueprintVariant {
     props?: BlueprintProps | BlueprintProps[];
-    state?: BlueprintState | BlueprintState[];
+    state?: BlueprintState;
     expectation?: ReactNode;
 }
 export interface BlueprintVariants {

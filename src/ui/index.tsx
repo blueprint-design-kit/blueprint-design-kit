@@ -7,7 +7,7 @@ import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
 import { TEST_RUNNER_URL_PATH } from '../config/constants.js';
 
-import type { BlueprintSchema, BlueprintProps, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
+import type { BlueprintSchema, BlueprintProps, BlueprintState, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
 import type { ReactNode } from 'react';
 
 import BlueprintLayout from './components/BlueprintLayout.js';
@@ -22,8 +22,11 @@ import TestRunnerLink from './components/left/TestRunnerLink.js';
 import TestRunnerLauncher from './components/center/TestRunnerLauncher.js';
 import VariantPicker from './components/right/VariantPicker.js';
 import PropsProvider from './PropsProvider.js';
+import StateProvider from './StateProvider.js';
 import PreviewWrapperClient from './components/center/PreviewWrapperClient.js';
 import PreviewWrapperServer from './components/center/PreviewWrapperServer.js';
+
+export { useState, useReducer } from './StateProvider.js';
 
 export {
     ComponentMenu,
@@ -109,6 +112,7 @@ export default async function BlueprintComponentUI({
     let notes: ReactNode = null;
     let variants: string[] = [];
     let variantProps: BlueprintProps | BlueprintProps[] = {};
+    let variantState: BlueprintState = {};
     let useClient: boolean | undefined = void 0;
 
     let Center = null;
@@ -137,12 +141,8 @@ export default async function BlueprintComponentUI({
                 variant = getVariant(selectedVariant, locale); // gets the selected variant or defaults to the first variant in the config
                 if (variant) {
                     variant.props = variant.props || {};
+                    variantState = variant.state || {};
                     expectation = variant.expectation;
-                    (Array.isArray(variant.props) ? variant.props : [variant.props]).forEach((p: BlueprintProps | undefined) => {
-                        if (p && variant?.state) {
-                            Object.assign(p, { state: variant.state });
-                        }
-                    });
                 }
             }
 
@@ -208,16 +208,18 @@ export default async function BlueprintComponentUI({
     return (
         <main>
             <PropsProvider value={variantProps}>
-                <BlueprintLayout
-                    LeftTop={LeftTop}
-                    Left={Left}
-                    LeftBottom={LeftBottom}
-                    CenterTop={CenterTop}
-                    Center={Center}
-                    CenterBottom={CenterBottom}
-                    RightTop={RightTop}
-                    Right={Right}
-                />
+                <StateProvider value={variantState}>
+                    <BlueprintLayout
+                        LeftTop={LeftTop}
+                        Left={Left}
+                        LeftBottom={LeftBottom}
+                        CenterTop={CenterTop}
+                        Center={Center}
+                        CenterBottom={CenterBottom}
+                        RightTop={RightTop}
+                        Right={Right}
+                    />
+                </StateProvider>
             </PropsProvider>
         </main>
     );

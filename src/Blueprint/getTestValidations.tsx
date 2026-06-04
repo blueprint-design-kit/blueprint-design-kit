@@ -52,9 +52,6 @@ export async function getTestValidations({ filter, onPropsReady }: GetValidation
                         const propsArray = Array.isArray(variant.props) ? variant.props : [variant.props];
                         let invalidProps;
                         for (const [index, p] of propsArray.entries()) {
-                            if (typeof p === 'object' && variant.state) {
-                                Object.assign(p, { state: variant.state });
-                            }
                             invalidProps = validateProps(p);
                             if (invalidProps) {
                                 expectations.push({

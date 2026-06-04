@@ -63,7 +63,7 @@ export function validatePropsAgainstSchema(
             if (typeof min !== 'undefined' && value < min) {
                 return `${errPrefix}.${key} "${value}" is less than minimum ${min}.`;
             }
-        } else if (key !== 'children' && key !== 'state') {
+        } else if (key !== 'children') {
             return `${errPrefix}.${key} is not a valid prop.`;
         }
     }

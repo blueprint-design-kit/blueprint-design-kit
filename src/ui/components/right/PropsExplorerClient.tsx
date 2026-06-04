@@ -3,6 +3,7 @@
 import { useContext } from 'react';
 import { formatExplorerItems, type ExplorerItem } from '../../utils/formatExplorerItems.js';
 import { PropsContext } from '../../PropsProvider.js';
+import { StateContext } from '../../StateProvider.js';
 
 import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.js';
 
@@ -13,10 +14,12 @@ export type PropsExplorerProps = {
 
 export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
     // Store props in context so they can be updated interactively 
-    let { props, setProps } = useContext(PropsContext);
+    let { props, updateProps } = useContext(PropsContext);
 
     // If props is an array (e.g. from a variant with multiple "props" entries), just show the first item in the PropsExplorer
     props = Array.isArray(props) ? props[0] : props;
+
+    const { state, updateState } = useContext(StateContext);
 
     function formatProps(schema: BlueprintSchema, props?: BlueprintProps) {
         const items: ExplorerItem[] = [];
@@ -27,9 +30,7 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
                 classPrefix: 'blueprint-layout-props-viewer-item',
                 schema: schema[key] as BlueprintSchema[keyof BlueprintSchema],
                 onUpdate: (newValue: any) => {
-                    setProps(Object.assign({}, props, {
-                        [key]: newValue,
-                    }));
+                    updateProps({ key, value: newValue });
                 },
             });
         }
@@ -44,11 +45,7 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
                 value: state[key],
                 classPrefix: 'blueprint-layout-props-viewer-item',
                 onUpdate: (newValue: any) => {
-                    setProps(Object.assign({}, props, {
-                        state: Object.assign({}, props?.state, {
-                            [key]: newValue,
-                        }),
-                    }));
+                    updateState({ key, value: newValue });
                 },
             });
         }
@@ -68,12 +65,12 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
                 ))}
             </div>
         </div>
-    {props && props['state'] &&
+    {state && Object.keys(state).length > 0 &&
         <div className="blueprint-layout-props-viewer-section">
-            <div className="blueprint-layout-props-viewer-label">State Passed:</div>
+            <div className="blueprint-layout-props-viewer-label">State:</div>
             <div>
-                {formatState(props['state']).map((state) => (
-                    <div key={state.key}>{state.node}</div>
+                {formatState(state).map((st) => (
+                    <div key={st.key}>{st.node}</div>
                 ))}
             </div>
         </div>

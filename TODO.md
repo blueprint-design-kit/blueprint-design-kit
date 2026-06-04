@@ -1,4 +1,3 @@
 TODO:
 
-Deprecate old repos
-Demo site hosted on github pages
+Demo site hosted on vercel hobby

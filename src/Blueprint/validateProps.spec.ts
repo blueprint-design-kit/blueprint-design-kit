@@ -109,13 +109,13 @@ describe('validateProps', () => {
             expect(error).toContain('Blueprint[Button] > props.unknown is not a valid prop');
         });
 
-        test('allows special props "children" and "state" without schema entry', () => {
+        test('allows special props "children" without schema entry', () => {
             const schema = {
                 name: { type: 'string' },
             };
             expect(
                 validatePropsAgainstSchema(
-                    { name: 'Test', children: { type: 'div' }, state: { open: true } },
+                    { name: 'Test', children: { type: 'div' } },
                     schema,
                 ),
             ).toBeUndefined();

@@ -54,30 +54,30 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
         function showEditable(elem: HTMLElement) {
             if (elem.dataset['editing'] === 'true') { return; }
             elem.dataset['editing'] = 'true';
-            elem.style.minWidth = '180px';
+            elem.style.display = 'none';
+            const parent = elem.parentElement;
+            if (!parent) { return; }
             let editable: HTMLInputElement | HTMLTextAreaElement = document.createElement('input');
             const expectsLongFormat = types && (types.includes('object') || typesJoined.includes('['));
             const currentlyContainsLongFormat = valueType === 'object' || (typeof value === 'string' && value.length > 25);
             if (expectsLongFormat || currentlyContainsLongFormat) {
                 editable = document.createElement('textarea');
-                elem.style.width = '100%';
+                parent.style.width = '100%';
             }
             editable.value = JSON.stringify(value);
             editable.style.width = '100%';
-            elem.innerHTML = '';
-            elem.appendChild(editable);
+            editable.style.marginLeft = '5px';
+            parent.appendChild(editable);
             const handleUpdate = () => {
                 try {
                     value = parseValueFromString(editable.value);
                 } catch {
                     // If parsing fails, keep the old value
                 }
-                elem.removeChild(editable);
-                const newValueInline = htmlify(value, classPrefix).inline;
-                const colorSwatch = types?.includes('color') ? `<span class="${classPrefix}-color-swatch" style="background-color:${value}"> </span>` : '';
-                elem.innerHTML = `${colorSwatch}<span class="${classPrefix}-value-${parseValueType(value)}">${newValueInline}</span>`;
-                elem.style.width = 'unset';
+                parent.removeChild(editable);
+                parent.style.width = 'unset';
                 onUpdate(value);
+                elem.style.display = 'inline-block';
                 elem.dataset['editing'] = 'false';
             };
             editable.onblur = handleUpdate;
@@ -128,10 +128,12 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
             node: <div className={`${classPrefix} ${typeof value === 'undefined' || value === null ? `${classPrefix}-undef` : `${classPrefix}-def`}`}>
                 <div>
                     <div className={`${classPrefix}-key`}>{key}:</div>
-                    <div className={`${classPrefix}-value`} style={{ cursor: useClient ? 'alias' : 'default' }} onClick={handleValueClicked}>
-                        {types && types.includes('color') &&
-                        <span className={`${classPrefix}-color-swatch`} style={{ backgroundColor: value }}> </span>}
-                        <span className={`${classPrefix}-value-${valueType}`}>{inline}</span>
+                    <div className={`${classPrefix}-value-holder`} style={{ display: 'inline-block', minWidth: 150 }}>
+                        <div className={`${classPrefix}-value`} style={{ cursor: useClient ? 'alias' : 'default' }} onClick={handleValueClicked}>
+                            {types && types.includes('color') &&
+                            <span className={`${classPrefix}-color-swatch`} style={{ backgroundColor: value }}> </span>}
+                            <span className={`${classPrefix}-value-${valueType}`}>{inline}</span>
+                        </div>
                     </div>
                     <div className={`${classPrefix}-details`}>{details}</div>
                 </div>

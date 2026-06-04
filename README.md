@@ -189,7 +189,7 @@ Each variant object can contain any of the following attributes:
 - **props** (what values are passed as props)
 - **expectation** (what the resulting dom should look like, as JSX)
 - **state** (what initial values to use as state)
-  - Note: This is an advanced feature. To be able to preview state in blueprints, your component must consume these values from a special prop called `state` and pass them into `useState()` hooks as initial values.
+  - Note: This is an advanced feature. To be able to preview state in blueprints, your actual component must `import { useState, useReducer } from 'blueprint-design-kit/ui'` instead of from React.
 
 An example variants object might look like this:
 ```tsx

@@ -21,7 +21,7 @@ describe('PropsExplorerClient', () => {
         );
 
         await expect.element(page.getByText('Props Passed:')).toBeInTheDocument();
-        await expect.element(page.getByText('State Passed:')).toBeInTheDocument();
+        await expect.element(page.getByText('State:')).toBeInTheDocument();
         await expect.element(page.getByText('title:')).toBeInTheDocument();
         await expect.element(page.getByText('open:')).toBeInTheDocument();
     });
@@ -39,6 +39,6 @@ describe('PropsExplorerClient', () => {
         );
 
         await expect.element(page.getByText('Props Passed:')).toBeInTheDocument();
-        expect(document.body.textContent?.includes('State Passed:')).toBe(false);
+        expect(document.body.textContent?.includes('State:')).toBe(false);
     });
 });
