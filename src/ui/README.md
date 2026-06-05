@@ -105,6 +105,7 @@ Execute `npm run dev` then visit your chosen route (`/blueprint`) to browse your
 - Use the icons beside the preview pane to toggle dark mode, device type, etc.
 - Use the props explorer to view the props that were passed and update them interactively. (Note: props are only interactive for components marked as 'use client')
 - You will see a warning on the page when `⚠️ Rendered content is different from expected`, allowing you to fix issues in realtime.
+- *Note: If client components appear stuck as "...loading..." when using the back button on localhost, simply open DevTools > Network and click "Disable cache". This should be a local development issue only.*
 
 
 ### 4) [Optional] Test components against their blueprints using the UI runner

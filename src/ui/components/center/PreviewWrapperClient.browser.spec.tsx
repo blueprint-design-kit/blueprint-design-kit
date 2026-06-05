@@ -64,7 +64,7 @@ describe('PreviewWrapperClient', () => {
             </PropsContext.Provider>,
         );
 
-        await expect.element(page.getByText('...Loading client component...')).toBeInTheDocument();
+        await expect.element(page.getByText('...loading...')).toBeInTheDocument();
     });
 
     test('renders one component per props entry when context props is an array', async () => {

@@ -38,7 +38,7 @@ export default function PreviewWrapperClient({ componentPath, expectation }: Pre
     }, [componentPath]);
 
     if (!FunctionComponent) {
-        return <div className='blueprint-reset' style={loadingComponentStyle}>...Loading client component...</div>;
+        return <div className='blueprint-reset' style={loadingComponentStyle}>...loading...</div>;
     }
 
     let component: ReactElement;
