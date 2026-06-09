@@ -24,9 +24,7 @@
     color: #EAE0CF;
     font-size: 1.1em;
 }
-.blueprint-ui .blueprint-layout-header a,
-.blueprint-ui .blueprint-layout-header h1,
-.blueprint-ui .blueprint-layout-header h2 {
+.blueprint-ui .blueprint-layout-header * {
     color: #EAE0CF;
     font-weight: bold;
 }
