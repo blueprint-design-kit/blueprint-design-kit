@@ -19,13 +19,14 @@
     background-color: #94B4C1;
 }
 
-.blueprint-ui .blueprint-layout-left-top {
+.blueprint-ui .blueprint-layout-header {
     background-color: #547792;
+    color: #EAE0CF;
     font-size: 1.1em;
 }
-.blueprint-ui .blueprint-layout-left-top a,
-.blueprint-ui .blueprint-layout-left-top h1,
-.blueprint-ui .blueprint-layout-left-top h2 {
+.blueprint-ui .blueprint-layout-header a,
+.blueprint-ui .blueprint-layout-header h1,
+.blueprint-ui .blueprint-layout-header h2 {
     color: #EAE0CF;
     font-weight: bold;
 }
@@ -54,11 +55,6 @@
     font-size: 0.85em;
 }
 
-.blueprint-ui .blueprint-layout-center-top {
-    background-color: #547792;
-    color: #EAE0CF;
-    font-size: 1.1em;
-}
 .blueprint-ui .blueprint-layout-center-bottom {
     border-top: 1px solid #D4CABA;
     background-color: #EAE0CF;

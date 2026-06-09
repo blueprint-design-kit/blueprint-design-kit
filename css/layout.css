@@ -24,22 +24,53 @@
     text-decoration: none;
 }
 
+.blueprint-ui .blueprint-layout-left-region {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.blueprint-ui .blueprint-layout-header {
+    flex: 0 0 auto;
+}
+
+.blueprint-ui .blueprint-layout-header-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.blueprint-ui .blueprint-layout-body-row {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
 .blueprint-ui .blueprint-layout-column-left {
     display: flex;
     flex-direction: column;
+    flex: 0 0 auto;
     max-width: 25vw;
 }
 
 .blueprint-ui .blueprint-layout-column-center {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .blueprint-ui .blueprint-layout-column-right {
     display: flex;
     flex-direction: column;
+    flex: 0 0 auto;
     max-width: 27vw;
+}
+
+.blueprint-ui .blueprint-layout-tile:empty {
+    display: none;
 }
 
 .blueprint-ui .blueprint-layout-tile:not(:empty) {
@@ -47,14 +78,18 @@
     overflow: auto;
 }
 
-.blueprint-ui .blueprint-layout-tile:nth-child(3) {
-    margin-top: auto;
-}
+/* Main tiles grow to fill their column; footer tiles size to content */
+.blueprint-ui .blueprint-layout-left,
+.blueprint-ui .blueprint-layout-center { flex: 1 1 auto; }
 
-.blueprint-ui .blueprint-layout-left-top:not(:empty) {
-    max-height: 25vh;
-    overflow: unset;
-}
+.blueprint-ui .blueprint-layout-left-bottom,
+.blueprint-ui .blueprint-layout-center-bottom { flex: 0 0 auto; }
+
+/* Right column: top/bottom size to content, middle fills */
+.blueprint-ui .blueprint-layout-right-top,
+.blueprint-ui .blueprint-layout-right-bottom { flex: 0 0 auto; }
+
+.blueprint-ui .blueprint-layout-right { flex: 1 1 auto; }
 
 .blueprint-ui .blueprint-layout-left:not(:empty) {
     padding-left: 0;
@@ -83,11 +118,7 @@
     min-height: 64px;
 }
 
-.blueprint-ui .blueprint-layout-center-top {
-    max-height: 20vh;
-}
 .blueprint-ui .blueprint-layout-center:not(:empty) {
-    flex: 1;
     padding: 0;
 }
 .blueprint-ui .blueprint-layout-center-bottom {
@@ -307,8 +338,9 @@
 /*****************/
 
 .blueprint-layout-links-menu {
-    margin: -7px 0 -3px 0;
+    margin: -5px 0 -8px;
     display: flex;
+    flex: 1;
     flex-direction: row;
     justify-content: flex-end;
     gap: 10px;

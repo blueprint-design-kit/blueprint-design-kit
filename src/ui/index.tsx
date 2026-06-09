@@ -197,10 +197,14 @@ export default async function BlueprintComponentUI({
         }
     }
 
-    const LeftTop = PageTitle({ title: pageTitle, baseUrl });
+    const Header = (
+        <>
+            {PageTitle({ title: pageTitle, baseUrl })}
+            {LinksMenu({ links, ...linksMenu })}
+        </>
+    );
     const Left = ComponentMenu({ documentationList, componentList, componentPath, activeState, baseUrl, ...componentMenu });
     const LeftBottom = TestRunnerLink({ baseUrl });
-    const CenterTop = LinksMenu({ links, ...linksMenu });
     const CenterBottom = notes;
     const RightTop = VariantPicker({ variants, selectedVariant });
     const Right = PropsExplorer({ schema, useClient });
@@ -210,10 +214,9 @@ export default async function BlueprintComponentUI({
             <PropsProvider value={variantProps}>
                 <StateProvider value={variantState}>
                     <BlueprintLayout
-                        LeftTop={LeftTop}
+                        Header={Header}
                         Left={Left}
                         LeftBottom={LeftBottom}
-                        CenterTop={CenterTop}
                         Center={Center}
                         CenterBottom={CenterBottom}
                         RightTop={RightTop}

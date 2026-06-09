@@ -280,7 +280,7 @@ Create a global stylesheet that loads after Blueprint and override only the clas
 	background-color: #20262b;
 }
 
-.blueprint-ui .blueprint-layout-center-top {
+.blueprint-ui .blueprint-layout-header {
 	background-color: #30404d;
 	color: #f5f8fa;
 }
