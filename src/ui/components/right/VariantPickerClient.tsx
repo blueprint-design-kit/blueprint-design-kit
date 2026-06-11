@@ -16,7 +16,7 @@ export type VariantPickerProps = {
 }
 
 export function VariantPickerClient({ variants, selectedVariant }: VariantPickerProps) {
-    if (variants.length < 2) {
+    if (!variants || variants.length < 1) {
         return null;
     }
 
