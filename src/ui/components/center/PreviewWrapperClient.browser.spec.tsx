@@ -15,7 +15,7 @@ vi.mock(import('./PreviewMain.js'), () => ({
     default: ({ component }: { component: unknown }) => <div>{component as ReactNode}</div>,
 }));
 
-import { PropsContext } from '../../PropsProvider';
+import { PropsContext } from '../../providers/PropsProvider';
 import { getComponent } from '../../../blueprint/getComponent.js';
 import PreviewWrapperClient from './PreviewWrapperClient';
 

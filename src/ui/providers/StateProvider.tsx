@@ -2,22 +2,33 @@
 
 import {
     createContext,
-    useContext,
     useEffect,
+    useContext,
     useReducer as useReactReducer,
     useState as useReactState,
 } from 'react';
-import type { ReactNode } from 'react';
-import type { BlueprintState } from '../blueprint/types.js';
+import type { ActionDispatch, ReactNode } from 'react';
+import type { BlueprintState } from '../../blueprint/types.js';
 
-function updateFn(prev: BlueprintState, action: { key: string; value: unknown }): BlueprintState {
-    const { key, value } = action;
+type SetStateAction<S> = S | ((prevState: S) => S);
+type UpdateAction = { key: string; value: unknown; } | { state: unknown };
+type BlueprintStateProvider = {
+    state: BlueprintState,
+    updateState: ActionDispatch<[action: UpdateAction]>;
+};
+
+function updateFn(prev: BlueprintState, action: UpdateAction): BlueprintState {
+    const newState = (action as { state: unknown }).state;
+    if (newState) {
+        return Object.assign({}, prev, newState);
+    }
+    const { key, value } = action as { key: string; value: unknown; };
     return Object.assign({}, prev, {
         [key]: value,
     });
 }
 
-export const StateContext = createContext<BlueprintState>(null as unknown as BlueprintState);
+export const StateContext = createContext<BlueprintStateProvider>(null as unknown as BlueprintStateProvider);
 
 export default function StateProvider({
     children,
@@ -30,19 +41,25 @@ export default function StateProvider({
     return <StateContext.Provider value={{ state, updateState }}>{children}</StateContext.Provider>;
 }
 
+export function useBlueprintState() {
+    const { state, updateState } = useContext(StateContext) || {};
+    return {
+        state,
+        updateState,
+    };
+}
 
-type SetStateAction<S> = S | ((prevState: S) => S);
+type UseStateReturn<S> = [S, (value: SetStateAction<S>) => void];
 
-export function useState<S>(key: string, initialState?: S | (() => S)): [S, (value: SetStateAction<S>) => void] {
+export function useState<S>(key: string, initialState?: S | (() => S)): UseStateReturn<S> {
     if (!key || typeof key !== 'string') {
         throw new Error(`Blueprint's useState must be called with "key" as the first argument`);
     }
-    const { state, updateState } = useContext(StateContext) || { state: null, updateState: null };
-    const inStateProvider = state !== null;
-    const initialValue = inStateProvider && typeof state[key] !== 'undefined' ? state[key] : initialState;
+    const { state, updateState } = useBlueprintState();
+    const initialValue = state && typeof state[key] !== 'undefined' ? state[key] : initialState;
 
     useEffect(() => {
-        if (inStateProvider && typeof state[key] === 'undefined') {
+        if (state && typeof state[key] === 'undefined') {
             // ensure that the initial value is set in state for use in PropsExplorer and other components
             state[key] = initialValue;
             updateState({ key, value: initialValue });
@@ -51,10 +68,10 @@ export function useState<S>(key: string, initialState?: S | (() => S)): [S, (val
 
     const [stateValue, setStateValue] = useReactState<S>(initialValue);
 
-    const currentValue = inStateProvider ? state[key] : stateValue;
+    const currentValue = state ? state[key] : stateValue;
     const setValue = (value: SetStateAction<S>) => {
         const newValue = typeof value === 'function' ? (value as (prev: S) => S)(currentValue) : value;
-        if (inStateProvider) {
+        if (state) {
             updateState({ key, value: newValue });
         }
         setStateValue(newValue); // this queues up a re-render of the component with the new state value
@@ -74,12 +91,11 @@ export function useReducer<S, A extends AnyAction>(
     if (!key || typeof key !== 'string') {
         throw new Error(`Blueprint's useReducer must be called with "key" as the first argument`);
     }
-    const { state, updateState } = useContext(StateContext) || { state: null, updateState: null };
-    const inStateProvider = state !== null;
-    const initialValue = inStateProvider && typeof state[key] !== 'undefined' ? state[key] : initialState;
+    const { state, updateState } = useBlueprintState();
+    const initialValue = state && typeof state[key] !== 'undefined' ? state[key] : initialState;
 
     useEffect(() => {
-        if (inStateProvider && typeof state[key] === 'undefined') {
+        if (state && typeof state[key] === 'undefined') {
             // ensure that the initial value is set in state for use in PropsExplorer and other components
             state[key] = initialValue;
             updateState({ key, value: initialValue });
@@ -91,10 +107,10 @@ export function useReducer<S, A extends AnyAction>(
         initialValue as S,
     );
 
-    const currentValue = inStateProvider ? state[key] : stateValue;
+    const currentValue = state ? state[key] : stateValue;
     const updateValue = (action: A) => {
         const newValue = reducer(currentValue as S, action);
-        if (inStateProvider) {
+        if (state) {
             updateState({ key, value: newValue });
         }
         dispatchStateChange(action); // this queues up a re-render of the component with the new state value

@@ -32,10 +32,9 @@
     "dev:local": "npx tsc && node put-files",
     "build": "rm -rf dist && npx tsc",
     "lint": "eslint",
-    "test": "npm run build && npm run test:vi",
-    "test:vi": "vitest run",
-    "test:vi:unit": "vitest run --project unit",
-    "test:vi:browser": "vitest run --project browser",
+    "test": "npm run build && vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:browser": "vitest run --project browser",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

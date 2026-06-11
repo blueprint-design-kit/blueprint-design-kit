@@ -2,8 +2,8 @@ import { describe, expect, test, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { PropsContext } from '../../PropsProvider';
-import { StateContext } from '../../StateProvider';
+import { PropsContext } from '../../providers/PropsProvider';
+import { StateContext } from '../../providers/StateProvider';
 import { PropsExplorerClient } from './PropsExplorerClient';
 
 describe('PropsExplorerClient', () => {

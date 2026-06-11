@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { getComponent } from '../../../blueprint/getComponent.js';
-import { PropsContext } from '../../PropsProvider.js';
+import { PropsContext } from '../../providers/PropsProvider.js';
 import PreviewMain from './PreviewMain.js';
 
 import type { ComponentType, CSSProperties, ReactElement, ReactNode } from 'react';

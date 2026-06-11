@@ -21,12 +21,12 @@ import TestRunner from './components/center/TestRunner.js';
 import TestRunnerLink from './components/left/TestRunnerLink.js';
 import TestRunnerLauncher from './components/center/TestRunnerLauncher.js';
 import VariantPicker from './components/right/VariantPicker.js';
-import PropsProvider from './PropsProvider.js';
-import StateProvider from './StateProvider.js';
+import PropsProvider from './providers/PropsProvider.js';
+import StateProvider from './providers/StateProvider.js';
 import PreviewWrapperClient from './components/center/PreviewWrapperClient.js';
 import PreviewWrapperServer from './components/center/PreviewWrapperServer.js';
 
-export { useState, useReducer } from './StateProvider.js';
+export { useState, useReducer, useBlueprintState } from './providers/StateProvider.js';
 
 export {
     ComponentMenu,

@@ -3,7 +3,78 @@ import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 import { useContext } from 'react';
 
-import StateProvider, { StateContext, useState, useReducer } from './StateProvider';
+import StateProvider, { StateContext, useBlueprintState, useState, useReducer } from './StateProvider';
+
+// ─── useBlueprintState ───────────────────────────────────────────────────────
+
+describe('useBlueprintState', () => {
+    test('returns state and updateState from context', async () => {
+        const updateState = vi.fn();
+        function Harness() {
+            const { state, updateState: fn } = useBlueprintState();
+            return (
+                <div>
+                    <span data-testid="value">{JSON.stringify(state?.count)}</span>
+                    <button onClick={() => fn({ key: 'count', value: 99 })}>Update</button>
+                </div>
+            );
+        }
+
+        render(
+            <StateContext.Provider value={{ state: { count: 1 }, updateState }}>
+                <Harness />
+            </StateContext.Provider>,
+        );
+
+        await expect.element(page.getByTestId('value')).toHaveTextContent('1');
+
+        await page.getByRole('button', { name: 'Update' }).click();
+        expect(updateState).toHaveBeenCalledWith({ key: 'count', value: 99 });
+    });
+
+    test('returns undefined state and updateState outside a provider', async () => {
+        function Harness() {
+            const { state, updateState } = useBlueprintState();
+            return (
+                <div>
+                    <span data-testid="state">{String(state)}</span>
+                    <span data-testid="updater">{String(updateState)}</span>
+                </div>
+            );
+        }
+
+        render(<Harness />);
+
+        await expect.element(page.getByTestId('state')).toHaveTextContent('undefined');
+        await expect.element(page.getByTestId('updater')).toHaveTextContent('undefined');
+    });
+
+    test('supports bulk state merge via { state } action', async () => {
+        function Harness() {
+            const { state, updateState } = useBlueprintState();
+            return (
+                <div>
+                    <span data-testid="a">{String(state?.a)}</span>
+                    <span data-testid="b">{String(state?.b)}</span>
+                    <button onClick={() => updateState({ state: { a: 'x', b: 'y' } })}>Merge</button>
+                </div>
+            );
+        }
+
+        render(
+            <StateProvider value={{ a: 'initial', b: 'initial' }}>
+                <Harness />
+            </StateProvider>,
+        );
+
+        await expect.element(page.getByTestId('a')).toHaveTextContent('initial');
+
+        await page.getByRole('button', { name: 'Merge' }).click();
+
+        await expect.element(page.getByTestId('a')).toHaveTextContent('x');
+        await expect.element(page.getByTestId('b')).toHaveTextContent('y');
+    });
+});
 
 // ─── useState ────────────────────────────────────────────────────────────────
 

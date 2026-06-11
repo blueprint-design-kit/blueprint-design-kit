@@ -2,8 +2,8 @@
 
 import { useContext } from 'react';
 import { formatExplorerItems, type ExplorerItem } from '../../utils/formatExplorerItems.js';
-import { PropsContext } from '../../PropsProvider.js';
-import { StateContext } from '../../StateProvider.js';
+import { PropsContext } from '../../providers/PropsProvider.js';
+import { StateContext } from '../../providers/StateProvider.js';
 
 import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.js';
 
@@ -54,28 +54,32 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
         return formatExplorerItems(items, useClient);
     }
 
-    if (!schema || !Object.keys(schema).length) {
-        return null;
+    const hasSchema = schema && Object.keys(schema).length > 0;
+    const hasState = state && Object.keys(state).length > 0;
+    if (hasSchema || hasState) {
+        return (<div className='blueprint-layout-props-viewer'>
+            {hasSchema &&
+                <div className="blueprint-layout-props-viewer-section">
+                    <div className="blueprint-layout-props-viewer-label">Props Passed:</div>
+                    <div>
+                        {formatProps(schema, props).map((prop) => (
+                            <div key={prop.key}>{prop.node}</div>
+                        ))}
+                    </div>
+                </div>
+            }
+            {hasState &&
+                <div className="blueprint-layout-props-viewer-section">
+                    <div className="blueprint-layout-props-viewer-label">State:</div>
+                    <div>
+                        {formatState(state).map((st) => (
+                            <div key={st.key}>{st.node}</div>
+                        ))}
+                    </div>
+                </div>
+            }
+        </div>);
     }
 
-    return (<div className='blueprint-layout-props-viewer'>
-        <div className="blueprint-layout-props-viewer-section">
-            <div className="blueprint-layout-props-viewer-label">Props Passed:</div>
-            <div>
-                {formatProps(schema, props).map((prop) => (
-                    <div key={prop.key}>{prop.node}</div>
-                ))}
-            </div>
-        </div>
-    {state && Object.keys(state).length > 0 &&
-        <div className="blueprint-layout-props-viewer-section">
-            <div className="blueprint-layout-props-viewer-label">State:</div>
-            <div>
-                {formatState(state).map((st) => (
-                    <div key={st.key}>{st.node}</div>
-                ))}
-            </div>
-        </div>
-    }
-    </div>);
+    return null;
 }

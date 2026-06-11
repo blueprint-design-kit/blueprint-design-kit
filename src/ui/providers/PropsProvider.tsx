@@ -2,7 +2,7 @@
 
 import { createContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
-import type { BlueprintProps } from '../blueprint/types.js';
+import type { BlueprintProps } from '../../blueprint/types.js';
 
 function propsUpdateFn(prev: BlueprintProps, action: { key: string; value: unknown }): BlueprintProps {
     const { key, value } = action;
