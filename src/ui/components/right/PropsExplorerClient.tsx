@@ -10,9 +10,10 @@ import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.j
 export type PropsExplorerProps = {
     schema: BlueprintSchema | null | undefined;
     useClient?: boolean | undefined;
+    useServer?: boolean | undefined;
 }
 
-export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
+export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplorerProps) {
     // Store props in context so they can be updated interactively
     const { props: propsFromContext, updateProps } = useContext(PropsContext) || { updateProps: () => {} };
     let props = propsFromContext;
@@ -81,5 +82,5 @@ export function PropsExplorerClient({ schema, useClient }: PropsExplorerProps) {
         </div>);
     }
 
-    return null;
+    return useClient || useServer ? ' ' : null;
 }

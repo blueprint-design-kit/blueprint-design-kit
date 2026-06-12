@@ -201,6 +201,26 @@
     border: 1px solid #777;
 }
 
+
+/**********************/
+/*** ClientOrServer ***/
+/**********************/
+
+.blueprint-layout-client-server-badge {
+    padding: 5px 10px;
+    border-radius: 10;
+    color: #eee;
+}
+
+.blueprint-layout-use-client-badge {
+    background-color: seagreen;
+}
+
+.blueprint-layout-use-server-badge {
+    background-color: indianred;
+}
+
+
 /*****************/
 /*** LinksMenu ***/
 /*****************/

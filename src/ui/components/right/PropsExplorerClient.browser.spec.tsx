@@ -42,4 +42,27 @@ describe('PropsExplorerClient', () => {
         await expect.element(page.getByText('Props Passed:')).toBeInTheDocument();
         expect(document.body.textContent?.includes('State:')).toBe(false);
     });
+
+    test('renders content when useServer is true and schema is provided', async () => {
+        render(
+            <PropsContext.Provider value={{ props: { label: 'Submit' }, updateProps: vi.fn() }}>
+                <PropsExplorerClient
+                    useServer={true}
+                    schema={{
+                        label: { type: 'string' },
+                    }}
+                />
+            </PropsContext.Provider>,
+        );
+
+        await expect.element(page.getByText('Props Passed:')).toBeInTheDocument();
+        await expect.element(page.getByText('label:')).toBeInTheDocument();
+    });
+
+    test('renders a placeholder when useServer is true and schema is absent', async () => {
+        await render(<PropsExplorerClient useServer={true} schema={null} />);
+
+        expect(document.body.textContent?.trim()).toBe('');
+        expect(document.body.innerHTML).not.toBe('');
+    });
 });

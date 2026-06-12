@@ -25,6 +25,7 @@ import PropsProvider from './providers/PropsProvider.js';
 import StateProvider from './providers/StateProvider.js';
 import PreviewWrapperClient from './components/center/PreviewWrapperClient.js';
 import PreviewWrapperServer from './components/center/PreviewWrapperServer.js';
+import { ClientVsServerTags } from './components/right/ClientVsServerTags.js';
 
 export { useState, useReducer, useBlueprintState } from './providers/StateProvider.js';
 
@@ -75,6 +76,7 @@ export type BlueprintUIProps = {
             };
         } | false;
         copyJSX?: object | false;
+        clientVsServerTags?: object | false;
         onPropsReady?: (
                 selectedComponent: string | undefined,
                 selectedVariant: string | undefined,
@@ -89,7 +91,16 @@ export default async function BlueprintComponentUI({
     activeState,
     options = {},
 }: BlueprintUIProps) {
-    const { pageTitle, documentation, onPropsReady, darkMode, deviceMode, copyJSX, componentMenu } = options;
+    const {
+        pageTitle,
+        documentation,
+        onPropsReady,
+        darkMode,
+        deviceMode,
+        copyJSX,
+        clientVsServerTags,
+        componentMenu,
+    } = options;
     const baseUrl = options.baseUrl || '/blueprint';
     const linksMenu = options.linksMenu || { reversed: true }; // we display right-aligned
     const selectedVariant = activeState?.variant || '';
@@ -114,6 +125,7 @@ export default async function BlueprintComponentUI({
     let variantProps: BlueprintProps | BlueprintProps[] = {};
     let variantState: BlueprintState = {};
     let useClient: boolean | undefined = void 0;
+    let useServer: boolean | undefined = void 0;
 
     let Center = null;
     if (componentPath) {
@@ -148,6 +160,7 @@ export default async function BlueprintComponentUI({
 
             const componentMeta = await getComponentMeta(componentPath);
             useClient = componentMeta?.useClient;
+            useServer = componentMeta?.useServer;
 
             async function extendAndValidateProps(propsPassed: BlueprintProps, i?: number) {
                 let propsInternal = propsPassed;
@@ -207,7 +220,8 @@ export default async function BlueprintComponentUI({
     const LeftBottom = TestRunnerLink({ baseUrl });
     const CenterBottom = notes;
     const RightTop = VariantPicker({ variants, selectedVariant });
-    const Right = PropsExplorer({ schema, useClient });
+    const Right = PropsExplorer({ schema, useClient, useServer });
+    const RightBottom = ClientVsServerTags({ useClient, useServer, options: clientVsServerTags });
 
     return (
         <main>
@@ -221,6 +235,7 @@ export default async function BlueprintComponentUI({
                         CenterBottom={CenterBottom}
                         RightTop={RightTop}
                         Right={Right}
+                        RightBottom={RightBottom}
                     />
                 </StateProvider>
             </PropsProvider>
