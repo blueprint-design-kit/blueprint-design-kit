@@ -27,7 +27,7 @@ export async function coverageReport(
             }
         }
         const coverage = {
-            percent: componentsWithBlueprints / totalComponents,
+            percent: (componentsWithBlueprints / totalComponents).toFixed(2),
             totalComponents,
             componentsWithBlueprints,
             missing,
