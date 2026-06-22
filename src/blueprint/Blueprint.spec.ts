@@ -96,6 +96,7 @@ describe('Blueprint', () => {
                 propOne: {
                     default: 123,
                     type: ['number', 'undefined'],
+                    optional: true,
                     source: 'http://datasource.com/123',
                     allow: [123, 456],
                     min: 100,

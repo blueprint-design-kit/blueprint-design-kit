@@ -49,6 +49,10 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
                 types = [schema.type];
             }
         }
+        if (schema.optional) {
+            types = types || [];
+            types.push('undefined');
+        }
         const typesJoined = types ? types.join(' | ') : '';
 
         function showEditable(elem: HTMLElement) {

@@ -45,15 +45,15 @@ npm install blueprint-design-kit
 
 Example Component:
 ```tsx
-// app/components/Badge.tsx
+// app/components/Atoms/Badge.tsx
 export default function Badge({ text, backgroundColor = '#f96' }) {
 	return <div className="badge" style={{ backgroundColor }}>{text}</div>;
 }
 ```
 
-Corresponding Blueprint (matches the file name with `.blueprint`):
+Corresponding Blueprint (matches the file name with `.blueprint` at the end, and should be in the same directory as the component):
 ```tsx
-// app/components/Badge.blueprint.tsx
+// app/components/Atoms/Badge.blueprint.tsx
 import { Blueprint } from 'blueprint-design-kit';
 
 const BadgeBlueprint = new Blueprint({
@@ -80,7 +80,7 @@ const BadgeBlueprint = new Blueprint({
 	},
 	links: [
 		'https://figma.com/design/1234567890',
-        'https://github.com/org/repo/blob/master/app/components/Badge.tsx',
+        'https://github.com/org/repo/blob/master/app/components/Atoms/Badge.tsx',
 	],
 });
 
@@ -142,6 +142,7 @@ As a required property, the schema is the most important. This record defines wh
 Each prop in a schema can contain any of the following attributes (all optional):
 - **type** (what types of values are allowed)
 - **allow** (what specific values are allowed)
+- **optional** (if this prop can be undefined or omitted)
 - **default** (what value will be used if none is passed)
 - **source** (what is the source of this data)
 - **min** (what is the minimum allowed value)
@@ -151,18 +152,19 @@ For a component that takes `text`, `backgroundColor`, and `price`, the schema mi
 ```ts
 schema: {
     text: {
-        // This type means this prop is required and must be a string
-        type: ['string'],
+        // This prop is not optional and must be a string
+        type: 'string',
         // Allow means it should only accept one of these values
         allow: ['Limited', 'New', 'Most Popular'],
         // For debugging, what is the source of this data?
         source: 'https://cms.com/entries/5678',
     },
     backgroundColor: {
+        // This prop is optional, but when provided, it should be a color value or null
+        type: ['color', 'null'],
+        optional: true,
         // The default value is what is used when none is passed
         default: '#f96',
-        // With undefined means this prop is optional, otherwise it should be a color
-        type: ['color', 'undefined'],
     },
     price: {
         default: { amount: 0, currency: 'USD' },
@@ -232,7 +234,7 @@ Links can usually be a simple string. Blueprint automatically detects some commo
 ```tsx
 links: [
     'https://figma.com/design/1234567890',
-    'https://github.com/org/repo/blob/master/app/components/Badge.tsx',
+    'https://github.com/org/repo/blob/master/app/components/Atoms/Badge.tsx',
     {
         url: 'http://anydomain.com/foo',
         type: 'MyCustomLink',

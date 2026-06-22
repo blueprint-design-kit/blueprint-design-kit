@@ -156,6 +156,34 @@ describe('formatExplorerItems', () => {
         expect(html).not.toContain('Type:');
     });
 
+    test('appends "undefined" to types when schema.optional is true', () => {
+        const [item] = formatExplorerItems([{
+            key: 'label',
+            value: undefined,
+            classPrefix,
+            schema: { type: 'string', optional: true },
+            onUpdate: noop,
+        }]);
+
+        const html = render(item?.node);
+        expect(html).toContain('Type:');
+        expect(html).toContain('{string | undefined}');
+    });
+
+    test('renders only "undefined" type when optional is true and no type is set', () => {
+        const [item] = formatExplorerItems([{
+            key: 'label',
+            value: undefined,
+            classPrefix,
+            schema: { optional: true },
+            onUpdate: noop,
+        }]);
+
+        const html = render(item?.node);
+        expect(html).toContain('Type:');
+        expect(html).toContain('{undefined}');
+    });
+
     test('renders default value row when schema has a default', () => {
         const [item] = formatExplorerItems([{
             key: 'size',

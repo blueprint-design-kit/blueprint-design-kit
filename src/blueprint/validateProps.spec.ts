@@ -138,6 +138,24 @@ describe('validateProps', () => {
             expect(validatePropsAgainstSchema({ name: 'Test' }, schema)).toBeUndefined();
         });
 
+        test('allows missing props marked optional: true even without a default', () => {
+            const schema = {
+                name: { type: 'string' },
+                label: { type: 'string', optional: true },
+            };
+            expect(validatePropsAgainstSchema({ name: 'Test' }, schema)).toBeUndefined();
+        });
+
+        test('still validates an optional prop when it is provided', () => {
+            const schema = {
+                label: { type: 'string', optional: true },
+            };
+            expect(validatePropsAgainstSchema({ label: 'hello' }, schema)).toBeUndefined();
+            const error = validatePropsAgainstSchema({ label: 42 }, schema, 'Button');
+            expect(error).toContain('Blueprint[Button] > props.label');
+            expect(error).toContain('does not conform to the type: string');
+        });
+
         test('handles empty props and schema', () => {
             expect(validatePropsAgainstSchema({}, {})).toBeUndefined();
             expect(validatePropsAgainstSchema(undefined, {})).toBeUndefined();

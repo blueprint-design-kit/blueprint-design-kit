@@ -68,8 +68,8 @@ export function validatePropsAgainstSchema(
         }
     }
     for (const key in schema) {
-        if (typeof props[key] === 'undefined') {
-            if (schema[key] && schema[key].type && checkTypeMismatch(undefined, schema[key].type)) {
+        if (schema[key] && typeof props[key] === 'undefined') {
+            if (!schema[key].optional && schema[key].type && checkTypeMismatch(undefined, schema[key].type)) {
                 return `${errPrefix} missing props.${key}`;
             }
         }

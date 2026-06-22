@@ -33,7 +33,7 @@ import { Blueprint } from 'blueprint-design-kit';
 const ProductCardBlueprint = new Blueprint({
 	schema: {
 		title: {
-			type: ['string', 'undefined'],
+			type: 'string',
 			default: 'Test Product',
 			allow: ['Test Product', 'Necklace', 'Purse'],
 		},

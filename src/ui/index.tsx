@@ -2,6 +2,7 @@ import '../../css/layout.js';
 import '../../css/theme-default.js';
 import '../../css/preview-controls.js';
 
+import BlueprintError from '../utils/BlueprintError.js';
 import { getBlueprint } from '../blueprint/getBlueprint.js';
 import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
@@ -101,6 +102,11 @@ export default async function BlueprintComponentUI({
         clientVsServerTags,
         componentMenu,
     } = options;
+
+    if (options.baseUrl && options.baseUrl.charAt(0) !== '/') {
+        throw new BlueprintError('options.baseUrl must start with "/"');
+    }
+
     const baseUrl = options.baseUrl || '/blueprint';
     const linksMenu = options.linksMenu || { reversed: true }; // we display right-aligned
     const selectedVariant = activeState?.variant || '';
