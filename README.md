@@ -92,8 +92,9 @@ export default BadgeBlueprint;
 
 Blueprint offers a pre-built UI which you can install and use out of the box...
 
-### Follow our guide: [How to Use &lt;BlueprintDesignKitUI /&gt;](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/ui/README.md) 🔗
+#### Follow our guide: [How to Use &lt;BlueprintDesignKitUI /&gt;](https://github.com/blueprint-design-kit/blueprint-design-kit/blob/main/src/ui/README.md) 🔗
 
+#### View the: [Live Demo](https://blueprint-design-kit-demo.vercel.app/) 🔗
 ![Blueprint UI](images/BlueprintUI.jpg)
 
 

@@ -2,6 +2,7 @@
 
 This is a premade Blueprint UI for showcasing, testing, and documenting components. It's ready to drop in and use right away, or you have the option to import the layout components individually to customize your own layout.
 
+#### View the: [Live Demo](https://blueprint-design-kit-demo.vercel.app/) 🔗
 ![Blueprint UI](../../images/BlueprintUI.jpg)
 
 ## Getting Started
