@@ -55,6 +55,7 @@ export type BlueprintUIProps = {
         documentation?: Record<string, ReactNode>;
         componentMenu?: {
             searchBar?: boolean;
+            startExpanded?: boolean;
         };
         linksMenu?: {
             reversed?: boolean;

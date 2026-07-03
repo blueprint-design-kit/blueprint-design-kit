@@ -38,6 +38,19 @@ describe('getImport', () => {
         );
     });
 
+    test('returns named export when importer resolves a module object', async () => {
+        const mockedGetImportsMap = vi.mocked(getImportsMap);
+        mockedGetImportsMap.mockResolvedValue({
+            'Atoms/Button': {
+                c: async () => ({ Button: () => 'ButtonComponent' }), // export must match the filename
+            },
+        } as unknown as BlueprintImportsMap);
+
+        const imported = await getImport('Atoms/Button', 'component');
+        expect(typeof imported).toBe('function');
+        expect(imported && (imported as FunctionComponent)({})).toBe('ButtonComponent');
+    });
+
     test('returns default export when importer resolves a module object', async () => {
         const mockedGetImportsMap = vi.mocked(getImportsMap);
         mockedGetImportsMap.mockResolvedValue({

@@ -183,6 +183,8 @@ These documentation pages will appear at the top of your components list. A page
     componentMenu: {
         // Set to false to hide the serarch/filter bar, shown by default
         searchBar: false,
+        // Set to true to load the menu with all directories expanded, collapsed by default
+        startExpanded: true,
     },
 }
 ```

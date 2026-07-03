@@ -15,17 +15,17 @@ interface NestedComponents {
 
 function nestSubdirectories(componentList: string[]) {
     const result: NestedComponents = { __: [] };
-    
+
     for (const component of componentList) {
         const parts = component.split('/');
-        
+
         if (parts.length === 1) {
             // No subdirectory, add to root
             result.__.push(component);
         } else {
             // Has subdirectories
             let current = result;
-            
+
             // Navigate through all parts except the last one
             for (let i = 0; i < parts.length - 1; i++) {
                 const part = parts[i] as string;
@@ -34,7 +34,7 @@ function nestSubdirectories(componentList: string[]) {
                 }
                 current = current[part] as NestedComponents;
             }
-            
+
             // Add the component name to the __ array at this level
             const componentName = parts[parts.length - 1];
             if (componentName) {
@@ -42,15 +42,25 @@ function nestSubdirectories(componentList: string[]) {
             }
         }
     }
-    
+
     return result;
 }
 
+// nested: {
+//     __: ['Component1', 'Component2'],
+//     Client: {
+//         __: ['Component3', 'Component4'],
+//         Atoms: {
+//             __: ['Component5', 'Component6'],
+//         },
+//     },
+// }
 function renderNestedComponents(
     nested: NestedComponents,
     pathRoot: string,
     baseUrl: string,
     componentPath?: string,
+    startExpanded?: boolean,
     activeState?: {
         [key: string]: string | undefined;
     } | undefined,
@@ -58,9 +68,9 @@ function renderNestedComponents(
     const items: ReactNode[] = [];
     Object.keys(nested).sort().forEach((key) => {
         if (key && key !== '__') {
-            items.push(<details key={`dir_${key}`} open>
+            items.push(<details key={`dir_${key}`} open={!!startExpanded}>
                 <summary>{key}</summary>
-                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, activeState)}
+                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, startExpanded, activeState)}
             </details>);
         }
     });
@@ -105,6 +115,7 @@ export type ComponentMenuProps = {
     componentPath?: string | undefined;
     baseUrl?: string | undefined;
     searchBar?: boolean | undefined;
+    startExpanded?: boolean | undefined;
     activeState?: {
         filter?: string | undefined;
     } | undefined;
@@ -116,6 +127,7 @@ export function ComponentMenuClient({
     componentPath,
     baseUrl = '/blueprint',
     searchBar = true,
+    startExpanded = false,
     activeState,
 }: ComponentMenuProps) {
     if (!componentList) {
@@ -146,6 +158,15 @@ export function ComponentMenuClient({
         setSearchFilter(query);
     }
 
+    function expandParentTree(element: HTMLElement) {
+        const parent = element.parentElement;
+        if (parent && parent.nodeName === 'DETAILS') {
+            const parentDetails = parent as HTMLDetailsElement;
+            parentDetails.open = true;
+            expandParentTree(parentDetails);
+        }
+    }
+
     useEffect(() => {
         const searchInput = document.getElementById('blueprint_component_menu_search') as HTMLInputElement | null;
         if (searchInput) {
@@ -156,6 +177,7 @@ export function ComponentMenuClient({
         if (componentPath) {
             const element = document.getElementById(`${baseUrl}/${componentPath}`);
             if (element) {
+                expandParentTree(element);
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
@@ -198,7 +220,7 @@ export function ComponentMenuClient({
                 }}>--<br />No components found</div>}
                 <div style={{ marginLeft: '-0.7em' }}>
                     <ul>
-                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, activeState)}
+                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, startExpanded, activeState)}
                     </ul>
                 </div>
             </section>

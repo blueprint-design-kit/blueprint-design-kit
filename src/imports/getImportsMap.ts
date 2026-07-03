@@ -5,7 +5,7 @@ import type { ComponentMeta } from "../blueprint/types.js";
 export interface BlueprintImportsMap {
     [key: string]: {
         b: () => Promise<Blueprint> | Promise<{ default: Blueprint }> | Promise<undefined>;
-        c: () => Promise<FunctionComponent> | Promise<{ default: FunctionComponent }> | Promise<undefined>;
+        c: () => Promise<FunctionComponent> | Promise<{ default: FunctionComponent }> | Promise<Record<string, FunctionComponent>> | Promise<undefined>;
         m: () => Promise<ComponentMeta> | Promise<undefined>;
     };
 }

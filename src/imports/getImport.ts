@@ -22,6 +22,15 @@ export default async function getImport(
     if (typeof importer !== 'function') {
         throw new BlueprintError(`'${componentPath}' ${importType} does not have an importer`);
     }
+    const componentName = componentPath.split('/').pop();
     const imported = await importer();
-    return imported && 'default' in imported ? imported.default : imported;
+    if (imported) {
+        if (componentName && componentName in imported) { // Handles named export (export must match filename)
+            return (imported as Record<string, FunctionComponent>)[componentName];
+        }
+        if ('default' in imported) { // Handles default export compatibility
+            return imported.default;
+        }
+    }
+    return imported;
 }
