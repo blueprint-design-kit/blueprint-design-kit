@@ -185,6 +185,9 @@ These documentation pages will appear at the top of your components list. A page
         searchBar: false,
         // Set to true to load the menu with all directories expanded, collapsed by default
         startExpanded: true,
+        // Set to true to hide components that do not have an associated blueprint file, 
+        // All components are shown by default and can be toggled in the interface.
+        startNonBlueprintHidden: true,
     },
 }
 ```

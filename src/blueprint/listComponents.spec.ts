@@ -7,12 +7,12 @@ vi.mock(import('../imports/getImportsMap.js'), () => {
             Badge: {
                 b: async () => {},
                 c: async () => {},
-                m: async () => {},
+                m: async () => { return { hasBlueprint: true }; },
             },
             'Atoms/Button': {
                 b: async () => {},
                 c: async () => {},
-                m: async () => {},
+                m: async () => { return { useClient: true }; },
             },
         }),
     };
@@ -22,11 +22,11 @@ describe('listComponents', () => {
 
     describe('listComponents', () => {
 
-        test('returns the correct list of component names', async () => {
+        test('returns the correct list of components', async () => {
             const components = await listComponents();
             expect(components).toEqual([
-                'Badge',
-                'Atoms/Button',
+                { path: 'Atoms/Button', meta: { useClient: true } },
+                { path: 'Badge', meta: { hasBlueprint: true } },
             ]);
         });
 

@@ -56,6 +56,7 @@ export type BlueprintUIProps = {
         componentMenu?: {
             searchBar?: boolean;
             startExpanded?: boolean;
+            startNonBlueprintHidden?: boolean;
         };
         linksMenu?: {
             reversed?: boolean;

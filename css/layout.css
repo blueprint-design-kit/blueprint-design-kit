@@ -158,6 +158,19 @@
     width: 94%;
     padding: 3px 6px;
 }
+.blueprint-ui .blueprint-layout-component-menu-icons {
+    margin: -4px 6px -10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.blueprint-ui .blueprint-layout-component-menu-icon {
+    display: flex;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
 
 /*********************/
 /*** Preview Frame ***/

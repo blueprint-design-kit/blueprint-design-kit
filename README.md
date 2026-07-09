@@ -289,7 +289,7 @@ If you need extra special customization ❄️, you can always access your bluep
 import { listComponents, getBlueprint, getComponent } from 'blueprint-design-kit';
 
 const components = listComponents();
-const componentPath = components[0];
+const componentPath = components[0].name;
 const blueprint = await getBlueprint(componentPath);
 const component = await getComponent(componentPath);
 ```

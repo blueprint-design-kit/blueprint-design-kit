@@ -2,11 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import BlueprintError from '../../../utils/BlueprintError.js';
+import LocalStorage from '../../../utils/localStorage.js';
 import { getUrlParam, removeUrlParam, setUrlParam } from '../../utils/urlParam.js';
+import collapseAll from '../../icons/collapseAll.js';
+import expandAll from '../../icons/expandAll.js';
+import hasBlueprint from '../../icons/hasBlueprint.js';
 
 import type { ChangeEvent, ReactNode } from 'react';
+import type { ComponentListItem } from '../../../blueprint/listComponents.js';
 
 const filterParamName = 'filter';
+
+interface LocalState {
+    nonBpHidden?: boolean;
+    expandAll?: boolean;
+}
+
+const localStorage = new LocalStorage<LocalState>('ComponentMenu');
 
 interface NestedComponents {
     [key: string]: NestedComponents | string[];
@@ -60,7 +72,7 @@ function renderNestedComponents(
     pathRoot: string,
     baseUrl: string,
     componentPath?: string,
-    startExpanded?: boolean,
+    allExpanded?: boolean,
     activeState?: {
         [key: string]: string | undefined;
     } | undefined,
@@ -68,9 +80,9 @@ function renderNestedComponents(
     const items: ReactNode[] = [];
     Object.keys(nested).sort().forEach((key) => {
         if (key && key !== '__') {
-            items.push(<details key={`dir_${key}`} open={!!startExpanded}>
+            items.push(<details key={`dir_${key}`} open={!!allExpanded}>
                 <summary>{key}</summary>
-                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, startExpanded, activeState)}
+                {renderNestedComponents(nested[key] as NestedComponents, `${pathRoot}/${key}`, baseUrl, componentPath, allExpanded, activeState)}
             </details>);
         }
     });
@@ -103,19 +115,44 @@ function onKeyDown(event: KeyboardEvent) {
     }
 }
 
-function filterListByQuery(items: string[], query?: string) {
+function isValidComponentList(list: unknown): list is ComponentListItem[] {
+    if (!Array.isArray(list)) {
+        return false;
+    }
+    for (const item of list) {
+        if (!item || typeof item.path !== 'string') {
+            return false;
+        }
+    }
+    return true;
+}
+
+function filterComponents(items: ComponentListItem[], query?: string, nonBpHidden?: boolean) {
+    let filteredItems = items;
+    if (nonBpHidden) {
+        filteredItems = filteredItems.filter((item) => item.meta && item.meta.hasBlueprint);
+    }
+    if (query) {
+        const queryLower = query.toLowerCase();
+        filteredItems = filteredItems.filter((item) => item.path.toLowerCase().includes(queryLower));
+    }
+    return filteredItems.map((item) => item.path);
+}
+
+function filterDocs(items: string[], query?: string) {
     if (!query) return items;
     const queryLower = query.toLowerCase();
     return items.filter((item) => item.toLowerCase().includes(queryLower));
 }
 
 export type ComponentMenuProps = {
-    componentList: string[];
+    componentList: ComponentListItem[];
     documentationList?: string[];
     componentPath?: string | undefined;
     baseUrl?: string | undefined;
     searchBar?: boolean | undefined;
     startExpanded?: boolean | undefined;
+    startNonBlueprintHidden?: boolean | undefined;
     activeState?: {
         filter?: string | undefined;
     } | undefined;
@@ -128,28 +165,33 @@ export function ComponentMenuClient({
     baseUrl = '/blueprint',
     searchBar = true,
     startExpanded = false,
+    startNonBlueprintHidden = false,
     activeState,
 }: ComponentMenuProps) {
     if (!componentList) {
         throw new BlueprintError('componentList is required');
     }
-    if (!Array.isArray(componentList) || (componentList.length > 0 && typeof componentList[0] !== 'string')) {
-        throw new BlueprintError('componentList must be an array of component names');
+    if (!isValidComponentList(componentList)) {
+        throw new BlueprintError('componentList must be an array of components with {path, meta}');
     }
 
+    const [nonBpHidden, setNonBpHidden] = useState(!!startNonBlueprintHidden);
+    const [allExpanded, setAllExpanded] = useState(!!startExpanded);
+
     const filter = activeState && activeState[filterParamName];
-    const [filteredComponents, setFilteredComponents] = useState(filterListByQuery(componentList, filter));
-    const [filteredDocs, setFilteredDocs] = useState(filterListByQuery(documentationList, filter));
+    const [filteredComponents, setFilteredComponents] = useState(filterComponents(componentList, filter, nonBpHidden));
+    const [filteredDocs, setFilteredDocs] = useState(filterDocs(documentationList, filter));
 
     const nestedComponents = nestSubdirectories(filteredComponents);
 
     function setSearchFilter(query: string) {
-        setFilteredComponents(filterListByQuery(componentList, query));
-        setFilteredDocs(filterListByQuery(documentationList, query));
+        setFilteredComponents(filterComponents(componentList, query, nonBpHidden));
+        setFilteredDocs(filterDocs(documentationList, query));
     }
 
     function onFilterChange(event: ChangeEvent<HTMLInputElement>) {
         const query = event.currentTarget.value.toLowerCase();
+        console.log('onFilterChange', query);
         if (query) {
             setUrlParam(filterParamName, encodeURIComponent(query), true);
         } else {
@@ -166,6 +208,30 @@ export function ComponentMenuClient({
             expandParentTree(parentDetails);
         }
     }
+
+    function toggleExpandAll() {
+        localStorage.update('expandAll', !allExpanded);
+        setAllExpanded(() => !allExpanded);
+    }
+
+    function toggleNonBpHidden() {
+        localStorage.update('nonBpHidden', !nonBpHidden);
+        setNonBpHidden(() => !nonBpHidden);
+    }
+
+    useEffect(() => {
+        const localState: LocalState = localStorage.get() || {};
+        if (typeof localState.expandAll === 'boolean') {
+            setAllExpanded(localState.expandAll);
+        }
+        if (typeof localState.nonBpHidden === 'boolean') {
+            setNonBpHidden(localState.nonBpHidden);
+        }
+    }, []);
+
+    useEffect(() => {
+        setSearchFilter(filter || ''); // Calling here also applies nonBpHidden state
+    }, [filter, nonBpHidden]);
 
     useEffect(() => {
         const searchInput = document.getElementById('blueprint_component_menu_search') as HTMLInputElement | null;
@@ -185,7 +251,7 @@ export function ComponentMenuClient({
         return () => {
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [componentPath]);
+    });
 
     return (
         <>
@@ -211,6 +277,22 @@ export function ComponentMenuClient({
                 </div>
             </section>
         }
+            <div className="blueprint-layout-component-menu-icons">
+                <div
+                    className="blueprint-layout-component-menu-icon"
+                    title={hasBlueprint.label}
+                    data-status={nonBpHidden ? 'active' : ''}
+                    onClick={toggleNonBpHidden}>
+                    {hasBlueprint.icon}
+                </div>
+                <div
+                    className="blueprint-layout-component-menu-icon"
+                    title={allExpanded ? collapseAll.label : expandAll.label}
+                    data-status={allExpanded ? 'active' : ''}
+                    onClick={toggleExpandAll}>
+                    {allExpanded ? collapseAll.icon : expandAll.icon}
+                </div>
+            </div>
             <section className="blueprint-layout-component-menu">
                 {componentList.length === 0 && <div style={{
                     margin: '0 0 0 1.5em',
@@ -220,7 +302,7 @@ export function ComponentMenuClient({
                 }}>--<br />No components found</div>}
                 <div style={{ marginLeft: '-0.7em' }}>
                     <ul>
-                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, startExpanded, activeState)}
+                        {renderNestedComponents(nestedComponents, '', baseUrl, componentPath, allExpanded, activeState)}
                     </ul>
                 </div>
             </section>

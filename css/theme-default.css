@@ -86,6 +86,12 @@
     font-style: italic;
     color: #888;
 }
+.blueprint-ui .blueprint-layout-component-menu-icon path {
+    color: #EAE0CF;
+}
+.blueprint-ui .blueprint-layout-component-menu-icon[data-status="active"] path {
+    color: #c6a870;
+}
 
 
 /*********************/

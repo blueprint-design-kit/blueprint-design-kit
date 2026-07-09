@@ -39,7 +39,7 @@ describe('getTestValidations', () => {
 
         const validateProps = vi.fn().mockReturnValue(undefined);
 
-        mockedListComponents.mockResolvedValue(['Button', 'Card']);
+        mockedListComponents.mockResolvedValue([{ path: 'Button', meta: {} }, { path: 'Card', meta: {} }]);
         // @ts-expect-error - simplified mock for testing
         mockedGetBlueprint.mockImplementation(async (componentName: string) => {
             if (componentName === 'Button') {
@@ -110,7 +110,7 @@ describe('getTestValidations', () => {
             .mockReturnValueOnce(undefined)
             .mockReturnValueOnce('Invalid prop "size"');
 
-        mockedListComponents.mockResolvedValue(['Button']);
+        mockedListComponents.mockResolvedValue([{ path: 'Button', meta: {} }]);
         // @ts-expect-error - simplified mock for testing
         mockedGetBlueprint.mockResolvedValue({
             listVariants: () => ['default'],
@@ -143,7 +143,11 @@ describe('getTestValidations', () => {
         const mockedGetComponent = vi.mocked(getComponent);
         const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-        mockedListComponents.mockResolvedValue(['A', 'B', 'C']);
+        mockedListComponents.mockResolvedValue([
+            { path: 'A', meta: {} },
+            { path: 'B', meta: {} },
+            { path: 'C', meta: {} },
+        ]);
         // @ts-expect-error - simplified mock for testing
         mockedGetBlueprint.mockImplementation(async (componentName: string) => {
             if (componentName === 'A') {

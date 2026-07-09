@@ -9,17 +9,17 @@ import {
 } from 'blueprint-design-kit';
 
 const components = listComponents();
-const componentPath = components[0];
+const componentPath = components[0].name;
 const blueprint = await getBlueprint(componentPath);
 const component = await getComponent(componentPath);
 const { useClient } = await getComponentMeta(componentPath);
 ```
 
 #### -> listComponents()
-Returns an Array of componentPaths that corresponds to your directory structure. For example:
+Returns an Array of components. Each component has a `path` property that corresponds to your directory structure. For example:
 ```ts
 const components = listComponents();
-// [ 'Atoms/Badge', 'Atoms/Button' ]
+// [{ path: 'Atoms/Badge', path: 'Atoms/Badge' }, { path: 'Atoms/Button', path: 'Atoms/Button' }, ...]
 ```
 
 #### -> getBlueprint(componentPath: string) (async)

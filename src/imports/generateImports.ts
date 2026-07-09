@@ -135,6 +135,11 @@ export async function generateImports() {
             }
         }
     };
+    for (const [key, component] of Object.entries(projectFiles.components)) {
+        if (projectFiles.blueprints[key]) {
+            component.meta.hasBlueprint = true;
+        }
+    }
 
     await writeImportsFile(projectFiles);
     await coverageReport(componentsRoot, filesList.length, projectFiles);

@@ -32,7 +32,7 @@ export type GetValidationsProps = {
 export async function getTestValidations({ filter, onPropsReady }: GetValidationsProps) {
     const validations: ExpectationValidation[] = [];
 
-    let componentList = await listComponents();
+    let componentList = (await listComponents()).map((component) => component.path);
     if (filter) {
         componentList = componentList.filter((componentName) => {
             const match = componentName.toLowerCase().match(filter);
