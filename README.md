@@ -148,6 +148,7 @@ Each prop in a schema can contain any of the following attributes (all optional)
 - **source** (what is the source of this data)
 - **min** (what is the minimum allowed value)
 - **max** (what is the maximum allowed value)
+- **note** (any additional notes or context for this prop)
 
 For a component that takes `text`, `backgroundColor`, and `price`, the schema might look like this:
 ```ts

@@ -16,7 +16,7 @@ function buildDetailsItem(key: string | number, val: unknown, classPrefix: strin
 }
 
 export function htmlify(val: unknown, classPrefix: string): { inline: string; details?: ReactNode } {
-    if (!val) { return { inline: String(val) }; }
+    if (!val) { return typeof val === 'string' ? { inline: '""' } : { inline: String(val) }; }
 
     if (typeof val === 'function') {
         return { inline: 'function' };

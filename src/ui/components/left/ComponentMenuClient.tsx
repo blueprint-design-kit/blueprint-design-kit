@@ -244,7 +244,7 @@ export function ComponentMenuClient({
             const element = document.getElementById(`${baseUrl}/${componentPath}`);
             if (element) {
                 expandParentTree(element);
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         document.addEventListener('keydown', onKeyDown);
@@ -280,7 +280,7 @@ export function ComponentMenuClient({
             <div className="blueprint-layout-component-menu-icons">
                 <div
                     className="blueprint-layout-component-menu-icon"
-                    title={hasBlueprint.label}
+                    title={nonBpHidden ? 'Show all components' : 'Hide components without blueprints'}
                     data-status={nonBpHidden ? 'active' : ''}
                     onClick={toggleNonBpHidden}>
                     {hasBlueprint.icon}

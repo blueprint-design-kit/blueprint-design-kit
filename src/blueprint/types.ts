@@ -20,6 +20,7 @@ export interface BlueprintSchema {
         allow?: any[]; // eslint-disable-line
         min?: number;
         max?: number;
+        note?: string;
     };
 }
 

@@ -21,7 +21,7 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
         const valueType = parseValueType(value);
 
         let defaultValue;
-        if (schema.default) {
+        if (typeof schema.default !== 'undefined') {
             defaultValue = htmlify(schema.default, classPrefix);
         }
 
@@ -173,6 +173,10 @@ export function formatExplorerItems(items: ExplorerItem[], useClient?: boolean) 
                         {typeof schema.max !== 'undefined' && <tr>
                             <td>Max:</td>
                             <td><code>{schema.max}</code></td>
+                            </tr>}
+                        {schema.note && <tr>
+                            <td>Note:</td>
+                            <td><code>{schema.note}</code></td>
                         </tr>}
                         </tbody>
                     </table>

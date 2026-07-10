@@ -29,7 +29,7 @@ describe('htmlify', () => {
         });
 
         test('empty string', () => {
-            expect(htmlify('', prefix)).toEqual({ inline: '' });
+            expect(htmlify('', prefix)).toEqual({ inline: '""' });
         });
     });
 
@@ -47,10 +47,6 @@ describe('htmlify', () => {
     describe('strings', () => {
         test('wraps value in double quotes', () => {
             expect(htmlify('hello', prefix)).toEqual({ inline: '"hello"' });
-        });
-
-        test('empty string is treated as falsy', () => {
-            expect(htmlify('', prefix)).toEqual({ inline: '' });
         });
     });
 

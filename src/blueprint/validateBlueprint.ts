@@ -12,7 +12,7 @@ function checkBlueprintForErrors(blueprintConfig: BlueprintConfig, blueprintName
         if (!prop || typeof prop !== 'object') {
             return `Blueprint[${blueprintName}] > schema.${key} does not have a valid configuration.`;
         }
-        if (!prop.type && !prop.default) {
+        if (!prop.type && typeof prop.default === 'undefined') {
             return `Blueprint[${blueprintName}] > schema.${key} must specify either a type or a default value.`;
         }
     }
