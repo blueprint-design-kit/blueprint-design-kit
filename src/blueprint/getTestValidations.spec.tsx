@@ -211,7 +211,6 @@ describe('getTestValidations', () => {
         const mockedSerializePropsForPassing = vi.mocked(serializePropsForPassing);
 
         mockedListComponents.mockResolvedValue([{ path: 'Button', meta: {} }]);
-        // @ts-expect-error - simplified mock for testing
         mockedGetComponentMeta.mockResolvedValue({ useClient: true });
         // @ts-expect-error - simplified mock for testing
         mockedGetBlueprint.mockResolvedValue({

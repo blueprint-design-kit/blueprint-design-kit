@@ -42,6 +42,36 @@ describe('serializePropsForPassing', () => {
         });
     });
 
+    describe('array of props', () => {
+        test('serializes each props object in the array', () => {
+            const props = [{ label: 'a', onClick: () => {} }, { label: 'b', onClick: () => {} }];
+            const serialized = serializePropsForPassing(props) as ReturnType<typeof serializePropsForPassing>[];
+            expect(Array.isArray(serialized)).toBe(true);
+            expect(serialized).toHaveLength(2);
+        });
+
+        test('serializes functions within each array entry', () => {
+            const fn = () => 'hi';
+            const props = [{ handler: fn }, { label: 'no-fn' }];
+            const serialized = serializePropsForPassing(props) as ReturnType<typeof serializePropsForPassing>[];
+            const serializedHandler = (serialized[0] as { handler: SerializedFunction }).handler;
+            expect(serializedHandler.__is_serialized_function__).toBe(true);
+            expect(serializedHandler.asString).toBe(fn.toString());
+        });
+
+        test('leaves non-function props in array entries unchanged', () => {
+            const props = [{ label: 'hello', count: 3 }];
+            const serialized = serializePropsForPassing(props) as ReturnType<typeof serializePropsForPassing>[];
+            expect((serialized[0] as { label: string; count: number }).label).toBe('hello');
+            expect((serialized[0] as { label: string; count: number }).count).toBe(3);
+        });
+
+        test('handles an empty array', () => {
+            const serialized = serializePropsForPassing([]);
+            expect(serialized).toEqual([]);
+        });
+    });
+
     describe('function props', () => {
         test('replaces a function with a serialized object', () => {
             const props = { onClick: () => {} };
@@ -181,6 +211,42 @@ describe('deserializeProps', () => {
         });
     });
 
+    describe('array of props', () => {
+        test('deserializes each props object in the array', () => {
+            const fn = () => 'value';
+            const props = [
+                { __contains_serialized_functions__: true, handler: { __is_serialized_function__: true, asString: fn.toString() } },
+                { label: 'plain' },
+            ];
+            const deserialized = deserializeProps(props) as ReturnType<typeof deserializeProps>[];
+            expect(Array.isArray(deserialized)).toBe(true);
+            expect(deserialized).toHaveLength(2);
+        });
+
+        test('reconstructs functions within each array entry', () => {
+            const fn = () => 99;
+            const props = [
+                { __contains_serialized_functions__: true, handler: { __is_serialized_function__: true, asString: fn.toString() } },
+            ];
+            const deserialized = deserializeProps(props) as ReturnType<typeof deserializeProps>[];
+            const handler = (deserialized[0] as { handler: () => number }).handler;
+            expect(typeof handler).toBe('function');
+            expect(handler()).toBe(99);
+        });
+
+        test('leaves non-serialized entries unchanged', () => {
+            const props = [{ label: 'no-fn', count: 5 }];
+            const deserialized = deserializeProps(props) as ReturnType<typeof deserializeProps>[];
+            expect((deserialized[0] as { label: string; count: number }).label).toBe('no-fn');
+            expect((deserialized[0] as { label: string; count: number }).count).toBe(5);
+        });
+
+        test('handles an empty array', () => {
+            const deserialized = deserializeProps([]);
+            expect(deserialized).toEqual([]);
+        });
+    });
+
     describe('round-trip', () => {
         test('serialize then deserialize preserves function behavior', () => {
             const original = () => 'round-trip';
@@ -190,6 +256,19 @@ describe('deserializeProps', () => {
             expect(typeof deserialized.fn).toBe('function');
             expect(deserialized.fn()).toBe('round-trip');
             expect(props.fn()).toBe('round-trip');
+        });
+
+        test('serialize then deserialize an array preserves function behavior in each entry', () => {
+            const fn1 = () => 'first';
+            const fn2 = () => 'second';
+            const props = [{ handler: fn1 }, { handler: fn2, label: 'keep' }];
+            const serialized = serializePropsForPassing(props) as ReturnType<typeof serializePropsForPassing>[];
+            const deserialized = deserializeProps(serialized) as ReturnType<typeof deserializeProps>[];
+            const h1 = (deserialized[0] as { handler: () => string }).handler;
+            const h2 = (deserialized[1] as { handler: () => string; label: string });
+            expect(h1()).toBe('first');
+            expect(h2.handler()).toBe('second');
+            expect(h2.label).toBe('keep');
         });
     });
 

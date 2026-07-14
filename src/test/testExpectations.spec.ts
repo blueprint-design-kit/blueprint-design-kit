@@ -41,7 +41,7 @@ describe('testExpectations', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        processExitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined));
+        processExitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
         consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
         consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
@@ -52,6 +52,7 @@ describe('testExpectations', () => {
         vi.mocked(getFileOptions).mockReturnValue({
             componentsRoot: './app/components',
         });
+        // @ts-expect-error ChildProcess is not fully mocked, but we only need the pid for testing
         vi.mocked(startLocalServer).mockReturnValue({ pid: 12345 });
         vi.mocked(waitForServer).mockResolvedValue(true);
         vi.mocked(testInPlaywright).mockResolvedValue({

@@ -10,7 +10,7 @@ function stripAnsi(str: string) {
 function getLoggedLines(consoleSpy: ReturnType<typeof vi.spyOn>): string[] {
     return consoleSpy.mock.calls
         .flat()
-        .map(arg => stripAnsi(String(arg)));
+        .map((arg: unknown) => stripAnsi(String(arg)));
 }
 
 const passing = { componentName: 'Atoms/Button', passingVariants: ['default'] };

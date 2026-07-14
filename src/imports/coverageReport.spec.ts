@@ -38,7 +38,7 @@ describe('coverageReport', () => {
         await coverageReport('./app/components', 2, {
             blueprints: {},
             components: {
-                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {} },
+                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {}, importPrefix: './' },
             },
         });
 
@@ -61,8 +61,8 @@ describe('coverageReport', () => {
                 'Atoms/Button': './app/components/Atoms/Button.blueprint.tsx',
             },
             components: {
-                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {} },
-                'Atoms/Card': { path: './app/components/Atoms/Card.component.tsx', meta: {} },
+                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {}, importPrefix: './' },
+                'Atoms/Card': { path: './app/components/Atoms/Card.component.tsx', meta: {}, importPrefix: './' },
             },
         });
 
@@ -88,7 +88,7 @@ describe('coverageReport', () => {
             coverageReport('./app/components', 2, {
                 blueprints: {},
                 components: {
-                    'Atoms/Card': { path: './app/components/Atoms/Card.component.tsx', meta: {} },
+                    'Atoms/Card': { path: './app/components/Atoms/Card.component.tsx', meta: {}, importPrefix: './' },
                 },
             }),
         ).rejects.toThrow('Missing blueprints for 1 out of 1 components');
@@ -113,7 +113,7 @@ describe('coverageReport', () => {
                 'Atoms/Button': './app/components/Atoms/Button.blueprint.tsx',
             },
             components: {
-                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {} },
+                'Atoms/Button': { path: './app/components/Atoms/Button.component.tsx', meta: {}, importPrefix: './' },
             },
         });
 

@@ -39,7 +39,9 @@ function deserialize(props: BlueprintProps) {
     return deserialized;
 }
 
-export function serializePropsForPassing(props: BlueprintProps | BlueprintProps[]) {
+type PropsToSerialize = BlueprintProps | BlueprintProps[];
+type SerializedProps = PropsToSerialize extends BlueprintProps[] ? BlueprintProps[] : BlueprintProps;
+export function serializePropsForPassing<T extends PropsToSerialize>(props: T): SerializedProps {
     if (!props) { return props; }
     if (Array.isArray(props)) {
         return props.map(p => serialize(p));
@@ -48,7 +50,7 @@ export function serializePropsForPassing(props: BlueprintProps | BlueprintProps[
     }
 }
 
-export function deserializeProps(props: BlueprintProps | BlueprintProps[]) {
+export function deserializeProps(props: PropsToSerialize): SerializedProps {
     if (!props) { return props; }
     if (Array.isArray(props)) {
         return props.map(p => deserialize(p));
