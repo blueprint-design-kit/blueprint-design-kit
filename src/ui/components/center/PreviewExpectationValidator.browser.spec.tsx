@@ -34,7 +34,6 @@ describe('PreviewExpectationValidator', () => {
 
         render(
             <PreviewExpectationValidator
-                expectation={<div>Expected</div>}
                 MAIN_CONTENT_ID="actual_container"
                 EXPECTATION_CONTENT_ID="expected_container"
                 EXPECTATION_MESSAGE_ID="expectation_message"
@@ -65,7 +64,6 @@ describe('PreviewExpectationValidator', () => {
 
         render(
             <PreviewExpectationValidator
-                expectation={<div>Expected</div>}
                 MAIN_CONTENT_ID="actual_container"
                 EXPECTATION_CONTENT_ID="expected_container"
                 EXPECTATION_MESSAGE_ID="expectation_message"

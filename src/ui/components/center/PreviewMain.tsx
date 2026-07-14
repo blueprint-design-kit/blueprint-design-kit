@@ -27,7 +27,6 @@ export default function PreviewMain({ component, expectation }: PreviewMainProps
                 </div>
             </div>
             <PreviewExpectationValidator
-                expectation={expectation}
                 MAIN_CONTENT_ID={MAIN_CONTENT_ID}
                 EXPECTATION_CONTENT_ID={EXPECTATION_CONTENT_ID}
                 EXPECTATION_MESSAGE_ID={EXPECTATION_MESSAGE_ID}

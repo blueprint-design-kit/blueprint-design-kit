@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useReducer } from 'react';
+import { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { BlueprintProps } from '../../blueprint/types.js';
 
@@ -22,4 +22,8 @@ export default function PropsProvider({
 }) {
     const [ props, updateProps ] = useReducer(propsUpdateFn, value);
     return <PropsContext.Provider value={{ props, updateProps }}>{children}</PropsContext.Provider>;
+}
+
+export function useProps() {
+    return useContext(PropsContext) || { updateProps: () => {} };
 }

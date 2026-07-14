@@ -1,3 +1,4 @@
+import { deserializeProps } from '../ui/utils/serializeProps.js';
 import { valueConformsToType } from '../utils/valueConformsToType.js';
 
 import type {
@@ -42,10 +43,11 @@ export function validatePropsAgainstSchema(
     blueprintName: string = '',
 ): string | undefined {
     const errPrefix = `Blueprint[${blueprintName}] > props`;
-    for (const key in props) {
+    const propsInternal: BlueprintProps = deserializeProps(props);
+    for (const key in propsInternal) {
         const schemaForKey = schema[key];
         if (schemaForKey) {
-            const value = props[key];
+            const value = propsInternal[key];
             const expectedType = schemaForKey.type || typeof schemaForKey.default;
             const mistmatch = checkTypeMismatch(value, expectedType);
             if (mistmatch) {
@@ -68,7 +70,7 @@ export function validatePropsAgainstSchema(
         }
     }
     for (const key in schema) {
-        if (schema[key] && typeof props[key] === 'undefined') {
+        if (schema[key] && typeof propsInternal[key] === 'undefined') {
             if (!schema[key].optional && schema[key].type && checkTypeMismatch(undefined, schema[key].type)) {
                 return `${errPrefix} missing props.${key}`;
             }

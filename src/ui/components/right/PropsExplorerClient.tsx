@@ -2,7 +2,8 @@
 
 import { useContext } from 'react';
 import { formatExplorerItems, type ExplorerItem } from '../../utils/formatExplorerItems.js';
-import { PropsContext } from '../../providers/PropsProvider.js';
+import { deserializeProps } from '../../utils/serializeProps.js';
+import { useProps } from '../../providers/PropsProvider.js';
 import { StateContext } from '../../providers/StateProvider.js';
 
 import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.js';
@@ -15,11 +16,12 @@ export type PropsExplorerProps = {
 
 export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplorerProps) {
     // Store props in context so they can be updated interactively
-    const { props: propsFromContext, updateProps } = useContext(PropsContext) || { updateProps: () => {} };
+    const { props: propsFromContext, updateProps } = useProps();
     let props = propsFromContext;
 
     // If props is an array (e.g. from a variant with multiple "props" entries), just show the first item in the PropsExplorer
     props = Array.isArray(props) ? props[0] : props;
+    props = deserializeProps(props);
 
     const contextForState = useContext(StateContext);
     const { state, updateState } = contextForState || { updateState: () => {} };

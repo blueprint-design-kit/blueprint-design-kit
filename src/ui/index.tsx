@@ -3,6 +3,7 @@ import '../../css/theme-default.js';
 import '../../css/preview-controls.js';
 
 import BlueprintError from '../utils/BlueprintError.js';
+import { serializePropsForPassing } from './utils/serializeProps.js';
 import { getBlueprint } from '../blueprint/getBlueprint.js';
 import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
@@ -233,7 +234,7 @@ export default async function BlueprintComponentUI({
 
     return (
         <main>
-            <PropsProvider value={variantProps}>
+            <PropsProvider value={serializePropsForPassing(variantProps)}>
                 <StateProvider value={variantState}>
                     <BlueprintLayout
                         Header={Header}

@@ -5,7 +5,8 @@ import { type ReactNode, useState } from 'react';
 
 vi.mock(import('../../../blueprint/getComponent.js'), () => ({
     getComponent: vi.fn(async () => {
-        return function MockComponent({ label }: { label?: string }) {
+        return function MockComponent({ label, onRender }: { label?: string, onRender?: () => void }) {
+            if (typeof onRender === 'function') { onRender(); }
             return <div>Loaded Component {label || ''}</div>;
         };
     }),
@@ -86,6 +87,18 @@ describe('PreviewWrapperClient', () => {
         );
 
         await expect.element(page.getByText('Loaded Component')).toBeInTheDocument();
+    });
+
+    test('does not blow up when passed a function prop', async () => {
+        const onRender = vi.fn();
+        render(
+            <PropsContext.Provider value={{ props: { onRender }, updateProps: vi.fn() }}>
+                <PreviewWrapperClient componentPath="Cards/ProductCard" />
+            </PropsContext.Provider>,
+        );
+
+        await expect.element(page.getByText('Loaded Component')).toBeInTheDocument();
+        expect(onRender).toHaveBeenCalled();
     });
 
     test('re-imports component when componentPath changes', async () => {

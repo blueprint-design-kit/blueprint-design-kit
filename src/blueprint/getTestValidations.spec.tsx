@@ -2,7 +2,9 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getTestValidations } from './getTestValidations';
 import { getBlueprint } from './getBlueprint.js';
 import { getComponent } from './getComponent.js';
+import { getComponentMeta } from './getComponentMeta.js';
 import { listComponents } from './listComponents.js';
+import { serializePropsForPassing } from '../ui/utils/serializeProps.js';
 
 vi.mock(import('./getBlueprint.js'), () => {
     return {
@@ -16,9 +18,21 @@ vi.mock(import('./getComponent.js'), () => {
     };
 });
 
+vi.mock(import('./getComponentMeta.js'), () => {
+    return {
+        getComponentMeta: vi.fn(),
+    };
+});
+
 vi.mock(import('./listComponents.js'), () => {
     return {
         listComponents: vi.fn(),
+    };
+});
+
+vi.mock(import('../ui/utils/serializeProps.js'), () => {
+    return {
+        serializePropsForPassing: vi.fn((props) => props),
     };
 });
 
@@ -187,6 +201,46 @@ describe('getTestValidations', () => {
                 ],
             },
         ]);
+    });
+
+    test('wraps component in TestValidationWrapperClient when useClient is true', async () => {
+        const mockedListComponents = vi.mocked(listComponents);
+        const mockedGetBlueprint = vi.mocked(getBlueprint);
+        const mockedGetComponent = vi.mocked(getComponent);
+        const mockedGetComponentMeta = vi.mocked(getComponentMeta);
+        const mockedSerializePropsForPassing = vi.mocked(serializePropsForPassing);
+
+        mockedListComponents.mockResolvedValue([{ path: 'Button', meta: {} }]);
+        // @ts-expect-error - simplified mock for testing
+        mockedGetComponentMeta.mockResolvedValue({ useClient: true });
+        // @ts-expect-error - simplified mock for testing
+        mockedGetBlueprint.mockResolvedValue({
+            listVariants: () => ['default'],
+            getVariant: () => ({
+                props: { size: 'm' },
+                expectation: 'renders correctly',
+            }),
+            validateProps: vi.fn().mockReturnValue(undefined),
+        });
+        const FunctionComponent = (props: Record<string, unknown>) => String(props.size);
+        mockedGetComponent.mockResolvedValue(FunctionComponent);
+
+        const validations = await getTestValidations({});
+
+        expect(validations).toHaveLength(1);
+        expect(validations[0].expectations).toHaveLength(1);
+
+        const component = validations[0].expectations?.[0].component;
+        expect(component).toBeTruthy();
+
+        // Props are serialized before being passed to TestValidationWrapperClient
+        expect(mockedSerializePropsForPassing).toHaveBeenCalledOnce();
+        expect(mockedSerializePropsForPassing).toHaveBeenCalledWith({ size: 'm' });
+
+        // TestValidationWrapperClient receives component and serialized props, not spread props
+        const child = (component as { props: { children: { props: { component: unknown; props: unknown } }[] } }).props.children[0];
+        expect(child.props.component).toBe(FunctionComponent);
+        expect(child.props.props).toEqual({ size: 'm' });
     });
 
 });

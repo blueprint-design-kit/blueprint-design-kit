@@ -7,13 +7,12 @@ import { printDiff } from '../../../utils/htmlDiffPrinter.js';
 import type { ReactNode } from 'react';
 
 export type ExpectationValidatorProps = {
-    expectation: ReactNode;
     MAIN_CONTENT_ID: string;
     EXPECTATION_CONTENT_ID: string;
     EXPECTATION_MESSAGE_ID: string;
 }
 
-export function PreviewExpectationValidator({ expectation, MAIN_CONTENT_ID, EXPECTATION_CONTENT_ID, EXPECTATION_MESSAGE_ID }: ExpectationValidatorProps) {
+export function PreviewExpectationValidator({ MAIN_CONTENT_ID, EXPECTATION_CONTENT_ID, EXPECTATION_MESSAGE_ID }: ExpectationValidatorProps) {
     const [unmet, setUnmet] = useState<ReactNode>();
 
     function showExpectedContent() {
@@ -57,7 +56,7 @@ export function PreviewExpectationValidator({ expectation, MAIN_CONTENT_ID, EXPE
 
     useEffect(() => {
         setTimeout(doValidate, 500); // Delay to allow DOM to update with rendered content
-    }, [expectation]);
+    }, []);
 
     return unmet;
 }

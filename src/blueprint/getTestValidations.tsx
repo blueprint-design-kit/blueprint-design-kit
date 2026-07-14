@@ -1,7 +1,10 @@
 'use server';
 
+import TestValidationWrapperClient from '../ui/components/center/TestValidationWrapperClient.js';
+import { serializePropsForPassing } from '../ui/utils/serializeProps.js';
 import { getBlueprint } from './getBlueprint.js';
 import { getComponent } from './getComponent.js';
+import { getComponentMeta } from './getComponentMeta.js';
 import { listComponents } from './listComponents.js';
 
 import type { ReactElement, ReactNode } from 'react';
@@ -67,6 +70,8 @@ export async function getTestValidations({ filter, onPropsReady }: GetValidation
                         const expectation = variant.expectation;
                         if (expectation) {
                             try {
+                                const componentMeta = await getComponentMeta(componentName);
+                                const useClient = !!componentMeta?.useClient;
                                 const FunctionComponent = await getComponent(componentName);
                                 if (!FunctionComponent) {
                                     throw new Error(`Component "${componentName}" not found.`);
@@ -75,7 +80,13 @@ export async function getTestValidations({ filter, onPropsReady }: GetValidation
                                     if (typeof onPropsReady === 'function') {
                                         Object.assign(props, await onPropsReady(componentName, `${variantName}${i ? `[${i}]` : ''}`, props));
                                     }
-                                    return <FunctionComponent key={i} {...props} />;
+                                    return useClient ?
+                                        <TestValidationWrapperClient
+                                            key={i}
+                                            component={FunctionComponent}
+                                            props={serializePropsForPassing(props)}
+                                        />
+                                        : <FunctionComponent key={i} {...props} />;
                                 });
                                 const component = <>{await Promise.all(promises)}</>;
                                 expectations.push({

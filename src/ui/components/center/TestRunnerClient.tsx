@@ -143,7 +143,7 @@ export function TestRunnerClient({ validations }: TestRunnerProps) {
             }, 200);
         };
         runTests();
-    }, [validations]);
+    }, []);
 
     if (!results) {
         return <div className='blueprint-layout-test-runner blueprint-reset'>
@@ -158,7 +158,7 @@ export function TestRunnerClient({ validations }: TestRunnerProps) {
     const { pass, fail, skip } = results;
     const printOutput = <div className='blueprint-layout-test-runner blueprint-reset'>
         <div>Total Components: {pass.length + fail.length + skip.length}</div>
-        {fail.length > 0 && 
+        {fail.length > 0 &&
         <>
             <h3>Failed ({fail.length})</h3>
             {fail.map((result, index) => (

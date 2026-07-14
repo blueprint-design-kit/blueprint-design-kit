@@ -1,8 +1,9 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getComponent } from '../../../blueprint/getComponent.js';
-import { PropsContext } from '../../providers/PropsProvider.js';
+import { deserializeProps } from '../../utils/serializeProps.js';
+import { useProps } from '../../providers/PropsProvider.js';
 import PreviewMain from './PreviewMain.js';
 
 import type { ComponentType, CSSProperties, ReactElement, ReactNode } from 'react';
@@ -21,7 +22,8 @@ export interface PreviewWrapperProps {
 
 export default function PreviewWrapperClient({ componentPath, expectation }: PreviewWrapperProps) {
     // Store props in context so they can be updated interactively
-    const { props } = useContext(PropsContext);
+    let { props } = useProps();
+    props = deserializeProps(props);
     const [FunctionComponent, setFunctionComponent] = useState<ComponentType<unknown> | null>(null);
 
     async function importComponent(selectedComponent: string) {
@@ -44,7 +46,7 @@ export default function PreviewWrapperClient({ componentPath, expectation }: Pre
     let component: ReactElement;
     if (Array.isArray(props)) {
         component = <>
-        {props.map((p = {}, i) => {
+            {props.map((p = {}, i) => {
             return <FunctionComponent key={i} {...p} />;
         })}
         </>;
