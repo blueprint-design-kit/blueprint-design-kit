@@ -64,7 +64,7 @@ describe('htmlDiffPrinter', () => {
 
         test('returns an empty string when there are no actual additions or removals', () => {
             const diff: HtmlDiffObject[] = [
-                { count: 1, added: false, removed: false, value: '<div>same</div>' },
+                { count: 15, added: false, removed: false, value: '<div>same</div>' },
             ];
 
             expect(printDiff(diff)).toBe('');
@@ -72,22 +72,38 @@ describe('htmlDiffPrinter', () => {
 
         test('wraps added and removed segments in ins and del tags', () => {
             const diff: HtmlDiffObject[] = [
-                { count: 1, added: false, removed: false, value: '<div>' },
-                { count: 1, added: true, removed: false, value: 'new' },
-                { count: 1, added: false, removed: true, value: 'old' },
-                { count: 1, added: false, removed: false, value: '</div>' },
+                { count: 5, added: false, removed: false, value: '<div>' },
+                { count: 3, added: true, removed: false, value: 'new' },
+                { count: 3, added: false, removed: true, value: 'old' },
+                { count: 6, added: false, removed: false, value: '</div>' },
             ];
 
             expect(printDiff(diff)).toBe('&lt;div&gt;<ins>new</ins><del>old</del>&lt;/div&gt;');
         });
 
-        test('drops paired diffs when direct values are effectively equal', () => {
+        test('drops mismatches when direct values are effectively equal', () => {
             const diff: HtmlDiffObject[] = [
-                { count: 1, added: false, removed: true, value: '#ff0000' },
-                { count: 1, added: true, removed: false, value: 'rgb(255, 0, 0)' },
+                { count: 18, added: false, removed: false, value: '<div style="color:' },
+                { count: 7, added: false, removed: true, value: '#ff0000' },
+                { count: 14, added: true, removed: false, value: 'rgb(255, 0, 0)' },
+                { count: 2, added: false, removed: false, value: '">' },
+                { count: 3, added: false, removed: true, value: '123' },
+                { count: 3, added: true, removed: false, value: '456' },
+                { count: 6, added: false, removed: false, value: '</div>' },
             ];
 
-            expect(printDiff(diff)).toBe('#ff0000');
+            expect(printDiff(diff)).toBe('&lt;div style="color:#ff0000"&gt;<del>123</del><ins>456</ins>&lt;/div&gt;');
+        });
+
+        test('returns an empty string when all mismatches are effectively equal', () => {
+            const diff: HtmlDiffObject[] = [
+                { count: 18, added: false, removed: false, value: '<div style="color:' },
+                { count: 7, added: false, removed: true, value: '#ff0000' },
+                { count: 14, added: true, removed: false, value: 'rgb(255, 0, 0)' },
+                { count: 8, added: false, removed: false, value: '"></div>' },
+            ];
+
+            expect(printDiff(diff)).toBe('');
         });
 
         test('trims trailing whitespace before encoding diff output', () => {

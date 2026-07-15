@@ -191,7 +191,6 @@ export function ComponentMenuClient({
 
     function onFilterChange(event: ChangeEvent<HTMLInputElement>) {
         const query = event.currentTarget.value.toLowerCase();
-        console.log('onFilterChange', query);
         if (query) {
             setUrlParam(filterParamName, encodeURIComponent(query), true);
         } else {

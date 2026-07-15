@@ -25,6 +25,9 @@ export function areEffectivelyEqual(val: string, nextVal: string) {
     if (isColorRGB(val) && isColorHex(nextVal) && convertRgbaToHex(val) === normalizeHex(nextVal)) {
         return true;
     }
+    if ((val.startsWith('none') && nextVal === 'initial') || (val === 'initial' && nextVal.startsWith('none'))) {
+        return true; // handles cases like "border: none" vs "border: initial"
+    }
     return false;
 }
 
@@ -36,7 +39,6 @@ export function printDiff(diff: HtmlDiffObject[]) {
         const val = htmlEncode(current.value.trimEnd());
         if (val) {
             if (current.added || current.removed) {
-                hasTrueDiff = true;
                 const next = diff[i + 1] as HtmlDiffObject | undefined;
                 const nextVal = htmlEncode((next?.value || '').trimEnd());
                 if (areEffectivelyEqual(val, nextVal)) {
@@ -44,6 +46,7 @@ export function printDiff(diff: HtmlDiffObject[]) {
                     i += 1;
                     continue;
                 }
+                hasTrueDiff = true;
                 acc += current.added ? `<ins>${val}</ins>` : `<del>${val}</del>`;
             } else {
                 acc += val;
