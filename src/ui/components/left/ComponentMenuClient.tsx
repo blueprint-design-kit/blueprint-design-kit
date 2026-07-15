@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import BlueprintError from '../../../utils/BlueprintError.js';
 import LocalStorage from '../../../utils/localStorage.js';
+import { nestSubdirectories } from '../../utils/nestSubdirectories.js';
 import { getUrlParam, removeUrlParam, setUrlParam } from '../../utils/urlParam.js';
 import collapseAll from '../../icons/collapseAll.js';
 import expandAll from '../../icons/expandAll.js';
@@ -10,6 +11,7 @@ import hasBlueprint from '../../icons/hasBlueprint.js';
 
 import type { ChangeEvent, ReactNode } from 'react';
 import type { ComponentListItem } from '../../../blueprint/listComponents.js';
+import type { NestedComponents } from '../../utils/nestSubdirectories.js';
 
 const filterParamName = 'filter';
 
@@ -20,48 +22,10 @@ interface LocalState {
 
 const localStorage = new LocalStorage<LocalState>('ComponentMenu');
 
-interface NestedComponents {
-    [key: string]: NestedComponents | string[];
-    __: string[]; // components directly under this level
-}
-
-function nestSubdirectories(componentList: string[]) {
-    const result: NestedComponents = { __: [] };
-
-    for (const component of componentList) {
-        const parts = component.split('/');
-
-        if (parts.length === 1) {
-            // No subdirectory, add to root
-            result.__.push(component);
-        } else {
-            // Has subdirectories
-            let current = result;
-
-            // Navigate through all parts except the last one
-            for (let i = 0; i < parts.length - 1; i++) {
-                const part = parts[i] as string;
-                if (!current[part]) {
-                    current[part] = { __: [] };
-                }
-                current = current[part] as NestedComponents;
-            }
-
-            // Add the component name to the __ array at this level
-            const componentName = parts[parts.length - 1];
-            if (componentName) {
-                current.__.push(componentName);
-            }
-        }
-    }
-
-    return result;
-}
-
 // nested: {
 //     __: ['Component1', 'Component2'],
 //     Client: {
-//         __: ['Component3', 'Component4'],
+//         __: ['Component3/Component3', 'Component4'],
 //         Atoms: {
 //             __: ['Component5', 'Component6'],
 //         },
@@ -97,7 +61,7 @@ function renderNestedComponents(
             const fullUrl = `${urlPath}${searchParamsString ? `?${searchParamsString}` : ''}`;
             items.push(<li id={urlPath} key={`li_${component}`} className='blueprint-component-menu-filterable'>
                 <a href={fullUrl} className={`${pathRoot}/${component}` === `/${componentPath}` ? 'selected-component' : ''}>
-                    {component}
+                    {component.split('/').pop()}
                 </a>
             </li>);
         });
