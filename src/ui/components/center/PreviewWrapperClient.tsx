@@ -43,16 +43,18 @@ export default function PreviewWrapperClient({ componentPath, expectation }: Pre
         return <div className='blueprint-reset' style={loadingComponentStyle}>...loading...</div>;
     }
 
+    let asGallery = false;
     let component: ReactElement;
     if (Array.isArray(props)) {
+        asGallery = true;
         component = <>
             {props.map((p = {}, i) => {
-            return <FunctionComponent key={i} {...p} />;
-        })}
+                return <FunctionComponent key={i} {...p} />;
+            })}
         </>;
     } else {
         component = <FunctionComponent {...props} />;
     }
 
-    return <PreviewMain component={component} expectation={expectation} />;
+    return <PreviewMain component={component} expectation={expectation} asGallery={asGallery} />;
 }

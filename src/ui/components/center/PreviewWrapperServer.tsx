@@ -18,8 +18,10 @@ export default async function PreviewWrapperServer({ componentPath, variantProps
         throw new Error(`Component "${componentPath}" not found.`);
     }
 
+    let asGallery = false;
     let component: ReactElement;
     if (Array.isArray(variantProps)) {
+        asGallery = true;
         const componentPromises = variantProps.map(async (p = {}, i) => {
             return <FunctionComponent key={i} {...p} />;
         });
@@ -28,5 +30,5 @@ export default async function PreviewWrapperServer({ componentPath, variantProps
         component = <FunctionComponent {...variantProps} />;
     }
 
-    return <PreviewMain component={component} expectation={expectation} />;
+    return <PreviewMain component={component} expectation={expectation} asGallery={asGallery} />;
 }

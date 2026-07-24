@@ -119,7 +119,7 @@ export default function PropsExplorerItemHeadline({
                     style={{ backgroundColor: value as string, cursor: 'pointer' }}
                     onClick={handleColorSwatchClick}
                 > </span>
-                {inline}
+                <span className={`${classPrefix}-value-span`}>{inline}</span>
             </>;
         } else {
             valueContent = <span className={`${classPrefix}-value-${valueType}`}>{inline}</span>;

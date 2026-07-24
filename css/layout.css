@@ -205,6 +205,13 @@
     margin: 0 auto;
 }
 
+.blueprint-layout-preview-gallery {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .blueprint-ui .blueprint-layout-preview-controls {
     box-sizing: border-box;
     border: none;
@@ -319,6 +326,9 @@
     margin-top: 1px;
     margin-left: 5px;
     white-space: nowrap;
+}
+.blueprint-layout-props-viewer-item-value-span {
+    white-space: break-spaces;
 }
 .blueprint-layout-props-viewer-item-icon {
     width: 22px;

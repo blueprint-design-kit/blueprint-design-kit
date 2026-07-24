@@ -6,14 +6,16 @@ import type { ReactNode } from 'react';
 export interface PreviewMainProps {
     component: ReactNode;
     expectation: ReactNode;
+    asGallery?: boolean;
 }
 
-export default function PreviewMain({ component, expectation }: PreviewMainProps) {
+export default function PreviewMain({ component, expectation, asGallery }: PreviewMainProps) {
+    const contentClassName = `${asGallery ? 'blueprint-layout-preview-gallery' : ''} blueprint-reset-self`;
     return <>
         <div className="blueprint-layout-main blueprint-reset-self">
             <div className="blueprint-layout-main-border blueprint-reset-self">
-                <div id={MAIN_CONTENT_ID} className="blueprint-layout-main-content blueprint-reset-self">
-                    {component}
+                <div className="blueprint-layout-main-content blueprint-reset-self">
+                    <div id={MAIN_CONTENT_ID} className={contentClassName}>{component}</div>
                 </div>
             </div>
         </div>
@@ -22,7 +24,7 @@ export default function PreviewMain({ component, expectation }: PreviewMainProps
             <div className="blueprint-layout-preview-expectation-main blueprint-reset-self">
                 <div className="blueprint-layout-main-border blueprint-reset-self">
                     <div className="blueprint-layout-main-content blueprint-reset-self">
-                        <div id={EXPECTATION_CONTENT_ID} className="blueprint-reset-self">{expectation}</div>
+                        <div id={EXPECTATION_CONTENT_ID} className={contentClassName}>{expectation}</div>
                     </div>
                 </div>
             </div>
