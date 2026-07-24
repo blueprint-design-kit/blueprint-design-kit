@@ -1,12 +1,14 @@
 'use client';
 
 import { useContext } from 'react';
-import { formatExplorerItems, type ExplorerItem } from '../../utils/formatExplorerItems.js';
 import { deserializeProps } from '../../utils/serializeProps.js';
 import { useProps } from '../../providers/PropsProvider.js';
 import { StateContext } from '../../providers/StateProvider.js';
+import PropsExplorerItem from './PropsExplorerItem.js';
 
 import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.js';
+
+const classPrefix = 'blueprint-layout-props-viewer-item';
 
 export type PropsExplorerProps = {
     schema: BlueprintSchema | null | undefined;
@@ -17,7 +19,7 @@ export type PropsExplorerProps = {
 export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplorerProps) {
     // Store props in context so they can be updated interactively
     const { props: propsFromContext, updateProps } = useProps();
-    let props = propsFromContext;
+    let props: BlueprintProps = propsFromContext;
 
     // If props is an array (e.g. from a variant with multiple "props" entries), just show the first item in the PropsExplorer
     props = Array.isArray(props) ? props[0] : props;
@@ -26,35 +28,33 @@ export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplo
     const contextForState = useContext(StateContext);
     const { state, updateState } = contextForState || { updateState: () => {} };
 
-    function formatProps(schema: BlueprintSchema, props?: BlueprintProps) {
-        const items: ExplorerItem[] = [];
+    function schemaToArray(schema: BlueprintSchema, props?: BlueprintProps) {
+        const items = [];
         for (const key of Object.keys(schema)) {
             items.push({
                 key,
                 value: props && props[key],
-                classPrefix: 'blueprint-layout-props-viewer-item',
                 schema: schema[key] as BlueprintSchema[keyof BlueprintSchema],
                 onUpdate: (newValue: unknown) => {
                     updateProps({ key, value: newValue });
                 },
             });
         }
-        return formatExplorerItems(items, useClient);
+        return items;
     }
 
-    function formatState(state: BlueprintProps) {
-        const items: ExplorerItem[] = [];
+    function stateToArray(state: BlueprintProps) {
+        const items = [];
         for (const key of Object.keys(state)) {
             items.push({
                 key,
                 value: state[key],
-                classPrefix: 'blueprint-layout-props-viewer-item',
                 onUpdate: (newValue: unknown) => {
                     updateState({ key, value: newValue });
                 },
             });
         }
-        return formatExplorerItems(items, useClient);
+        return items;
     }
 
     const hasSchema = schema && Object.keys(schema).length > 0;
@@ -65,8 +65,17 @@ export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplo
                 <div className="blueprint-layout-props-viewer-section">
                     <div className="blueprint-layout-props-viewer-label">Props Passed:</div>
                     <div>
-                        {formatProps(schema, props).map((prop) => (
-                            <div key={prop.key}>{prop.node}</div>
+                        {schemaToArray(schema, props).map((prop) => (
+                            <div key={prop.key}>
+                                <PropsExplorerItem
+                                    classPrefix={classPrefix}
+                                    name={prop.key}
+                                    value={prop.value}
+                                    schema={prop.schema}
+                                    useClient={useClient}
+                                    onUpdate={prop.onUpdate}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -75,8 +84,15 @@ export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplo
                 <div className="blueprint-layout-props-viewer-section">
                     <div className="blueprint-layout-props-viewer-label">State:</div>
                     <div>
-                        {formatState(state).map((st) => (
-                            <div key={st.key}>{st.node}</div>
+                        {stateToArray(state).map((st) => (
+                            <div key={st.key}>
+                                <PropsExplorerItem
+                                    classPrefix={classPrefix}
+                                    name={st.key}
+                                    value={st.value}
+                                    onUpdate={st.onUpdate}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>

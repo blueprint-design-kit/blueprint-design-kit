@@ -11,17 +11,19 @@ export type BlueprintSchemaType =
     string[] |
     ((propValue: any) => boolean); // eslint-disable-line
 
+export interface BlueprintSchemaEntry {
+    default?: any; // eslint-disable-line
+    type?: BlueprintSchemaType;
+    optional?: boolean;
+    source?: string | { tag: string; url: string; };
+    allow?: any[]; // eslint-disable-line
+    min?: number;
+    max?: number;
+    note?: string;
+};
+
 export interface BlueprintSchema {
-    [key: string]: {
-        default?: any; // eslint-disable-line
-        type?: BlueprintSchemaType;
-        optional?: boolean;
-        source?: string | { tag: string; url: string; };
-        allow?: any[]; // eslint-disable-line
-        min?: number;
-        max?: number;
-        note?: string;
-    };
+    [key: string]: BlueprintSchemaEntry;
 }
 
 export type BlueprintProps = {

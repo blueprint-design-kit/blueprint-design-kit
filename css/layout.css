@@ -291,9 +291,9 @@
     max-width: 240px;
 }
 
-/*******************/
-/*** PropsViewer ***/
-/*******************/
+/*********************/
+/*** PropsExplorer ***/
+/*********************/
 
 .blueprint-layout-props-viewer {
     margin-top: -10px;
@@ -302,16 +302,39 @@
     margin-bottom: 15px;
 }
 .blueprint-layout-props-viewer-item {
+    width: fit-content;
+    min-width: 100%;
     margin-bottom: 15px;
     padding: 8px 10px;
 }
-.blueprint-layout-props-viewer-item-key {
-    display: inline-block;
+
+/*****************************/
+/*** PropsExplorerKeyValue ***/
+/*****************************/
+
+.blueprint-layout-props-viewer-item-headline {
+    display: flex;
 }
 .blueprint-layout-props-viewer-item-value {
-    display: inline-block;
+    margin-top: 1px;
     margin-left: 5px;
+    white-space: nowrap;
 }
+.blueprint-layout-props-viewer-item-icon {
+    width: 22px;
+    min-width: 22px; /* Prevent shrinking because of flex */
+    height: 22px;
+    margin-top: -1px;
+    margin-left: auto;
+    cursor: pointer;
+}
+.blueprint-layout-props-viewer-item-editor {
+    margin-top: 5px;
+}
+.blueprint-layout-props-viewer-item-editor textarea {
+    width: 100%;
+}
+
 .blueprint-layout-props-viewer-item-details-item {
     margin-left: 14px;
 }
@@ -322,6 +345,11 @@
 .blueprint-layout-props-viewer-item-details-inline {
     cursor: default;
 }
+
+/***************************/
+/*** PropsExplorerSchema ***/
+/***************************/
+
 .blueprint-layout-props-viewer-item-schema {
     padding: 4px;
     margin: 5px -10px -8px;
