@@ -5,22 +5,36 @@ describe('printTextInBox', () => {
 
     test('renders a basic boxed string', () => {
         const output = printTextInBox('Hello');
-        expect(output).toContain('┌');
-        expect(output).toContain('└');
-        expect(output).toContain('Hello');
+        expect(output).toBe(
+`
+┌───────┐
+│ Hello │
+└───────┘
+`);
     });
 
     test('renders multiple lines from a single string', () => {
         const output = printTextInBox('A\nB');
-        expect(output).toContain('A');
-        expect(output).toContain('B');
+        expect(output).toBe(
+`
+┌───┐
+│ A │
+│ B │
+└───┘
+`);
     });
 
     test('uses first line as title when usesTitle is true', () => {
         const output = printTextInBox(['Title', 'Line 1', 'Line 2'], { usesTitle: true });
-        expect(output).toContain('Title');
-        expect(output).toContain('├');
-        expect(output).toContain('Line 1');
+        expect(output).toBe(
+`
+┌────────┐
+│ Title  │
+├────────┤
+│ Line 1 │
+│ Line 2 │
+└────────┘
+`);
     });
 
 });

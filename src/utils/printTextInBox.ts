@@ -36,7 +36,7 @@ export function printTextInBox(text: string[] | string, options: PrintTextInBoxO
     const bottom = box(`└${horizontal}┘`);
     let header = '';
     if (title) {
-        header = `${box('│')} ${title}${' '.repeat(width - stripAnsi(title).length)} ${box('│')}\n`;
+        header = `\n${box('│')} ${title}${' '.repeat(width - stripAnsi(title).length)} ${box('│')}\n`;
         header += box(`├${horizontal}┤`);
     }
 
@@ -47,5 +47,5 @@ export function printTextInBox(text: string[] | string, options: PrintTextInBoxO
         middle += `${box('│')} ${line}${padding} ${box('│')}\n`;
     }
 
-    return `\n${top}\n${header}\n${middle}${bottom}\n`;
+    return `\n${top}${header}\n${middle}${bottom}\n`;
 }
