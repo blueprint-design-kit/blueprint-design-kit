@@ -18,38 +18,38 @@ describe('PropsExplorerItemHeadline', () => {
         expect(span?.textContent).toBe('42');
     });
 
-    test('renders color swatch when types includes color and useClient is false', async () => {
+    test('renders color swatch when types includes color and renderMode is not client', async () => {
         render(<PropsExplorerItemHeadline classPrefix="bp" name="bg" value="#ff0000" types={['color']} />);
         await expect.element(page.getByText('bg:')).toBeInTheDocument();
         expect(document.querySelector('.bp-color-swatch')).toBeTruthy();
     });
 
-    test('renders dropdown select when useClient and allow is provided', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="size" value="md" types={['string']} allow={['sm', 'md', 'lg']} useClient />);
+    test('renders dropdown select when renderMode is client and allow is provided', async () => {
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="size" value="md" types={['string']} allow={['sm', 'md', 'lg']} renderMode="client" />);
         await expect.element(page.getByRole('combobox')).toBeInTheDocument();
         expect(document.querySelectorAll('option').length).toBe(3);
     });
 
-    test('renders color swatch and hidden color input when useClient and types includes color', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="bg" value="#00ff00" types={['color']} useClient />);
+    test('renders color swatch and hidden color input when rednerMode is client and types includes color', async () => {
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="bg" value="#00ff00" types={['color']} renderMode="client" />);
         await expect.element(page.getByText('bg:')).toBeInTheDocument();
         expect(document.querySelector('.bp-color-swatch')).toBeTruthy();
         expect(document.querySelector('input[type="color"]')).toBeTruthy();
     });
 
-    test('renders edit icon when useClient and value is not a function', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} useClient />);
+    test('renders edit icon when renderMode is client and value is not a function', async () => {
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} renderMode="client" />);
         await expect.element(page.getByTitle('Edit Value')).toBeInTheDocument();
     });
 
     test('does not render edit icon when value is a function', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="onClick" value={() => {}} types={undefined} useClient />);
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="onClick" value={() => {}} types={undefined} renderMode="client" />);
         await expect.element(page.getByText('onClick:')).toBeInTheDocument();
         expect(document.querySelector('[title="Edit Value"]')).toBeNull();
     });
 
     test('clicking edit icon shows textarea prefilled with current value', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} useClient />);
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} renderMode="client" />);
         await page.getByTitle('Edit Value').click();
         const textarea = document.querySelector('textarea') as HTMLTextAreaElement | null;
         expect(textarea).toBeTruthy();
@@ -58,7 +58,7 @@ describe('PropsExplorerItemHeadline', () => {
 
     test('pressing Enter in textarea commits new value and calls onUpdate', async () => {
         const onUpdate = vi.fn();
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="count" value={1} types={undefined} useClient onUpdate={onUpdate} />);
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="count" value={1} types={undefined} renderMode="client" onUpdate={onUpdate} />);
         await page.getByTitle('Edit Value').click();
         const textarea = page.getByRole('textbox');
         await textarea.fill('42');
@@ -67,7 +67,7 @@ describe('PropsExplorerItemHeadline', () => {
     });
 
     test('clicking edit icon switches to save icon', async () => {
-        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} useClient />);
+        render(<PropsExplorerItemHeadline classPrefix="bp" name="label" value="hello" types={undefined} renderMode="client" />);
         await page.getByTitle('Edit Value').click();
         await expect.element(page.getByTitle('Save Value')).toBeInTheDocument();
     });

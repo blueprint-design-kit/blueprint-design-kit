@@ -64,6 +64,7 @@ describe('getTestValidations', () => {
                         expectation: 'renders correctly',
                     }),
                     validateProps,
+                    getOptions: () => {return {}},
                 };
             }
             return undefined;
@@ -133,6 +134,7 @@ describe('getTestValidations', () => {
                 expectation: 'renders correctly',
             }),
             validateProps,
+            getOptions: () => {return {}},
         });
 
         const validations = await getTestValidations({});
@@ -172,6 +174,7 @@ describe('getTestValidations', () => {
                     listVariants: () => [],
                     getVariant: () => undefined,
                     validateProps: () => undefined,
+                    getOptions: () => {return {}},
                 };
             }
             return {
@@ -181,6 +184,7 @@ describe('getTestValidations', () => {
                     expectation: 'should render',
                 }),
                 validateProps: () => undefined,
+                getOptions: () => {return {}},
             };
         });
         mockedGetComponent.mockResolvedValue(undefined);
@@ -220,6 +224,7 @@ describe('getTestValidations', () => {
                 expectation: 'renders correctly',
             }),
             validateProps: vi.fn().mockReturnValue(undefined),
+            getOptions: () => {return {}},
         });
         const FunctionComponent = (props: Record<string, unknown>) => String(props.size);
         mockedGetComponent.mockResolvedValue(FunctionComponent);

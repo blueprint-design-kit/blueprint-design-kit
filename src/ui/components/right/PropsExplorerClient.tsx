@@ -6,17 +6,17 @@ import { useProps } from '../../providers/PropsProvider.js';
 import { StateContext } from '../../providers/StateProvider.js';
 import PropsExplorerItem from './PropsExplorerItem.js';
 
-import type { BlueprintSchema, BlueprintProps } from '../../../blueprint/types.js';
+import type { BlueprintSchema, BlueprintProps, BlueprintRenderMode } from '../../../blueprint/types.js';
 
 const classPrefix = 'blueprint-layout-props-viewer-item';
 
 export type PropsExplorerProps = {
     schema: BlueprintSchema | null | undefined;
-    useClient?: boolean | undefined;
-    useServer?: boolean | undefined;
+    renderMode?: BlueprintRenderMode | undefined;
+    holdSpaceWhenEmpty?: boolean | undefined;
 }
 
-export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplorerProps) {
+export function PropsExplorerClient({ schema, renderMode, holdSpaceWhenEmpty }: PropsExplorerProps) {
     // Store props in context so they can be updated interactively
     const { props: propsFromContext, updateProps } = useProps();
     let props: BlueprintProps = propsFromContext;
@@ -72,7 +72,7 @@ export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplo
                                     name={prop.key}
                                     value={prop.value}
                                     schema={prop.schema}
-                                    useClient={useClient}
+                                    renderMode={renderMode}
                                     onUpdate={prop.onUpdate}
                                 />
                             </div>
@@ -100,5 +100,5 @@ export function PropsExplorerClient({ schema, useClient, useServer }: PropsExplo
         </div>);
     }
 
-    return useClient || useServer ? ' ' : null;
+    return holdSpaceWhenEmpty ? ' ' : null;
 }

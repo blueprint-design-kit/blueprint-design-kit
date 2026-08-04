@@ -5,6 +5,7 @@ import { validatePropsAgainstSchema } from './validateProps.js';
 import type { ReactNode } from 'react';
 import type {
     BlueprintConfig,
+    BlueprintOptions,
     BlueprintInstance,
     BlueprintLinks,
     BlueprintProps,
@@ -46,6 +47,13 @@ export class Blueprint {
                 return bp.locales[locale]?.notes || bp.notes;
             }
             return bp.notes;
+        };
+
+        const getOptions = (locale?: string): BlueprintOptions => {
+            if (locale && bp.locales) {
+                return bp.locales[locale]?.options || bp.options || {};
+            }
+            return bp.options || {};
         };
 
         const getSchema = (locale?: string): BlueprintSchema | undefined => {
@@ -104,6 +112,7 @@ export class Blueprint {
         const blueprintInstance: BlueprintInstance = {
             getLinks,
             getNotes,
+            getOptions,
             getSchema,
             getVariant,
             listVariants,

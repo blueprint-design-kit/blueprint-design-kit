@@ -3,14 +3,14 @@
 import PropsExplorerItemHeadline from './PropsExplorerItemHeadline.js';
 import PropsExplorerItemSchema from './PropsExplorerItemSchema.js';
 
-import type { BlueprintSchemaEntry } from '../../../blueprint/types.js';
+import type { BlueprintSchemaEntry, BlueprintRenderMode } from '../../../blueprint/types.js';
 
 interface PropsExplorerItemProps {
     classPrefix: string;
     name: string;
     value: unknown;
     schema?: BlueprintSchemaEntry;
-    useClient?: boolean | undefined;
+    renderMode?: BlueprintRenderMode | undefined;
     onUpdate?: (newValue: unknown) => void;
 }
 
@@ -19,7 +19,7 @@ export default function PropsExplorerItem({
     name,
     value,
     schema = {},
-    useClient,
+    renderMode,
     onUpdate,
 }: PropsExplorerItemProps) {
     const allow = schema.allow;
@@ -44,7 +44,7 @@ export default function PropsExplorerItem({
             value={value}
             types={types}
             allow={allow}
-            useClient={useClient}
+            renderMode={renderMode}
             onUpdate={onUpdate}
         />
         <PropsExplorerItemSchema

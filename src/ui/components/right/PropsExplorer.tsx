@@ -1,6 +1,6 @@
 import { PropsExplorerClient, type PropsExplorerProps } from './PropsExplorerClient.js';
 
-export default function PropsExplorer({ schema, useClient, useServer }: PropsExplorerProps) {
+export default function PropsExplorer({ schema, renderMode, holdSpaceWhenEmpty }: PropsExplorerProps) {
 
     // Flatten schema types into strings to avoid passing functions into client components
     //  and avoid mutating the original schema
@@ -13,5 +13,5 @@ export default function PropsExplorer({ schema, useClient, useServer }: PropsExp
         copyOfSchema[key] = copyOfSchemaObject;
     }
 
-    return <PropsExplorerClient schema={copyOfSchema} useClient={useClient} useServer={useServer} />;
+    return <PropsExplorerClient schema={copyOfSchema} renderMode={renderMode} holdSpaceWhenEmpty={holdSpaceWhenEmpty} />;
 }

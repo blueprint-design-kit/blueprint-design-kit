@@ -3,6 +3,8 @@ import { Blueprint } from './Blueprint';
 import * as validateBlueprintModule from './validateBlueprint';
 import * as validatePropsModule from './validateProps';
 
+import type { BlueprintOptions } from './types';
+
 describe('Blueprint', () => {
 
     describe('new Blueprint()', () => {
@@ -28,6 +30,7 @@ describe('Blueprint', () => {
             const {
                 getLinks,
                 getNotes,
+                getOptions,
                 getSchema,
                 getVariant,
                 listVariants,
@@ -37,6 +40,7 @@ describe('Blueprint', () => {
 
             expect(typeof getLinks).toBe('function');
             expect(typeof getNotes).toBe('function');
+            expect(typeof getOptions).toBe('function');
             expect(typeof getSchema).toBe('function');
             expect(typeof getVariant).toBe('function');
             expect(typeof listVariants).toBe('function');
@@ -45,6 +49,7 @@ describe('Blueprint', () => {
 
             expect(getLinks()).toEqual([]);
             expect(getNotes()).toBeUndefined();
+            expect(getOptions()).toEqual({});
             expect(getSchema()).toEqual({});
             expect(getVariant()).toBeUndefined();
             expect(listVariants()).toEqual([]);
@@ -89,6 +94,23 @@ describe('Blueprint', () => {
             const { getNotes } = bp.make();
             expect(getNotes()).toBe(mockedNotes);
             expect(getNotes('fr')).toBe(mockedNotesFr);
+        });
+
+        test('getOptions', () => {
+            const mockedOptions: BlueprintOptions = { forceRenderMode: 'client' };
+            const mockedOptionsFr: BlueprintOptions = { forceRenderMode: 'server' };
+            const bp = new Blueprint({
+                schema: {},
+                options: mockedOptions,
+                locales: {
+                    fr: {
+                        options: mockedOptionsFr,
+                    },
+                },
+            });
+            const { getOptions } = bp.make();
+            expect(getOptions()).toBe(mockedOptions);
+            expect(getOptions('fr')).toBe(mockedOptionsFr);
         });
 
         test('getSchema', () => {

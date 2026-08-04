@@ -9,8 +9,15 @@ import { getComponentMeta } from '../blueprint/getComponentMeta.js';
 import { listComponents } from '../blueprint/listComponents.js';
 import { TEST_RUNNER_URL_PATH } from '../config/constants.js';
 
-import type { BlueprintSchema, BlueprintProps, BlueprintState, BlueprintVariant, BlueprintLinks } from '../blueprint/types.js';
 import type { ReactNode } from 'react';
+import type {
+    BlueprintSchema,
+    BlueprintProps,
+    BlueprintState,
+    BlueprintVariant,
+    BlueprintLinks,
+    BlueprintRenderMode,
+} from '../blueprint/types.js';
 
 import BlueprintLayout from './components/BlueprintLayout.js';
 import ComponentMenu from './components/left/ComponentMenu.js';
@@ -135,6 +142,7 @@ export default async function BlueprintComponentUI({
     let variantState: BlueprintState = {};
     let useClient: boolean | undefined = void 0;
     let useServer: boolean | undefined = void 0;
+    let renderMode: BlueprintRenderMode = 'auto';
 
     let Center = null;
     if (componentPath) {
@@ -151,10 +159,18 @@ export default async function BlueprintComponentUI({
         } else {
             let variant: BlueprintVariant | undefined = void 0;
             let expectation: ReactNode = null;
+
             const selectedBlueprint = await getBlueprint(componentPath);
             const validateProps = selectedBlueprint?.validateProps || (() => null);
+
+            const componentMeta = await getComponentMeta(componentPath);
+            useClient = componentMeta?.useClient;
+            useServer = componentMeta?.useServer;
+
             if (selectedBlueprint) {
-                const { getLinks, getNotes, getSchema, getVariant, listVariants } = selectedBlueprint;
+                const { getLinks, getNotes, getOptions, getSchema, getVariant, listVariants } = selectedBlueprint;
+                const { forceRenderMode } = getOptions(locale);
+                renderMode = forceRenderMode || (useClient ? 'client' : (useServer ? 'server' : 'auto'));
                 schema = getSchema(locale);
                 links = getLinks(locale);
                 notes = getNotes(locale);
@@ -166,10 +182,6 @@ export default async function BlueprintComponentUI({
                     expectation = variant.expectation;
                 }
             }
-
-            const componentMeta = await getComponentMeta(componentPath);
-            useClient = componentMeta?.useClient;
-            useServer = componentMeta?.useServer;
 
             async function extendAndValidateProps(propsPassed: BlueprintProps, i?: number) {
                 let propsInternal = propsPassed;
@@ -198,7 +210,7 @@ export default async function BlueprintComponentUI({
                 variantProps = await extendAndValidateProps(variantProps);
             }
 
-            const component = useClient ?
+            const component = renderMode === 'client' ?
                 <PreviewWrapperClient
                     componentPath={componentPath}
                     expectation={expectation}
@@ -229,7 +241,7 @@ export default async function BlueprintComponentUI({
     const LeftBottom = TestRunnerLink({ baseUrl });
     const CenterBottom = notes;
     const RightTop = VariantPicker({ variants, selectedVariant });
-    const Right = PropsExplorer({ schema, useClient, useServer });
+    const Right = PropsExplorer({ schema, renderMode, holdSpaceWhenEmpty: useClient || useServer });
     const RightBottom = ClientVsServerTags({ useClient, useServer, options: clientVsServerTags });
 
     return (

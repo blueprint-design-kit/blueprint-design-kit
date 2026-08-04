@@ -49,6 +49,18 @@ interface BlueprintLink {
 }
 export type BlueprintLinks = (string | BlueprintLink)[];
 
+export type BlueprintRenderMode = 'client' | 'server' | 'auto';
+
+export interface BlueprintOptions {
+    /**
+     * Forces the preview pane to render on the client or server. Defaults to auto.
+     *  Warning: this can cause obscure runtime errors if the component is not compatible with the selected render mode.
+     *  It is recommended to add 'use client' or 'use server' to the component file instead of using this option.
+     *  Use this flag only when you have a compoent that could render either way, but you want to to preview it in a specific mode.
+     */
+    forceRenderMode?: BlueprintRenderMode;
+}
+
 export interface BlueprintConfig {
     /**
      * The schema defines the expected props for this component, along with their types, default values, and other validation rules.
@@ -74,6 +86,12 @@ export interface BlueprintConfig {
     notes?: ReactNode;
 
     /**
+     * Options or overrides for this particular component.
+     * Typically not needed as you'll just want default behavior.
+     */
+    options?: BlueprintOptions;
+
+    /**
      * An optional object defining locale-specific overrides for any of the above configuration options.
      * The keys of this object should be locale identifiers (e.g. 'en-US', 'fr-FR', etc.).
      */
@@ -82,10 +100,16 @@ export interface BlueprintConfig {
         variants?: BlueprintVariants;
         links?: BlueprintLinks;
         notes?: ReactNode;
+        options?: BlueprintOptions;
     }>;
 }
 
 export interface BlueprintInstance {
+    /**
+     * Returns the specified options for this blueprint if any are set
+     */
+    getOptions: (locale?: string) => BlueprintOptions;
+
     /**
      * Returns an Array of links for this blueprint
      */

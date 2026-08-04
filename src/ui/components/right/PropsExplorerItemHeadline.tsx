@@ -6,13 +6,15 @@ import { htmlify } from '../../utils/htmlify.js';
 import doneIcon from '../../icons/done.js';
 import editIcon from '../../icons/edit.js';
 
+import type { BlueprintRenderMode } from '../../../blueprint/types.js';
+
 interface PropsExplorerItemHeadlineProps {
     classPrefix: string;
     name: string;
     value: unknown;
     types: string[] | undefined;
     allow?: unknown[] | undefined;
-    useClient?: boolean | undefined;
+    renderMode?: BlueprintRenderMode | undefined;
     onUpdate?: ((newValue: unknown) => void) | undefined;
 };
 
@@ -22,7 +24,7 @@ export default function PropsExplorerItemHeadline({
     value,
     types,
     allow,
-    useClient,
+    renderMode,
     onUpdate,
 }: PropsExplorerItemHeadlineProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -87,7 +89,7 @@ export default function PropsExplorerItemHeadline({
     }
 
     let valueContent;
-    if (useClient) {
+    if (renderMode === 'client') {
         if (Array.isArray(allow) && allow.length) {
             valueContent = <>
                 <div className={`${classPrefix}-value-picker`}>
@@ -139,7 +141,7 @@ export default function PropsExplorerItemHeadline({
     }
 
     let icon = null;
-    if (useClient && valueIsEditable) {
+    if (renderMode === 'client' && valueIsEditable) {
         icon = isEditing ? {
             title: 'Save Value',
             content: doneIcon.icon,

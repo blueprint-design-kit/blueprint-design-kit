@@ -29,6 +29,7 @@ const locale = 'en-US';
 const blueprint = await getBlueprint('Atoms/Badge');
 blueprint.getLinks(locale), // [ 'http://foo.com/Badge' ]
 blueprint.getNotes(locale), // <h1>Notes</h1>
+blueprint.getOptions(locale), // { forceRenderMode: 'client' }
 blueprint.getSchema(locale), // { text: { type: 'string' }, backgroundColor: { default: '#f96' } }
 blueprint.listVariants(), // [ 'DEFAULT', 'NewProducts', 'Logged-In' ]
 blueprint.getVariant('Logged-In', locale), // { props: { text: 'Hi, Sam' } }

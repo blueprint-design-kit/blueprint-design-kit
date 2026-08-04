@@ -12,7 +12,7 @@ describe('PropsExplorerClient', () => {
             <PropsContext.Provider value={{ props: { title: 'Hello' }, updateProps: vi.fn() }}>
                 <StateContext.Provider value={{ state: { open: true }, updateState: vi.fn() }}>
                     <PropsExplorerClient
-                        useClient={false}
+                        renderMode='client'
                         schema={{
                             title: { type: 'string' },
                         }}
@@ -31,7 +31,7 @@ describe('PropsExplorerClient', () => {
         render(
             <PropsContext.Provider value={{ props: { title: 'Hello' }, updateProps: vi.fn() }}>
                 <PropsExplorerClient
-                    useClient={false}
+                    renderMode='client'
                     schema={{
                         title: { type: 'string' },
                     }}
@@ -47,7 +47,7 @@ describe('PropsExplorerClient', () => {
         render(
             <PropsContext.Provider value={{ props: { label: 'Submit' }, updateProps: vi.fn() }}>
                 <PropsExplorerClient
-                    useServer={true}
+                    renderMode='server'
                     schema={{
                         label: { type: 'string' },
                     }}
@@ -59,8 +59,8 @@ describe('PropsExplorerClient', () => {
         await expect.element(page.getByText('label:')).toBeInTheDocument();
     });
 
-    test('renders a placeholder when useServer is true and schema is absent', async () => {
-        await render(<PropsExplorerClient useServer={true} schema={null} />);
+    test('renders a placeholder when holdSpaceWhenEmpty is true and schema is absent', async () => {
+        await render(<PropsExplorerClient holdSpaceWhenEmpty={true} schema={null} />);
 
         expect(document.body.textContent?.trim()).toBe('');
         expect(document.body.innerHTML).not.toBe('');
