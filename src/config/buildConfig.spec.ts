@@ -5,6 +5,7 @@ import { readUserConfigFile } from '../_blueprint_config_builder.js';
 import { setOptions, getFileOptions } from './options.js';
 import { BLUEPRINT_PROJECT_DIRNAME } from '../_project_/dirname.js';
 
+// @ts-expect-error Simplified mock for testing
 vi.mock(import('node:fs'), () => ({
     default: {
         promises: {
@@ -29,6 +30,30 @@ describe('buildConfig', () => {
         vi.mocked(readUserConfigFile).mockResolvedValue(undefined);
         vi.mocked(getFileOptions).mockReturnValue({ importsFormat: 'es6' });
         vi.mocked(fs.promises.writeFile).mockResolvedValue(undefined);
+    });
+
+    test('sanitizes userConfig for functions and circular references', async () => {
+        const fn = () => {};
+        const problematicOption = { abc: 'foobar', fn, self: null };
+        // @ts-expect-error Providing a self-reference
+        problematicOption.self = problematicOption;
+
+        const userConfig = { testingOptions: problematicOption };
+        // @ts-expect-error Testing a problematic option on purpose
+        vi.mocked(readUserConfigFile).mockResolvedValue(userConfig);
+
+        await buildConfig();
+
+        // Removes functions and circulat refs when stringifying to file
+        const [, content] = vi.mocked(fs.promises.writeFile).mock.calls[0] || [];
+        expect(String(content).split('\n').slice(2)).toStrictEqual([
+            "export default {",
+            "  testingOptions: {",
+            "    abc: 'foobar',",
+            "    self: '[Circular]',",
+            "  },",
+            "};",
+        ]);
     });
 
     test('calls setOptions with the result of readUserConfigFile', async () => {

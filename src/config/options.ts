@@ -1,5 +1,6 @@
-import deepExtend from 'deep-extend';
 import savedConfig from '../_project_/blueprint.config.js';
+
+import type { BrowserType } from 'playwright';
 
 /**
  * Set by the user in a blueprint.config.{ts|js} file in the root of their project.
@@ -68,8 +69,9 @@ export interface BlueprintSystemOptions {
         serverCommand?: string;
         serverUrl?: string;
         timeout?: number;
+        browserLauncher?: BrowserType | undefined;
     },
-    
+
 }
 
 /**
@@ -99,6 +101,8 @@ const options: BlueprintSystemOptions = {
     testingOptions: {
         serverCommand: 'npm run start',
         serverUrl: 'http://localhost:3000/blueprint',
+        timeout: 0,
+        browserLauncher: undefined,
     },
 };
 
@@ -106,7 +110,15 @@ const options: BlueprintSystemOptions = {
 let userOptionsApplied = false;
 
 export function setOptions(userOptions: BlueprintSystemOptions | undefined) {
-    deepExtend(options, userOptions || {});
+    if (userOptions) {
+        // Flat extend our nested options
+        for (const category in options) {
+            const categoryName = category as keyof BlueprintSystemOptions;
+            const defaultOptions = options[categoryName] || {};
+            const overrideOptions = userOptions[categoryName] || {};
+            Object.assign(defaultOptions, overrideOptions);
+        }
+    }
     userOptionsApplied = true;
 }
 

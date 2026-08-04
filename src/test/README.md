@@ -64,6 +64,8 @@ $ npm run test
 ```
 ![Blueprint UI](../../images/BlueprintTestCli.jpg)
 
+Note: If you are getting an installation error and you already have Playwright installed in your project, you might need to pass your instance of `testingOptions.browserLauncher` into your blueprint.config file in order to launch from a compatible version.
+
 ### 3) Run your tests from the UI Interface
 
 Start your application

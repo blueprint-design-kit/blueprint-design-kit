@@ -3,21 +3,29 @@
 import { chromium } from 'playwright';
 import { TEST_RUNNER_RESULTS_ID, TEST_RUNNER_URL_PATH } from '../config/constants.js';
 import BlueprintError from '../utils/BlueprintError.js';
-
-import type { ValidationOutput } from '../ui/components/center/TestRunnerClient.js';
 import { printTextInBox } from '../utils/printTextInBox.js';
 
-async function launchChromium() {
+import type { BrowserType } from 'playwright';
+import type { ValidationOutput } from '../ui/components/center/TestRunnerClient.js';
+
+async function launchChromium(browserLauncher: BrowserType | undefined) {
     try {
-        return await chromium.launch({ headless: true });
+        const launcher = browserLauncher && typeof browserLauncher.launch === 'function' ? browserLauncher : chromium;
+        console.log('[Blueprint] Playwright executablePath:\n', launcher.executablePath());
+        return await launcher.launch({ headless: true });
     } catch (err) {
-        if (String(err).includes('playwright install')) {
+        const errStr = String(err);
+        if (errStr.includes('playwright install')) {
             throw new BlueprintError(printTextInBox([
                 'Running blueprint tests requires installing Chromium for Playwright.',
                 'This step is only required if you haven\'t already installed Playwright in this project.',
+                '',
                 'Please run: ',
                 '  npx playwright install chromium',
-            ]));
+                '',
+                'Or, if your project uses a different launcher/version, provide it in:',
+                '  blueprint.config.ts > testingOptions.browserLauncher',
+            ]) + errStr);
         }
         throw err;
     }
@@ -32,16 +40,17 @@ type HandleErrorFn = (err: unknown, context?: string) => void;
 type TestInPlaywrightOptions = {
     filter?: string | undefined;
     timeout?: number;
+    browserLauncher?: BrowserType | undefined;
 };
 
 export async function testInPlaywright(
     serverUrl: string,
     handleError: HandleErrorFn,
-    { filter, timeout = 0 }: TestInPlaywrightOptions
+    { filter, timeout = 0, browserLauncher }: TestInPlaywrightOptions
 ) {
     let resultsJson: ValidationOutput | undefined;
 
-    const browser = await launchChromium();
+    const browser = await launchChromium(browserLauncher);
     try {
         const page = await browser.newPage();
 
