@@ -93,7 +93,7 @@ export default function PropsExplorerItemHeadline({
         if (Array.isArray(allow) && allow.length) {
             valueContent = <>
                 <div className={`${classPrefix}-value-picker`}>
-                    <select name={`${classPrefix}-value-select`} value={inline} onChange={handleDropdownChange}>
+                    <select name={`value-select`} className={`${classPrefix}-value-select`} value={inline} onChange={handleDropdownChange}>
                         {allow.map((option) => {
                             const { inline: optionAsHtml } = htmlify(option, classPrefix);
                             return <option key={optionAsHtml} value={optionAsHtml}>{optionAsHtml}</option>
